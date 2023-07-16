@@ -1,4 +1,3 @@
-// MessageInput.tsx
 import React, { useState } from 'react';
 
 type MessageInputProps = {
@@ -33,3 +32,4 @@ const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey }) => {
   );
 };
 export default MessageInput;
+

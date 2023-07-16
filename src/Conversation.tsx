@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import MessageInput from './MessageInput';
 import { Conversation as ConversationType, ConversationData } from './Conversations';
 import getColor from './getColor';
@@ -18,16 +18,9 @@ const Conversation: React.FC<ConversationProps> = ({
   const [apiKey, setApiKey] = useState('');
   const [messages, setMessages] = useState<ConversationData[]>(conversation.revisions[0].conversation);
 
-  // 会話の前のバージョンを追跡するための ref を追加
-  const previousConversationRef = useRef(conversation);
-
   useEffect(() => {
-    // 会話が変わった場合のみ状態を更新
-    if (previousConversationRef.current !== conversation) {
-      setTitle(conversation.title);
-      setMessages(conversation.revisions[0].conversation);
-      previousConversationRef.current = conversation;  // 新しい会話を ref に保存
-    }
+    setTitle(conversation.title);
+    setMessages(conversation.revisions[0].conversation);
   }, [conversation]);
 
   const handleRename = () => {
@@ -78,14 +71,12 @@ const Conversation: React.FC<ConversationProps> = ({
   };
 
   const sendMessage = async (messageContent: string, role: string, apiKey: string, model: string) => {
-    const conversationAtStart = conversation;
-    
     appendMessage(messageContent, role);
     
     // AIの応答を待つ間、空のメッセージを追加します。
     setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
     
-    const completion = await sendToOpenAI(messageContent, role, apiKey, model);
+const completion = await sendToOpenAI(messageContent, role, apiKey, model);
 
     const reader = completion.body?.getReader();
   
@@ -123,20 +114,8 @@ const Conversation: React.FC<ConversationProps> = ({
         }
         return read();
       };
-    
       await read();
-    
-      // If the conversation has not changed during AI's response, then update the conversation
-      setConversations(prev => prev.map(item =>
-        item === conversationAtStart ? {
-          ...item,
-          revisions: [{
-            revision: '0',
-            conversation: [...item.revisions[0].conversation, { role: 'assistant', content: aiMessageContent }]
-          }]
-        } : item
-      ));
-
+      console.log(messages);
     } catch (e) {
       console.error(e);
     }

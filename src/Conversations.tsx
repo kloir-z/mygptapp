@@ -94,31 +94,55 @@ const Conversations: React.FC = () => {
   };
 
   return (
-      <div style={{ display: 'flex' }}>
-        <div style={{ margin: '1rem', width: '20%' }}>
-          <button onClick={() => {
-            const newConv = createNewConversation();
-            setConversations(prev => [...prev, newConv]);
-            setActiveConversation(newConv);
-          }}>New</button>
-          {conversations.map((conversation, index) => (
-            <div 
-              key={index} 
-              onClick={() => changeConversation(index)}
-              style={{backgroundColor: 'lightgrey', padding: '10px', margin: '5px 0', cursor: 'pointer'}}
-            >
-              {conversation.title}
-            </div>
-          ))}
-        </div>
-        {activeConversation && (
-          <Conversation
-            conversation={activeConversation}
-            setConversations={setConversations}
-            setActiveConversation={setActiveConversation}
-          />
-        )}
+    <div style={{ display: 'flex' }}>
+      <div style={{ margin: '1rem', width: '20%' }}>
+        <button onClick={() => {
+          const newConv = createNewConversation();
+          setConversations(prev => [...prev, newConv]);
+          setActiveConversation(newConv);
+        }}>New</button>
+        <input 
+          value={activeConversation?.title || ''} 
+          onChange={(e) => {
+            if(activeConversation) {
+              const newTitle = e.target.value;
+              setActiveConversation(prev => prev ? {...prev, title: newTitle} : null);
+            }
+          }}
+        />
+        <button onClick={() => {
+          if(activeConversation) {
+            setConversations(prev => prev.map(conv => 
+              conv.id === activeConversation.id ? {...conv, title: activeConversation.title} : conv
+            ));
+          }
+        }}>Rename</button>
+        <button onClick={() => {
+          if(activeConversation) {
+            setConversations(prev => prev.filter(conv => conv.id !== activeConversation.id));
+            setActiveConversation(null);
+          }
+        }}>Delete</button>
+        {conversations.map((conversation, index) => (
+          <div 
+            key={index} 
+            onClick={() => changeConversation(index)}
+            style={{backgroundColor: 'lightgrey', padding: '10px', margin: '5px 0', cursor: 'pointer'}}
+          >
+            {conversation.title}
+          </div>
+        ))}
       </div>
+      {activeConversation ? (
+        <Conversation
+          conversation={activeConversation}
+          setConversations={setConversations}
+          setActiveConversation={setActiveConversation}
+        />
+      ) : (
+        <div style={{ margin: '1rem', flex: 1 }}>Please select a conversation</div>
+      )}
+    </div>
   );
 };
 

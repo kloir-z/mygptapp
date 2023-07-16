@@ -14,27 +14,14 @@ const Conversation: React.FC<ConversationProps> = ({
   setConversations,
   setActiveConversation,
 }) => {
-  const [title, setTitle] = useState(conversation.title);
   const [apiKey, setApiKey] = useState('');
   const [model, setModel] = useState('gpt-3.5-turbo-16k-0613'); 
   const [messages, setMessages] = useState<ConversationData[]>(conversation.revisions[0].conversation);
 
   useEffect(() => {
-    setTitle(conversation.title);
     setMessages(conversation.revisions[0].conversation);
   }, [conversation]);
   
-  const handleRename = () => {
-    setConversations(prev => prev.map(item =>
-      item === conversation ? { ...item, title } : item
-    ));
-  };
-
-  const handleDelete = () => {
-    setConversations(prev => prev.filter(item => item !== conversation));
-    setActiveConversation(null);
-  };
-
   const sendToOpenAI = async (messageContent: string, role: string, apiKey: string, model: string) => {
     const messageData = messages.map((message) => ({
       role: message.role,
@@ -127,9 +114,6 @@ const Conversation: React.FC<ConversationProps> = ({
 
   return (
     <div style={{ margin: '1rem', flex: 1 }}>
-      <input value={title} onChange={e => setTitle(e.target.value)} />
-      <button onClick={handleRename}>Rename</button>
-      <button onClick={handleDelete}>Delete</button>
       <input value={apiKey} onChange={e => setApiKey(e.target.value)} placeholder="API Key" />
       <select value={model} onChange={e => setModel(e.target.value)}>  {/* New model select dropdown */}
         <option value="gpt-3.5-turbo-16k-0613">gpt-3.5-turbo-16k-0613</option>

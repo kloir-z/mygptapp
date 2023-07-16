@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import Conversation from './Conversation';
 
-// データの型定義
-type ConversationData = {
+export type ConversationData = {
   role: string;
   content: string;
 };
@@ -17,9 +16,7 @@ export type Conversation = {
   revisions: RevisionData[];
 };
 
-// Conversationsコンポーネント
 const Conversations: React.FC = () => {
-  // 初期データ
   const initialConversations: Conversation[] = [
     {
       title: "Sample Conversation",
@@ -33,18 +30,18 @@ const Conversations: React.FC = () => {
             },
             {
               role: "user",
-              content: "通常の会話test",
+              content: "test",
             },
             {
               role: "assistant",
-              content: "こんにちは、どうしましたか？test",
+              content: "test?",
             },
           ],
         },
       ],
     },
     {
-      title: "テスト会話",
+      title: "test conversation",
       revisions: [
         {
           revision: "0",
@@ -55,11 +52,11 @@ const Conversations: React.FC = () => {
             },
             {
               role: "user",
-              content: "てすと",
+              content: "tests",
             },
             {
               role: "assistant",
-              content: "こんにちは、テストですか？",
+              content: "hello, test?",
             },
           ],
         },
@@ -70,8 +67,6 @@ const Conversations: React.FC = () => {
   const [conversations, setConversations] = useState(initialConversations);
   const [activeConversation, setActiveConversation] = useState<Conversation | null>(null);
 
-
-  // コンポーネントの削除
   const deleteConversation = (index: number) => {
     const newConversations = [...conversations];
     newConversations.splice(index, 1);
@@ -81,28 +76,31 @@ const Conversations: React.FC = () => {
     }
   };
 
-  // アクティブな会話の切り替え
   const changeConversation = (index: number) => {
     setActiveConversation(conversations[index]);
   };
 
   return (
-    <div style={{ display: 'flex' }}>
-      <div style={{ margin: '1rem', width: '20%' }}>
-        {conversations.map((conversation, index) => (
-          <button key={index} onClick={() => changeConversation(index)}>
-            {conversation.title}
-          </button>
-        ))}
+      <div style={{ display: 'flex' }}>
+        <div style={{ margin: '1rem', width: '20%' }}>
+          {conversations.map((conversation, index) => (
+            <div 
+              key={index} 
+              onClick={() => changeConversation(index)}
+              style={{backgroundColor: 'lightgrey', padding: '10px', margin: '5px 0', cursor: 'pointer'}}
+            >
+              {conversation.title}
+            </div>
+          ))}
+        </div>
+        {activeConversation && (
+          <Conversation
+            conversation={activeConversation}
+            setConversations={setConversations}
+            setActiveConversation={setActiveConversation}
+          />
+        )}
       </div>
-      {activeConversation && (
-        <Conversation
-          conversation={activeConversation}
-          setConversations={setConversations}
-          setActiveConversation={setActiveConversation}
-        />
-      )}
-    </div>
   );
 };
 

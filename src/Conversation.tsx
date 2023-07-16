@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import MessageInput from './MessageInput';
-import { Conversation as ConversationType } from './Conversations';
+import { Conversation as ConversationType, ConversationData } from './Conversations';
 import getColor from './getColor';
 
 type ConversationProps = {
@@ -15,9 +15,19 @@ const Conversation: React.FC<ConversationProps> = ({
   setActiveConversation,
 }) => {
   const [title, setTitle] = useState(conversation.title);
+  const [apiKey, setApiKey] = useState('');
+  const [messages, setMessages] = useState<ConversationData[]>(conversation.revisions[0].conversation);
+
+  // 会話の前のバージョンを追跡するための ref を追加
+  const previousConversationRef = useRef(conversation);
 
   useEffect(() => {
-    setTitle(conversation.title);
+    // 会話が変わった場合のみ状態を更新
+    if (previousConversationRef.current !== conversation) {
+      setTitle(conversation.title);
+      setMessages(conversation.revisions[0].conversation);
+      previousConversationRef.current = conversation;  // 新しい会話を ref に保存
+    }
   }, [conversation]);
 
   const handleRename = () => {
@@ -31,22 +41,105 @@ const Conversation: React.FC<ConversationProps> = ({
     setActiveConversation(null);
   };
 
-  const addMessage = (content: string) => {
-    setConversations(prev => {
-      return prev.map(item => {
-        if (item === conversation) {
-          const newConversation = { ...item };
-          const newMessage = {
-            role: 'user',
-            content,
-          };
-          newConversation.revisions[0].conversation = [...newConversation.revisions[0].conversation, newMessage];
-          setActiveConversation(newConversation);  // 新しいアクティブな会話を設定
-          return newConversation;
-        }
-        return item;
-      });
+  const appendMessage = (content: string, role: string) => {
+    setMessages((prev) => [...prev, { role, content }]);
+    setConversations(prev => prev.map(item =>
+      item === conversation ? {
+        ...item,
+        revisions: [{
+          revision: '0',
+          conversation: [...item.revisions[0].conversation, { role, content }]
+        }]
+      } : item
+    ));
+  };
+
+  const sendToOpenAI = async (messageContent: string, role: string, apiKey: string, model: string) => {
+    const messageData = messages.map((message) => ({
+      role: message.role,
+      content: message.content,
+    }));
+    messageData.push({ role, content: messageContent });
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: model,
+        messages: messageData,
+        stream: true
+      })
     });
+
+    console.log(model);
+    return response;
+  };
+
+  const sendMessage = async (messageContent: string, role: string, apiKey: string, model: string) => {
+    const conversationAtStart = conversation;
+    
+    appendMessage(messageContent, role);
+    
+    // AIの応答を待つ間、空のメッセージを追加します。
+    setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
+    
+    const completion = await sendToOpenAI(messageContent, role, apiKey, model);
+
+    const reader = completion.body?.getReader();
+  
+    if (completion.status !== 200 || !reader) {
+      return;
+    }
+  
+    const decoder = new TextDecoder('utf-8');
+    let aiMessageContent = '';
+  
+    try {
+      const read = async (): Promise<void> => {
+        const { done, value } = await reader.read();
+        if (done) {
+          reader.releaseLock();
+          return;
+        }
+  
+        const chunk = decoder.decode(value, { stream: true });
+        const jsons = chunk
+          .split('\n')
+          .filter((data) => data.startsWith('data:') && !data.includes('[DONE]'))
+          .map((data) => JSON.parse(data.slice(5)))
+          .filter((data) => data);
+  
+        for (const json of jsons) {
+          if (json.choices) {
+            const aiMessageChunk = json.choices[0]?.delta.content;
+            if (aiMessageChunk) {
+              aiMessageContent += aiMessageChunk;
+              // 最新のAIのメッセージを更新します。
+              setMessages(prev => prev.map((message, index) => index === prev.length - 1 ? { role: 'assistant', content: aiMessageContent } : message));
+            }
+          }
+        }
+        return read();
+      };
+    
+      await read();
+    
+      // If the conversation has not changed during AI's response, then update the conversation
+      setConversations(prev => prev.map(item =>
+        item === conversationAtStart ? {
+          ...item,
+          revisions: [{
+            revision: '0',
+            conversation: [...item.revisions[0].conversation, { role: 'assistant', content: aiMessageContent }]
+          }]
+        } : item
+      ));
+
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
@@ -54,12 +147,13 @@ const Conversation: React.FC<ConversationProps> = ({
       <input value={title} onChange={e => setTitle(e.target.value)} />
       <button onClick={handleRename}>Rename</button>
       <button onClick={handleDelete}>Delete</button>
-      {conversation.revisions[0].conversation.map((item, index) => (
-        <pre key={index} style={{ backgroundColor: getColor(item.role) }}>
-          {item.content}
-        </pre>
+      <input value={apiKey} onChange={e => setApiKey(e.target.value)} placeholder="API Key" />
+      {messages.map((message: ConversationData, index: number) => (
+        <div key={index} style={{backgroundColor: getColor(message.role), padding: '10px', margin: '5px 0', textAlign: 'left'}}>
+          <strong>{message.role}: </strong> {message.content}
+        </div>
       ))}
-      <MessageInput addMessage={addMessage} />
+      <MessageInput sendMessage={sendMessage} apiKey={apiKey} />
     </div>
   );
 };

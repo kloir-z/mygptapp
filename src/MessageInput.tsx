@@ -14,7 +14,6 @@ const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey }) => {
       // Message is empty, do nothing
       return;
     }
-    // The role and apiKey need to be passed in somehow
     sendMessage(message, 'user', apiKey, model);
     setMessage('');
   };

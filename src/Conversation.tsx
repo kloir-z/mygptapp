@@ -16,6 +16,7 @@ const Conversation: React.FC<ConversationProps> = ({
 }) => {
   const [title, setTitle] = useState(conversation.title);
   const [apiKey, setApiKey] = useState('');
+  const [model, setModel] = useState('gpt-3.5-turbo-16k-0613');  // Add
   const [messages, setMessages] = useState<ConversationData[]>(conversation.revisions[0].conversation);
 
   useEffect(() => {
@@ -106,8 +107,8 @@ const Conversation: React.FC<ConversationProps> = ({
     return finalMessages;
   };
   
-  const sendMessage = async (messageContent: string, role: string, apiKey: string, model: string) => {
-    const finalMessages = await getAIResponse(messageContent, role, apiKey, model);
+  const sendMessage = async (messageContent: string, role: string, apiKey: string) => { // Removed model from arguments
+    const finalMessages = await getAIResponse(messageContent, role, apiKey, model); // Passed model directly
     console.log('finalMessages');
     console.log(finalMessages);
     console.log('conversation');
@@ -134,6 +135,11 @@ const Conversation: React.FC<ConversationProps> = ({
       <button onClick={handleRename}>Rename</button>
       <button onClick={handleDelete}>Delete</button>
       <input value={apiKey} onChange={e => setApiKey(e.target.value)} placeholder="API Key" />
+      <select value={model} onChange={e => setModel(e.target.value)}>  {/* New model select dropdown */}
+        <option value="gpt-3.5-turbo-16k-0613">gpt-3.5-turbo-16k-0613</option>
+        <option value="gpt-3.5-turbo-0613">gpt-3.5-turbo-0613</option>
+        <option value="gpt-4-0613">gpt-4-0613</option>
+      </select>
       {messages.map((message: ConversationData, index: number) => (
         <div key={index} style={{backgroundColor: getColor(message.role), padding: '10px', margin: '5px 0', textAlign: 'left'}}>
           <strong>{message.role}: </strong> {message.content}

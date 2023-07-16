@@ -16,7 +16,7 @@ const Conversation: React.FC<ConversationProps> = ({
 }) => {
   const [title, setTitle] = useState(conversation.title);
   const [apiKey, setApiKey] = useState('');
-  const [model, setModel] = useState('gpt-3.5-turbo-16k-0613');  // Add
+  const [model, setModel] = useState('gpt-3.5-turbo-16k-0613'); 
   const [messages, setMessages] = useState<ConversationData[]>(conversation.revisions[0].conversation);
 
   useEffect(() => {
@@ -107,12 +107,8 @@ const Conversation: React.FC<ConversationProps> = ({
     return finalMessages;
   };
   
-  const sendMessage = async (messageContent: string, role: string, apiKey: string) => { // Removed model from arguments
-    const finalMessages = await getAIResponse(messageContent, role, apiKey, model); // Passed model directly
-    console.log('finalMessages');
-    console.log(finalMessages);
-    console.log('conversation');
-    console.log(conversation);
+  const sendMessage = async (messageContent: string, role: string, apiKey: string) => { 
+    const finalMessages = await getAIResponse(messageContent, role, apiKey, model); 
   
     setConversations(prev => prev.map(item => {
       if (item.id === conversation.id) {

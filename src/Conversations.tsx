@@ -13,7 +13,7 @@ type RevisionData = {
 };
 
 export type Conversation = {
-  id: string;  // 追加
+  id: string; 
   title: string;
   revisions: RevisionData[];
 };

@@ -22,7 +22,7 @@ const Conversation: React.FC<ConversationProps> = ({
     setTitle(conversation.title);
     setMessages(conversation.revisions[0].conversation);
   }, [conversation]);
-
+  
   const handleRename = () => {
     setConversations(prev => prev.map(item =>
       item === conversation ? { ...item, title } : item
@@ -32,19 +32,6 @@ const Conversation: React.FC<ConversationProps> = ({
   const handleDelete = () => {
     setConversations(prev => prev.filter(item => item !== conversation));
     setActiveConversation(null);
-  };
-
-  const appendMessage = (content: string, role: string) => {
-    setMessages((prev) => [...prev, { role, content }]);
-    setConversations(prev => prev.map(item =>
-      item === conversation ? {
-        ...item,
-        revisions: [{
-          revision: '0',
-          conversation: [...item.revisions[0].conversation, { role, content }]
-        }]
-      } : item
-    ));
   };
 
   const sendToOpenAI = async (messageContent: string, role: string, apiKey: string, model: string) => {
@@ -66,27 +53,22 @@ const Conversation: React.FC<ConversationProps> = ({
       })
     });
 
-    console.log(model);
     return response;
   };
 
-  const sendMessage = async (messageContent: string, role: string, apiKey: string, model: string) => {
-    appendMessage(messageContent, role);
-    
-    // AIの応答を待つ間、空のメッセージを追加します。
-    setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
-    
-const completion = await sendToOpenAI(messageContent, role, apiKey, model);
-
-    const reader = completion.body?.getReader();
-  
-    if (completion.status !== 200 || !reader) {
-      return;
+  const getAIResponse = async (messageContent: string, role: string, apiKey: string, model: string) => {
+    setMessages(prev => [...prev, { role: 'user', content: messageContent }]);
+    const response = await sendToOpenAI(messageContent, role, apiKey, model);
+    const reader = response.body?.getReader();
+    if (!reader) {
+      throw new Error('Response body stream not available');
     }
   
     const decoder = new TextDecoder('utf-8');
     let aiMessageContent = '';
-  
+    setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
+    let finalMessages = [...messages, { role: 'user', content: messageContent }, { role: 'assistant', content: '' }];
+
     try {
       const read = async (): Promise<void> => {
         const { done, value } = await reader.read();
@@ -94,20 +76,19 @@ const completion = await sendToOpenAI(messageContent, role, apiKey, model);
           reader.releaseLock();
           return;
         }
-  
+
         const chunk = decoder.decode(value, { stream: true });
         const jsons = chunk
           .split('\n')
           .filter((data) => data.startsWith('data:') && !data.includes('[DONE]'))
           .map((data) => JSON.parse(data.slice(5)))
           .filter((data) => data);
-  
+
         for (const json of jsons) {
           if (json.choices) {
             const aiMessageChunk = json.choices[0]?.delta.content;
             if (aiMessageChunk) {
               aiMessageContent += aiMessageChunk;
-              // 最新のAIのメッセージを更新します。
               setMessages(prev => prev.map((message, index) => index === prev.length - 1 ? { role: 'assistant', content: aiMessageContent } : message));
             }
           }
@@ -115,10 +96,36 @@ const completion = await sendToOpenAI(messageContent, role, apiKey, model);
         return read();
       };
       await read();
-      console.log(messages);
     } catch (e) {
       console.error(e);
     }
+  
+    finalMessages = finalMessages.map((message, index) => 
+      index === finalMessages.length - 1 ? { role: 'assistant', content: aiMessageContent } : message
+    );
+    return finalMessages;
+  };
+  
+  const sendMessage = async (messageContent: string, role: string, apiKey: string, model: string) => {
+    const finalMessages = await getAIResponse(messageContent, role, apiKey, model);
+    console.log('finalMessages');
+    console.log(finalMessages);
+    console.log('conversation');
+    console.log(conversation);
+  
+    setConversations(prev => prev.map(item => {
+      if (item.id === conversation.id) {
+        return {
+          ...item,
+          revisions: [{
+            revision: '0',
+            conversation: finalMessages
+          }]
+        };
+      } else {
+        return item;
+      }
+      }));
   };
 
   return (

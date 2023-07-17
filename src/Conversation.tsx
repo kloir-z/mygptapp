@@ -1,21 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import MessageInput from './MessageInput';
 import { Conversation as ConversationType, ConversationData } from './Conversations';
 import getColor from './getColor';
+import "firebase/compat/auth";
+import "firebase/compat/firestore";
 
 type ConversationProps = {
   conversation: ConversationType;
   setConversations: React.Dispatch<React.SetStateAction<ConversationType[]>>;
   setActiveConversation: React.Dispatch<React.SetStateAction<ConversationType | null>>;
+  sendMessage: (updatedConversation: ConversationType) => Promise<void>;
 };
 
 const Conversation: React.FC<ConversationProps> = ({
   conversation,
   setConversations,
   setActiveConversation,
+  sendMessage
 }) => {
   const [apiKey, setApiKey] = useState('');
-  const [model, setModel] = useState('gpt-3.5-turbo-16k-0613'); 
+  const [model, setModel] = useState('gpt-3.5-turbo-0613'); 
   const [messages, setMessages] = useState<ConversationData[]>(conversation.revisions[0].conversation);
 
   useEffect(() => {
@@ -94,38 +98,34 @@ const Conversation: React.FC<ConversationProps> = ({
     return finalMessages;
   };
   
-  const sendMessage = async (messageContent: string, role: string, apiKey: string) => { 
+  const updateConversation  = async (messageContent: string, role: string, apiKey: string) => { 
     const finalMessages = await getAIResponse(messageContent, role, apiKey, model); 
-  
-    setConversations(prev => prev.map(item => {
-      if (item.id === conversation.id) {
-        return {
-          ...item,
-          revisions: [{
-            revision: '0',
-            conversation: finalMessages
-          }]
-        };
-      } else {
-        return item;
-      }
-      }));
+
+    const updatedConversation = {
+      ...conversation,
+      revisions: [{
+        revision: '0',
+        conversation: finalMessages
+      }]
+    };
+    sendMessage(updatedConversation);
+
   };
 
   return (
     <div style={{ margin: '1rem', flex: 1 }}>
-      <input value={apiKey} onChange={e => setApiKey(e.target.value)} placeholder="API Key" />
+      <input type="password" value={apiKey} onChange={e => setApiKey(e.target.value)} placeholder="API Key" />
       <select value={model} onChange={e => setModel(e.target.value)}>  {/* New model select dropdown */}
         <option value="gpt-3.5-turbo-16k-0613">gpt-3.5-turbo-16k-0613</option>
         <option value="gpt-3.5-turbo-0613">gpt-3.5-turbo-0613</option>
         <option value="gpt-4-0613">gpt-4-0613</option>
       </select>
       {messages.map((message: ConversationData, index: number) => (
-        <div key={index} style={{backgroundColor: getColor(message.role), padding: '10px', margin: '5px 0', textAlign: 'left'}}>
-          <strong>{message.role}: </strong> {message.content}
-        </div>
+        <pre key={index} style={{backgroundColor: getColor(message.role), padding: '10px', margin: '0px', textAlign: 'left'}}>
+          {message.content}
+        </pre>
       ))}
-      <MessageInput sendMessage={sendMessage} apiKey={apiKey} />
+      <MessageInput sendMessage={updateConversation} apiKey={apiKey} />
     </div>
   );
 };

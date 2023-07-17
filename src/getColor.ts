@@ -3,9 +3,9 @@ const getColor = (role: string) => {
     case 'system':
       return 'lightgray';
     case 'user':
-      return 'lightblue';
+      return '#c1d5ff';
     case 'assistant':
-      return 'lightgreen';
+      return '#bbdebb';
     default:
       return 'white';
   }

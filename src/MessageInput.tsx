@@ -19,7 +19,19 @@ const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey }) => {
 
   return (
     <div>
-      <textarea value={message} onChange={e => setMessage(e.target.value)} />
+       <textarea 
+        value={message} 
+        onChange={e => setMessage(e.target.value)}
+        style={{
+          marginTop: '10px',
+          width: '97%',
+          padding: '10px',
+          height: 'auto',
+          resize: 'none',
+          overflow: 'auto',
+        }}
+        rows={message.split('\n').length || 1}
+      />
       <button onClick={handleSend}>Send</button>
     </div>
   );

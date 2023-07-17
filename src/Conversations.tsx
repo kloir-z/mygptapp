@@ -1,4 +1,8 @@
-import React, { useState, } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import "firebase/compat/firestore";
+import { AuthContext } from './AuthContext';
 import Conversation from './Conversation';
 import { v4 as uuidv4 } from 'uuid'; 
 
@@ -13,63 +17,41 @@ type RevisionData = {
 };
 
 export type Conversation = {
-  id: string; 
+  id: string;
   title: string;
   revisions: RevisionData[];
 };
 
 const Conversations: React.FC = () => {
-  const initialConversations: Conversation[] = [
-    {
-      id: uuidv4(),
-      title: "Sample Conversation",
-      revisions: [
-        {
-          revision: "0",
-          conversation: [
-            {
-              role: "system",
-              content: "AI Assistant",
-            },
-            {
-              role: "user",
-              content: "test",
-            },
-            {
-              role: "assistant",
-              content: "test?",
-            },
-          ],
-        },
-      ],
-    },
-    {
-      id: uuidv4(),
-      title: "test conversation",
-      revisions: [
-        {
-          revision: "0",
-          conversation: [
-            {
-              role: "system",
-              content: "AI Assistant",
-            },
-            {
-              role: "user",
-              content: "tests",
-            },
-            {
-              role: "assistant",
-              content: "hello, test?",
-            },
-          ],
-        },
-      ],
-    },
-  ];
+  const authContext = useContext(AuthContext);
 
-  const [conversations, setConversations] = useState(initialConversations);
+  if (!authContext) {
+    // handle the case when authContext is not available
+    // for example, return null or some placeholder
+    return null;
+  }
+
+  const { user } = authContext;
+
+  const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConversation, setActiveConversation] = useState<Conversation | null>(null);
+
+  useEffect(() => {
+    const fetchConversations = async () => {
+      const firestore = firebase.firestore();
+      const docRef = firestore.collection("conversations").doc(user?.uid);
+      const doc = await docRef.get();
+      const data = doc.data();
+      if (!data || !data.messages) {
+        return;
+      }
+      const conversations: Conversation[] = data.messages.map((message: any) => ({id: message.id, ...message} as Conversation));
+      setConversations(conversations);
+      console.log(conversations);
+    };
+
+    fetchConversations();
+  }, [user?.uid]);
 
   const changeConversation = (index: number) => {
     setActiveConversation(conversations[index]);
@@ -83,14 +65,25 @@ const Conversations: React.FC = () => {
         {
           revision: "0",
           conversation: [
-            {
-              role: "system",
-              content: "AI Assistant",
-            },
           ],
         },
       ],
     };
+  };
+  
+  const handleMessageSend = async (updatedConversation: Conversation) => {
+    const updatedConversations = conversations.map(item => 
+      item.id === updatedConversation.id ? updatedConversation : item
+    );
+
+    // Update Firebase Firestore and wait for the write to finish
+    const firestore = firebase.firestore();
+    await firestore.collection("conversations").doc(user?.uid).set({
+      messages: updatedConversations
+    });
+
+    // After Firestore update, update local state
+    setConversations(updatedConversations);
   };
 
   return (
@@ -138,6 +131,7 @@ const Conversations: React.FC = () => {
           conversation={activeConversation}
           setConversations={setConversations}
           setActiveConversation={setActiveConversation}
+          sendMessage={handleMessageSend}
         />
       ) : (
         <div style={{ margin: '1rem', flex: 1 }}>Please select a conversation</div>

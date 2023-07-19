@@ -5,9 +5,6 @@ import { AuthContext } from '../Auth/AuthContext';
 
 const AppContainer = styled.div`
   text-align: left;
-  background-color: #c1d5ff;
-  background-color: #bbdebb;
-  background-color: #282c34;
 `;
 
 const App: React.FC = () => {

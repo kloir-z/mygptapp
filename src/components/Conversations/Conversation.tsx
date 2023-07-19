@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import styled from '@emotion/styled';
 import MessageInput from './MessageInput';
 import { Conversation as ConversationType, ConversationData } from './Conversations';
-import getColor from './getColor';
 import { getAIResponse } from './openAIUtil';
 
 type ConversationProps = {
@@ -10,6 +10,43 @@ type ConversationProps = {
   setActiveConversation: React.Dispatch<React.SetStateAction<ConversationType | null>>;
   sendMessage: (updatedConversation: ConversationType) => Promise<void>;
 };
+
+const getColor = (role: string) => {
+  switch (role) {
+    case 'system':
+      return 'lightgray';
+    case 'user':
+      return '#eaf0ff';
+    case 'assistant':
+      return '#edffed';
+    default:
+      return 'white';
+  }
+};
+
+const Message = styled.pre<{role: string}>`
+  background-color: ${props => getColor(props.role)};
+  padding: 10px;
+  margin: 0px;
+  text-align: left;
+`;
+
+const ConversationContainer = styled.div`
+  margin: 1rem;
+  flex: 1;
+`;
+
+const StyledInput = styled.input`
+  /* Styles can be added here */
+`;
+
+const StyledSelect = styled.select`
+  /* Styles can be added here */
+`;
+
+const StyledOption = styled.option`
+  /* Styles can be added here */
+`;
 
 const Conversation: React.FC<ConversationProps> = ({
   conversation,
@@ -36,20 +73,20 @@ const Conversation: React.FC<ConversationProps> = ({
   };
 
   return (
-    <div style={{ margin: '1rem', flex: 1 }}>
-      <input type="password" value={apiKey} onChange={e => setApiKey(e.target.value)} placeholder="API Key" />
-      <select value={model} onChange={e => setModel(e.target.value)}>  {/* New model select dropdown */}
-        <option value="gpt-3.5-turbo-16k-0613">gpt-3.5-turbo-16k-0613</option>
-        <option value="gpt-3.5-turbo-0613">gpt-3.5-turbo-0613</option>
-        <option value="gpt-4-0613">gpt-4-0613</option>
-      </select>
+    <ConversationContainer>
+      <StyledInput type="password" value={apiKey} onChange={e => setApiKey(e.target.value)} placeholder="API Key" />
+      <StyledSelect value={model} onChange={e => setModel(e.target.value)}>  {/* New model select dropdown */}
+        <StyledOption value="gpt-3.5-turbo-16k-0613">gpt-3.5-turbo-16k-0613</StyledOption>
+        <StyledOption value="gpt-3.5-turbo-0613">gpt-3.5-turbo-0613</StyledOption>
+        <StyledOption value="gpt-4-0613">gpt-4-0613</StyledOption>
+      </StyledSelect>
       {messages.map((message: ConversationData, index: number) => (
-        <pre key={index} style={{backgroundColor: getColor(message.role), padding: '10px', margin: '0px', textAlign: 'left'}}>
+        <Message key={index} role={message.role}>
           {message.content}
-        </pre>
+        </Message>
       ))}
       <MessageInput sendMessage={updateConversation} apiKey={apiKey} />
-    </div>
+    </ConversationContainer>
   );
 };
 

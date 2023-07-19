@@ -2,9 +2,10 @@ import React, { useEffect, useState, useContext } from 'react';
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
-import { AuthContext } from './AuthContext';
+import { AuthContext } from '../Auth/AuthContext';
 import Conversation from './Conversation';
 import { v4 as uuidv4 } from 'uuid'; 
+import styled from '@emotion/styled';
 
 export type ConversationData = {
   role: string;
@@ -21,6 +22,35 @@ export type Conversation = {
   title: string;
   revisions: RevisionData[];
 };
+
+const ConversationWrapper = styled.div`
+  display: flex;
+`;
+
+const Sidebar = styled.div`
+  margin: 1rem;
+  width: 20%;
+`;
+
+const ConversationItem = styled.div`
+  background-color: lightgrey; 
+  padding: 10px; 
+  margin: 5px 0; 
+  cursor: pointer;
+`;
+
+const StyledButton = styled.button`
+  // Add your styles here
+`;
+
+const StyledInput = styled.input`
+  // Add your styles here
+`;
+
+const Placeholder = styled.div`
+  margin: 1rem;
+  flex: 1;
+`;
 
 const Conversations: React.FC = () => {
   const authContext = useContext(AuthContext);
@@ -86,15 +116,15 @@ const Conversations: React.FC = () => {
     setConversations(updatedConversations);
   };
 
-  return (
-    <div style={{ display: 'flex' }}>
-      <div style={{ margin: '1rem', width: '20%' }}>
-        <button onClick={() => {
+   return (
+    <ConversationWrapper>
+      <Sidebar>
+        <StyledButton onClick={() => {
           const newConv = createNewConversation();
           setConversations(prev => [...prev, newConv]);
           setActiveConversation(newConv);
-        }}>New</button>
-        <input 
+        }}>New</StyledButton>
+        <StyledInput 
           value={activeConversation?.title || ''} 
           onChange={(e) => {
             if(activeConversation) {
@@ -103,29 +133,28 @@ const Conversations: React.FC = () => {
             }
           }}
         />
-        <button onClick={() => {
+        <StyledButton onClick={() => {
           if(activeConversation) {
             setConversations(prev => prev.map(conv => 
               conv.id === activeConversation.id ? {...conv, title: activeConversation.title} : conv
             ));
           }
-        }}>Rename</button>
-        <button onClick={() => {
+        }}>Rename</StyledButton>
+        <StyledButton onClick={() => {
           if(activeConversation) {
             setConversations(prev => prev.filter(conv => conv.id !== activeConversation.id));
             setActiveConversation(null);
           }
-        }}>Delete</button>
+        }}>Delete</StyledButton>
         {conversations.map((conversation, index) => (
-          <div 
+          <ConversationItem 
             key={index} 
             onClick={() => changeConversation(index)}
-            style={{backgroundColor: 'lightgrey', padding: '10px', margin: '5px 0', cursor: 'pointer'}}
           >
             {conversation.title}
-          </div>
+          </ConversationItem>
         ))}
-      </div>
+      </Sidebar>
       {activeConversation ? (
         <Conversation
           conversation={activeConversation}
@@ -134,9 +163,9 @@ const Conversations: React.FC = () => {
           sendMessage={handleMessageSend}
         />
       ) : (
-        <div style={{ margin: '1rem', flex: 1 }}>Please select a conversation</div>
+        <Placeholder>Please select a conversation</Placeholder>
       )}
-    </div>
+    </ConversationWrapper>
   );
 };
 

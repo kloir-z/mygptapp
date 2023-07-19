@@ -1,9 +1,25 @@
 import React, { useState } from 'react';
+import styled from '@emotion/styled';
 
 type MessageInputProps = {
   sendMessage: (message: string, role: string, apiKey: string) => void;
   apiKey: string;
 };
+
+const MessageInputContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+`;
+
+const StyledTextarea = styled.textarea`
+  margin-top: 10px;
+  width: 97%;
+  padding: 10px;
+  height: auto;
+  resize: none;
+  overflow: auto;
+`;
 
 const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey }) => {
   const [message, setMessage] = useState('');
@@ -18,22 +34,14 @@ const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey }) => {
   };
 
   return (
-    <div>
-       <textarea 
+    <MessageInputContainer>
+      <StyledTextarea 
         value={message} 
         onChange={e => setMessage(e.target.value)}
-        style={{
-          marginTop: '10px',
-          width: '97%',
-          padding: '10px',
-          height: 'auto',
-          resize: 'none',
-          overflow: 'auto',
-        }}
         rows={message.split('\n').length || 1}
       />
       <button onClick={handleSend}>Send</button>
-    </div>
+    </MessageInputContainer>
   );
 };
 export default MessageInput;

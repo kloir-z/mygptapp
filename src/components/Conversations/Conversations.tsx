@@ -46,11 +46,7 @@ const StyledButton = styled.button`
 `;
 
 const StyledInput = styled.input`
-    padding: 10px 15px;
-    font-size: 0.8rem;
-    border-radius: 3px;
-    border: 2px solid #ddd;
-    box-sizing: border-box;
+  // Add your styles here
 `;
 
 const Placeholder = styled.div`
@@ -125,7 +121,21 @@ const Conversations: React.FC = () => {
    return (
     <ConversationWrapper>
       <Sidebar>
-       <StyledButton onClick={() => {
+        <StyledButton onClick={() => {
+          const newConv = createNewConversation();
+          setConversations(prev => [...prev, newConv]);
+          setActiveConversation(newConv);
+        }}>New</StyledButton>
+        <StyledInput 
+          value={activeConversation?.title || ''} 
+          onChange={(e) => {
+            if(activeConversation) {
+              const newTitle = e.target.value;
+              setActiveConversation(prev => prev ? {...prev, title: newTitle} : null);
+            }
+          }}
+        />
+        <StyledButton onClick={() => {
           if(activeConversation) {
             setConversations(prev => prev.map(conv => 
               conv.id === activeConversation.id ? {...conv, title: activeConversation.title} : conv
@@ -138,20 +148,6 @@ const Conversations: React.FC = () => {
             setActiveConversation(null);
           }
         }}>Delete</StyledButton>
-        <StyledInput 
-          value={activeConversation?.title || ''} 
-          onChange={(e) => {
-            if(activeConversation) {
-              const newTitle = e.target.value;
-              setActiveConversation(prev => prev ? {...prev, title: newTitle} : null);
-            }
-          }}
-        />
-         <StyledButton onClick={() => {
-          const newConv = createNewConversation();
-          setConversations(prev => [...prev, newConv]);
-          setActiveConversation(newConv);
-        }}>New</StyledButton>
         {conversations.map((conversation, index) => (
           <ConversationItem 
             key={index} 

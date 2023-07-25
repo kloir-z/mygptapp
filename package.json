@@ -46,6 +46,8 @@
     ]
   },
   "devDependencies": {
-    "@types/uuid": "^9.0.2"
+    "@types/uuid": "^9.0.2",
+    "babel-plugin-emotion": "^11.0.0",
+    "react-app-rewired": "^2.2.1"
   }
 }

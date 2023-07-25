@@ -9,13 +9,12 @@ type MessageInputProps = {
 const MessageInputContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: flex-start;
 `;
 
 const StyledTextarea = styled.textarea`
+  width: 100%;
   margin-top: 10px;
-  width: 97vw;
-  width: 97svh;
   padding: 10px;
   height: auto;
   resize: none;

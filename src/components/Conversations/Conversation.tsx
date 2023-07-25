@@ -16,9 +16,9 @@ const getColor = (role: string) => {
     case 'system':
       return 'lightgray';
     case 'user':
-      return '#545b71';
+      return '#3e4756';
     case 'assistant':
-      return '#4d674d';
+      return '#454a62';
     default:
       return 'white';
   }
@@ -32,11 +32,21 @@ const Message = styled.pre<{role: string}>`
   font-family: Meiryo;
   font-size: 0.8rem;
   color: #ebebeb;
+  white-space: pre-wrap;
 `;
 
 const ConversationContainer = styled.div`
   margin: 1rem;
   flex: 1;
+`;
+
+const MessagesContainer = styled.div`
+  overflow-y: auto;
+  height: calc(100vh - 150px);  /* adjust this as per your needs */
+`;
+
+const InputContainer = styled.div`
+  /* Styles can be added here */
 `;
 
 const StyledInput = styled.input`
@@ -78,17 +88,21 @@ const Conversation: React.FC<ConversationProps> = ({
   return (
     <ConversationContainer>
       <StyledInput type="password" value={apiKey} onChange={e => setApiKey(e.target.value)} placeholder="API Key" />
-      <StyledSelect value={model} onChange={e => setModel(e.target.value)}>  {/* New model select dropdown */}
+      <StyledSelect value={model} onChange={e => setModel(e.target.value)}>  
         <StyledOption value="gpt-3.5-turbo-16k-0613">gpt-3.5-turbo-16k-0613</StyledOption>
         <StyledOption value="gpt-3.5-turbo-0613">gpt-3.5-turbo-0613</StyledOption>
         <StyledOption value="gpt-4-0613">gpt-4-0613</StyledOption>
       </StyledSelect>
-      {messages.map((message: ConversationData, index: number) => (
-        <Message key={index} role={message.role}>
-          {message.content}
-        </Message>
-      ))}
-      <MessageInput sendMessage={updateConversation} apiKey={apiKey} />
+      <MessagesContainer>
+        {messages.map((message: ConversationData, index: number) => (
+          <Message key={index} role={message.role}>
+            {message.content}
+          </Message>
+        ))}
+      </MessagesContainer>
+      <InputContainer>
+        <MessageInput sendMessage={updateConversation} apiKey={apiKey} />
+      </InputContainer>
     </ConversationContainer>
   );
 };

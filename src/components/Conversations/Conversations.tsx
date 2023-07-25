@@ -29,10 +29,12 @@ const ConversationWrapper = styled.div`
 
 const Sidebar = styled.div`
   margin: 1rem;
-  width: 20%;
+  width: 150px;
 `;
 
 const ConversationItem = styled.div`
+  font-family: MairyoUI;
+  font-size: 0.8rem;
   background-color: lightgrey; 
   padding: 10px; 
   margin: 5px 0; 
@@ -44,7 +46,11 @@ const StyledButton = styled.button`
 `;
 
 const StyledInput = styled.input`
-  // Add your styles here
+    padding: 10px 15px;
+    font-size: 0.8rem;
+    border-radius: 3px;
+    border: 2px solid #ddd;
+    box-sizing: border-box;
 `;
 
 const Placeholder = styled.div`
@@ -119,21 +125,7 @@ const Conversations: React.FC = () => {
    return (
     <ConversationWrapper>
       <Sidebar>
-        <StyledButton onClick={() => {
-          const newConv = createNewConversation();
-          setConversations(prev => [...prev, newConv]);
-          setActiveConversation(newConv);
-        }}>New</StyledButton>
-        <StyledInput 
-          value={activeConversation?.title || ''} 
-          onChange={(e) => {
-            if(activeConversation) {
-              const newTitle = e.target.value;
-              setActiveConversation(prev => prev ? {...prev, title: newTitle} : null);
-            }
-          }}
-        />
-        <StyledButton onClick={() => {
+       <StyledButton onClick={() => {
           if(activeConversation) {
             setConversations(prev => prev.map(conv => 
               conv.id === activeConversation.id ? {...conv, title: activeConversation.title} : conv
@@ -146,6 +138,20 @@ const Conversations: React.FC = () => {
             setActiveConversation(null);
           }
         }}>Delete</StyledButton>
+        <StyledInput 
+          value={activeConversation?.title || ''} 
+          onChange={(e) => {
+            if(activeConversation) {
+              const newTitle = e.target.value;
+              setActiveConversation(prev => prev ? {...prev, title: newTitle} : null);
+            }
+          }}
+        />
+         <StyledButton onClick={() => {
+          const newConv = createNewConversation();
+          setConversations(prev => [...prev, newConv]);
+          setActiveConversation(newConv);
+        }}>New</StyledButton>
         {conversations.map((conversation, index) => (
           <ConversationItem 
             key={index} 

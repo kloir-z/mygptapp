@@ -14,11 +14,17 @@ const MessageInputContainer = styled.div`
 
 const StyledTextarea = styled.textarea`
   margin-top: 10px;
-  width: 97%;
+  width: 97vw;
+  width: 97svh;
   padding: 10px;
   height: auto;
   resize: none;
   overflow: auto;
+  padding: 10px 15px;
+  font-size: 0.8rem;
+  border-radius: 3px;
+  border: 2px solid #ddd;
+  box-sizing: border-box;
 `;
 
 const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey }) => {

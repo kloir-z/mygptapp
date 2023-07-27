@@ -6,6 +6,9 @@ import { AuthContext } from '../Auth/AuthContext';
 const AppContainer = styled.div`
   text-align: left;
   max-width: 2000px;
+  font-family: Meiryo;
+  font-size: 0.8rem;
+  color: #ebebeb;
 `;
 
 const App: React.FC = () => {

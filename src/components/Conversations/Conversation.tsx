@@ -9,6 +9,7 @@ type ConversationProps = {
   setConversations: React.Dispatch<React.SetStateAction<ConversationType[]>>;
   setActiveConversation: React.Dispatch<React.SetStateAction<ConversationType | null>>;
   sendMessage: (updatedConversation: ConversationType) => Promise<void>;
+  toggleMenu: () => void;
 };
 
 const getColor = (role: string) => {
@@ -50,20 +51,29 @@ const InputContainer = styled.div`
 `;
 
 const StyledInput = styled.input`
-  /* Styles can be added here */
+  padding: 2px 6px;
+  margin: 5px;
 `;
 
 const StyledSelect = styled.select`
-  /* Styles can be added here */
+  padding: 2px 6px;
+  margin: 5px;
 `;
 
 const StyledOption = styled.option`
-  /* Styles can be added here */
+  padding: 2px 6px;
+  margin: 5px;
+`;
+
+const StyledButton = styled.button`
+  padding: 1px 6px;
+  margin: 5px;
 `;
 
 const Conversation: React.FC<ConversationProps> = ({
   conversation,
-  sendMessage
+  sendMessage,
+  toggleMenu
 }) => {
   const [apiKey, setApiKey] = useState('');
   const [model, setModel] = useState('gpt-3.5-turbo-0613'); 
@@ -87,6 +97,7 @@ const Conversation: React.FC<ConversationProps> = ({
 
   return (
     <ConversationContainer>
+      <StyledButton onClick={toggleMenu}>Menu</StyledButton>
       <StyledInput type="password" value={apiKey} onChange={e => setApiKey(e.target.value)} placeholder="API Key" />
       <StyledSelect value={model} onChange={e => setModel(e.target.value)}>  
         <StyledOption value="gpt-3.5-turbo-16k-0613">gpt-3.5-turbo-16k-0613</StyledOption>

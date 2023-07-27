@@ -31,19 +31,27 @@ const ConversationWrapper = styled.div`
 const Sidebar = styled.div`
   margin: 5px;
   width: 190px;
-  height: 95svh;  // Adjust this value as per your needs
+  height: 95svh;
   overflow-y: auto;
+  outline: none;
 `;
 
-const ConversationItem = styled.div`
+const ConversationItem = styled.div<{ active: boolean }>`
   font-family: MairyoUI;
   font-size: 0.8rem;
-  background-color: lightgrey; 
+  background-color: ${props => props.active ? '#70777e' : '#474c57'}; 
   padding: 10px; 
   margin: 4px; 
   cursor: default;
   display: flex; 
   justify-content: space-between;
+  .edit-icon {
+    opacity: 0;
+    transition: opacity 0.1s ease-in-out;
+  }
+  &:hover .edit-icon {
+    opacity: 1;
+  }
 `;
 
 const StyledButton = styled.button`
@@ -75,12 +83,16 @@ const Conversations: React.FC = () => {
   }
 
   const { user } = authContext;
-
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConversation, setActiveConversation] = useState<Conversation | null>(null);
-  const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [editingTitles, setEditingTitles] = useState<Record<string, boolean>>({});
   const inputRef = useRef<HTMLInputElement>(null);  
+  const [originalTitle, setOriginalTitle] = useState<string>("");
+  const [showMenu, setShowMenu] = useState(true);
+
+  const toggleMenu = () => {
+    setShowMenu(prevState => !prevState);
+  };
 
   useEffect(() => {
     const fetchConversations = async () => {
@@ -115,6 +127,25 @@ const Conversations: React.FC = () => {
     };
   }, [editingTitles]);
 
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        const id = Object.keys(editingTitles).find(key => editingTitles[key]);
+        if (id) {
+          setConversations(prev => prev.map(conv => 
+            conv.id === id ? {...conv, title: originalTitle} : conv
+          ));
+          toggleEditingTitle(id);
+        }
+      }
+    };
+  
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [editingTitles, originalTitle]);
+
   const changeConversation = (index: number) => {
     if (Object.values(editingTitles).some(isEditing => isEditing)) {
       return;
@@ -141,14 +172,31 @@ const Conversations: React.FC = () => {
       item.id === updatedConversation.id ? updatedConversation : item
     );
 
-    // Update Firebase Firestore and wait for the write to finish
     const firestore = firebase.firestore();
     await firestore.collection("conversations").doc(user?.uid).set({
       messages: updatedConversations
     });
 
-    // After Firestore update, update local state
     setConversations(updatedConversations);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    let newIndex;
+    if (activeConversation) {
+      const currentIndex = conversations.findIndex(
+        (conv) => conv.id === activeConversation.id
+      );
+      if (e.keyCode === 38 && currentIndex > 0) { // Up key
+        newIndex = currentIndex - 1;
+      } else if (e.keyCode === 40 && currentIndex < conversations.length - 1) { // Down key
+        newIndex = currentIndex + 1;
+      }
+    } else if (e.keyCode === 38 || e.keyCode === 40) { // If no conversation selected yet
+      newIndex = 0;
+    }
+    if (newIndex !== undefined) {
+      changeConversation(newIndex);
+    }
   };
 
   const toggleEditingTitle = (id: string) => {
@@ -160,7 +208,11 @@ const Conversations: React.FC = () => {
 
    return (
     <ConversationWrapper>
-      <Sidebar>
+    {showMenu && (
+    <Sidebar
+      tabIndex={0}
+      onKeyDown={(e) => handleKeyDown(e)}
+    >
         <StyledButton onClick={() => {
           const newConv = createNewConversation();
           setConversations(prev => [...prev, newConv]);
@@ -176,6 +228,7 @@ const Conversations: React.FC = () => {
           <ConversationItem 
             key={index} 
             onClick={() => changeConversation(index)}
+            active={activeConversation?.id === conversation.id}
           >
             {editingTitles[conversation.id] ? (
               <StyledInput 
@@ -190,22 +243,28 @@ const Conversations: React.FC = () => {
               />
             ) : (
               <>
-                {conversation.title}
-                <FiEdit2 onClick={(event) => {
+              {conversation.title}
+              <FiEdit2 
+                className="edit-icon"
+                onClick={(event) => {
                   event.stopPropagation();
                   toggleEditingTitle(conversation.id);
-                }} /> 
+                  setOriginalTitle(conversation.title);
+                }} 
+              />
               </>
             )}
           </ConversationItem>
         ))}
       </Sidebar>
+      )}
       {activeConversation ? (
         <Conversation
           conversation={activeConversation}
           setConversations={setConversations}
           setActiveConversation={setActiveConversation}
           sendMessage={handleMessageSend}
+          toggleMenu={toggleMenu}
         />
       ) : (
         <Placeholder>Please select a conversation</Placeholder>

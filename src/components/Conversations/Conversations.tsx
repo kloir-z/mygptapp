@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
@@ -6,6 +6,7 @@ import { AuthContext } from '../Auth/AuthContext';
 import Conversation from './Conversation';
 import { v4 as uuidv4 } from 'uuid'; 
 import styled from '@emotion/styled';
+import { FiEdit2 } from 'react-icons/fi';
 
 export type ConversationData = {
   role: string;
@@ -28,8 +29,10 @@ const ConversationWrapper = styled.div`
 `;
 
 const Sidebar = styled.div`
-  margin: 1rem;
-  width: 150px;
+  margin: 5px;
+  width: 190px;
+  height: 95svh;  // Adjust this value as per your needs
+  overflow-y: auto;
 `;
 
 const ConversationItem = styled.div`
@@ -37,16 +40,24 @@ const ConversationItem = styled.div`
   font-size: 0.8rem;
   background-color: lightgrey; 
   padding: 10px; 
-  margin: 5px 0; 
-  cursor: pointer;
+  margin: 4px; 
+  cursor: default;
+  display: flex; 
+  justify-content: space-between;
 `;
 
 const StyledButton = styled.button`
-  // Add your styles here
+  margin: 5px;
 `;
 
 const StyledInput = styled.input`
-  // Add your styles here
+  font-family: MairyoUI;
+  font-size: 0.8rem;
+  background-color: #f7f7f7;
+  padding: 0px 5px;
+  border: 0px;
+  margin: 0px;
+  width: 100%;
 `;
 
 const Placeholder = styled.div`
@@ -67,6 +78,9 @@ const Conversations: React.FC = () => {
 
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConversation, setActiveConversation] = useState<Conversation | null>(null);
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [editingTitles, setEditingTitles] = useState<Record<string, boolean>>({});
+  const inputRef = useRef<HTMLInputElement>(null);  
 
   useEffect(() => {
     const fetchConversations = async () => {
@@ -85,7 +99,26 @@ const Conversations: React.FC = () => {
     fetchConversations();
   }, [user?.uid]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (inputRef.current && !inputRef.current.contains(event.target as Node)) {
+        const id = Object.keys(editingTitles).find(key => editingTitles[key]);
+        if (id) {
+          toggleEditingTitle(id);
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [editingTitles]);
+
   const changeConversation = (index: number) => {
+    if (Object.values(editingTitles).some(isEditing => isEditing)) {
+      return;
+    }
     setActiveConversation(conversations[index]);
   };
 
@@ -118,6 +151,13 @@ const Conversations: React.FC = () => {
     setConversations(updatedConversations);
   };
 
+  const toggleEditingTitle = (id: string) => {
+    setEditingTitles(prev => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
    return (
     <ConversationWrapper>
       <Sidebar>
@@ -126,22 +166,6 @@ const Conversations: React.FC = () => {
           setConversations(prev => [...prev, newConv]);
           setActiveConversation(newConv);
         }}>New</StyledButton>
-        <StyledInput 
-          value={activeConversation?.title || ''} 
-          onChange={(e) => {
-            if(activeConversation) {
-              const newTitle = e.target.value;
-              setActiveConversation(prev => prev ? {...prev, title: newTitle} : null);
-            }
-          }}
-        />
-        <StyledButton onClick={() => {
-          if(activeConversation) {
-            setConversations(prev => prev.map(conv => 
-              conv.id === activeConversation.id ? {...conv, title: activeConversation.title} : conv
-            ));
-          }
-        }}>Rename</StyledButton>
         <StyledButton onClick={() => {
           if(activeConversation) {
             setConversations(prev => prev.filter(conv => conv.id !== activeConversation.id));
@@ -153,7 +177,26 @@ const Conversations: React.FC = () => {
             key={index} 
             onClick={() => changeConversation(index)}
           >
-            {conversation.title}
+            {editingTitles[conversation.id] ? (
+              <StyledInput 
+                ref={inputRef}
+                value={conversation.title} 
+                onChange={(e) => {
+                  const newTitle = e.target.value;
+                  setConversations(prev => prev.map(conv => 
+                    conv.id === conversation.id ? {...conv, title: newTitle} : conv
+                  ));
+                }}
+              />
+            ) : (
+              <>
+                {conversation.title}
+                <FiEdit2 onClick={(event) => {
+                  event.stopPropagation();
+                  toggleEditingTitle(conversation.id);
+                }} /> 
+              </>
+            )}
           </ConversationItem>
         ))}
       </Sidebar>

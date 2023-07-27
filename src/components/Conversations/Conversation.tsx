@@ -16,9 +16,9 @@ const getColor = (role: string) => {
     case 'system':
       return 'lightgray';
     case 'user':
-      return '#3e4756';
+      return '#4c586a';
     case 'assistant':
-      return '#454a62';
+      return '#393e52';
     default:
       return 'white';
   }
@@ -36,7 +36,7 @@ const Message = styled.pre<{role: string}>`
 `;
 
 const ConversationContainer = styled.div`
-  margin: 1rem;
+  margin: 5px;
   flex: 1;
 `;
 

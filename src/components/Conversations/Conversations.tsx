@@ -6,23 +6,8 @@ import { AuthContext } from '../Auth/AuthContext';
 import Conversation from './Conversation';
 import { v4 as uuidv4 } from 'uuid'; 
 import { FiEdit2 } from 'react-icons/fi';
-import { ConversationWrapper,Sidebar,ConversationItem,StyledButton,StyledInput,Placeholder } from './Conversations.styles'
-
-export type ConversationData = {
-  role: string;
-  content: string;
-};
-
-type RevisionData = {
-  revision: string;
-  conversation: ConversationData[];
-};
-
-export type Conversation = {
-  id: string;
-  title: string;
-  revisions: RevisionData[];
-};
+import { ConversationWrapper, Sidebar,ConversationItem,StyledButton,StyledInput,Placeholder } from './Conversations.styles'
+import { ConversationType } from './Conversations.types';
 
 const Conversations: React.FC = () => {
   const authContext = useContext(AuthContext);
@@ -34,8 +19,8 @@ const Conversations: React.FC = () => {
   }
 
   const { user } = authContext;
-  const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [activeConversation, setActiveConversation] = useState<Conversation | null>(null);
+  const [conversations, setConversations] = useState<ConversationType[]>([]);
+  const [activeConversation, setActiveConversation] = useState<ConversationType | null>(null);
   const [editingTitles, setEditingTitles] = useState<Record<string, boolean>>({});
   const inputRef = useRef<HTMLInputElement>(null);  
   const [originalTitle, setOriginalTitle] = useState<string>("");
@@ -54,7 +39,7 @@ const Conversations: React.FC = () => {
       if (!data || !data.messages) {
         return;
       }
-      const conversations: Conversation[] = data.messages.map((message: any) => ({id: message.id, ...message} as Conversation));
+      const conversations: ConversationType[] = data.messages.map((message: any) => ({id: message.id, ...message} as ConversationType));
       setConversations(conversations);
       console.log(conversations);
     };
@@ -104,7 +89,7 @@ const Conversations: React.FC = () => {
     setActiveConversation(conversations[index]);
   };
 
-  const createNewConversation = (): Conversation => {
+  const createNewConversation = (): ConversationType => {
     return {
       id: uuidv4(),
       title: "New Conversation",
@@ -118,7 +103,7 @@ const Conversations: React.FC = () => {
     };
   };
   
-  const handleMessageSend = async (updatedConversation: Conversation) => {
+  const handleMessageSend = async (updatedConversation: ConversationType) => {
     const updatedConversations = conversations.map(item => 
       item.id === updatedConversation.id ? updatedConversation : item
     );

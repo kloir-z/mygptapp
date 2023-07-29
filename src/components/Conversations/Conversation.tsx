@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import styled from '@emotion/styled';
 import MessageInput from './MessageInput';
-import { Conversation as ConversationType, ConversationData } from './Conversations';
+import { ConversationType, ConversationData } from './Conversations.types';
 import { getAIResponse, getAndSetTokenCount } from './openAIUtil';
 import { Message,ConversationContainer, MessagesContainer, InputContainer, StyledInput, StyledSelect, StyledOption, StyledButton } from './Conversation.styles'
 

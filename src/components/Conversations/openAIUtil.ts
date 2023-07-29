@@ -1,4 +1,4 @@
-import { ConversationData } from "./Conversations";
+import { ConversationData } from './Conversations.types';
 
 const sendToOpenAI = async (messageContent: string, role: string, apiKey: string, model: string, messages: ConversationData[]) => {
   const messageData = messages.map((message) => ({

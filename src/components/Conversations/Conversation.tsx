@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import MessageInput from './MessageInput';
 import { Conversation as ConversationType, ConversationData } from './Conversations';
-import { getAIResponse } from './openAIUtil';
+import { getAIResponse, getAndSetTokenCount } from './openAIUtil';
 
 type ConversationProps = {
   conversation: ConversationType;
@@ -43,7 +43,7 @@ const ConversationContainer = styled.div`
 
 const MessagesContainer = styled.div`
   overflow-y: auto;
-  height: calc(100vh - 150px);  /* adjust this as per your needs */
+  height: calc(100vh - 200px);  /* adjust this as per your needs */
 `;
 
 const InputContainer = styled.div`
@@ -78,10 +78,12 @@ const Conversation: React.FC<ConversationProps> = ({
   const [apiKey, setApiKey] = useState('');
   const [model, setModel] = useState('gpt-3.5-turbo-0613'); 
   const [messages, setMessages] = useState<ConversationData[]>(conversation.revisions[0].conversation);
+  const [tokenCount, setTokenCount] = useState<number>(0);  
 
   useEffect(() => {
     setMessages(conversation.revisions[0].conversation);
-  }, [conversation]);
+    getAndSetTokenCount(conversation.revisions[0].conversation, model, setTokenCount);
+  }, [conversation, model]);
   
   const updateConversation  = async (messageContent: string, role: string, apiKey: string) => { 
     const finalMessages = await getAIResponse(messageContent, role, apiKey, model, messages, setMessages); 
@@ -93,6 +95,7 @@ const Conversation: React.FC<ConversationProps> = ({
       }]
     };
     sendMessage(updatedConversation);
+    await getAndSetTokenCount(finalMessages, model, setTokenCount);
   };
 
   return (
@@ -114,6 +117,7 @@ const Conversation: React.FC<ConversationProps> = ({
       <InputContainer>
         <MessageInput sendMessage={updateConversation} apiKey={apiKey} />
       </InputContainer>
+      <div>現在のトークン数: {tokenCount}</div>
     </ConversationContainer>
   );
 };

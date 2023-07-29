@@ -66,3 +66,25 @@ export const getAIResponse = async (messageContent: string, role: string, apiKey
   let finalMessages = [...messages, { role: 'user', content: messageContent }, { role: 'assistant', content: aiMessageContent }];
   return finalMessages;
 };
+
+const countTokens = async (messages: ConversationData[], model: string): Promise<number> => {
+  const url = 'https://us-central1-my-pj-20230703.cloudfunctions.net/count_tokens';
+  const data = {
+    messages,
+    model
+  };
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  });
+  const json = await response.json();
+  return json['num_tokens'];
+};
+
+export const getAndSetTokenCount = async (messages: ConversationData[], model: string, setTokenCount: React.Dispatch<React.SetStateAction<number>>) => {
+  const tokenCount = await countTokens(messages, model);
+  setTokenCount(tokenCount);
+};

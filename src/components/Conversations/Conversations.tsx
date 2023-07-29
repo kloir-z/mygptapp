@@ -8,7 +8,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { FiEdit2 } from 'react-icons/fi';
 import { ConversationWrapper,Sidebar,ConversationItem,StyledButton,StyledInput,Placeholder } from './Conversations.styles'
 
-
 export type ConversationData = {
   role: string;
   content: string;
@@ -24,7 +23,6 @@ export type Conversation = {
   title: string;
   revisions: RevisionData[];
 };
-
 
 const Conversations: React.FC = () => {
   const authContext = useContext(AuthContext);

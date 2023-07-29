@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { FiEdit2 } from 'react-icons/fi';
 import { ConversationWrapper, Sidebar,ConversationItem,StyledButton,StyledInput,Placeholder } from './Conversations.styles'
 import { ConversationType } from './Conversations.types';
+import { fetchConversations, updateConversations  } from '../Auth/firebase';
 
 const Conversations: React.FC = () => {
   const authContext = useContext(AuthContext);
@@ -30,22 +31,16 @@ const Conversations: React.FC = () => {
     setShowMenu(prevState => !prevState);
   };
 
-  useEffect(() => {
-    const fetchConversations = async () => {
-      const firestore = firebase.firestore();
-      const docRef = firestore.collection("conversations").doc(user?.uid);
-      const doc = await docRef.get();
-      const data = doc.data();
-      if (!data || !data.messages) {
-        return;
-      }
-      const conversations: ConversationType[] = data.messages.map((message: any) => ({id: message.id, ...message} as ConversationType));
-      setConversations(conversations);
-      console.log(conversations);
-    };
+useEffect(() => {
+  const fetchUserConversations = async () => {
+    const fetchedConversations = await fetchConversations(user?.uid);
+    const conversations: ConversationType[] = fetchedConversations.map((message: any) => ({id: message.id, ...message} as ConversationType));
+    setConversations(conversations);
+    console.log(conversations);
+  };
 
-    fetchConversations();
-  }, [user?.uid]);
+  fetchUserConversations();
+}, [user?.uid]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -107,12 +102,8 @@ const Conversations: React.FC = () => {
     const updatedConversations = conversations.map(item => 
       item.id === updatedConversation.id ? updatedConversation : item
     );
-
-    const firestore = firebase.firestore();
-    await firestore.collection("conversations").doc(user?.uid).set({
-      messages: updatedConversations
-    });
-
+  
+    await updateConversations(user?.uid, updatedConversations);
     setConversations(updatedConversations);
   };
 

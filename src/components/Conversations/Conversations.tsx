@@ -5,8 +5,9 @@ import "firebase/compat/firestore";
 import { AuthContext } from '../Auth/AuthContext';
 import Conversation from './Conversation';
 import { v4 as uuidv4 } from 'uuid'; 
-import styled from '@emotion/styled';
 import { FiEdit2 } from 'react-icons/fi';
+import { ConversationWrapper,Sidebar,ConversationItem,StyledButton,StyledInput,Placeholder } from './Conversations.styles'
+
 
 export type ConversationData = {
   role: string;
@@ -24,64 +25,6 @@ export type Conversation = {
   revisions: RevisionData[];
 };
 
-const ConversationWrapper = styled.div`
-  display: flex;
-`;
-
-const Sidebar = styled.div`
-  margin: 5px;
-  width: 190px;
-  height: 95svh;
-  overflow-y: auto;
-  outline: none;
-`;
-
-const ConversationItem = styled.div<{ active: boolean }>`
-  font-family: MairyoUI;
-  font-size: 0.8rem;
-  background-color: ${props => props.active ? '#70777e' : '#474c57'}; 
-  padding: 10px; 
-  margin: 4px; 
-  cursor: default;
-  display: flex; 
-  justify-content: space-between;
-  .edit-icon {
-    opacity: 0;
-    transition: opacity 0.1s ease-in-out;
-  }
-  &:hover .edit-icon {
-    opacity: 1;
-  }
-`;
-
-const StyledButton = styled.button`
-  margin: 5px;
-  padding: 5px 10px;
-  font-size: 0.8rem;
-  border-radius: 3px;
-  border: none;
-  cursor: pointer;
-  color: white;
-  background: #336396;
-  &:hover {
-    background: #244569;
-  }
-`;
-
-const StyledInput = styled.input`
-  font-family: MairyoUI;
-  font-size: 0.8rem;
-  background-color: #f7f7f7;
-  padding: 0px 5px;
-  border: 0px;
-  margin: 0px;
-  width: 100%;
-`;
-
-const Placeholder = styled.div`
-  margin: 1rem;
-  flex: 1;
-`;
 
 const Conversations: React.FC = () => {
   const authContext = useContext(AuthContext);

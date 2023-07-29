@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import { getAndSetTokenCount } from './openAIUtil';
 import { ConversationData } from './Conversations';
+import { MessageInputContainer, MessageInputBottomContainer, StyledTextarea, StyledButton, InfoText } from './MessageInput.styles'
 
 type MessageInputProps = {
   sendMessage: (message: string, role: string, apiKey: string) => void;
@@ -10,55 +11,6 @@ type MessageInputProps = {
   apiKey: string;
   model: string;
 };
-
-const MessageInputContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-`;
-
-const MessageInputBottomContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-`;
-
-const StyledTextarea = styled.textarea`
-  width: 100%;
-  margin-top: 10px;
-  padding: 10px;
-  height: auto;
-  resize: none;
-  overflow: auto;
-  padding: 10px 15px;
-  font-size: 0.8rem;
-  border-radius: 3px;
-  border: 1px solid #576374;
-  box-sizing: border-box;
-  color: #ebebeb;
-  background-color: #4c586a;
-;
-`;
-
-const StyledButton = styled.button`
-  margin: 5px;
-  padding: 5px 10px;
-  font-size: 0.8rem;
-  border-radius: 3px;
-  border: none;
-  cursor: pointer;
-  color: white;
-  background: #336396;
-  &:hover {
-    background: #244569;
-  }
-`;
-
-const InfoText = styled.div`
-  margin: 5px;
-  font-size: 0.8rem;
-  color: #ebebeb;
-`;
 
 const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey, messages, model }) => {
   const [message, setMessage] = useState('');

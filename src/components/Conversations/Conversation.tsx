@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import MessageInput from './MessageInput';
 import { Conversation as ConversationType, ConversationData } from './Conversations';
 import { getAIResponse, getAndSetTokenCount } from './openAIUtil';
+import { Message,ConversationContainer, MessagesContainer, InputContainer, StyledInput, StyledSelect, StyledOption, StyledButton } from './Conversation.styles'
 
 type ConversationProps = {
   conversation: ConversationType;
@@ -11,73 +12,6 @@ type ConversationProps = {
   sendMessage: (updatedConversation: ConversationType) => Promise<void>;
   toggleMenu: () => void;
 };
-
-const getColor = (role: string) => {
-  switch (role) {
-    case 'system':
-      return 'lightgray';
-    case 'user':
-      return '#4c586a';
-    case 'assistant':
-      return '#393e52';
-    default:
-      return 'white';
-  }
-};
-
-const Message = styled.pre<{role: string}>`
-  background-color: ${props => getColor(props.role)};
-  padding: 10px;
-  margin: 0px;
-  text-align: left;
-  font-family: Meiryo;
-  font-size: 0.8rem;
-  color: #ebebeb;
-  white-space: pre-wrap;
-`;
-
-const ConversationContainer = styled.div`
-  margin: 5px;
-  flex: 1;
-`;
-
-const MessagesContainer = styled.div`
-  overflow-y: auto;
-  height: calc(100vh - 200px);  /* adjust this as per your needs */
-`;
-
-const InputContainer = styled.div`
-  /* Styles can be added here */
-`;
-
-const StyledInput = styled.input`
-  padding: 2px 6px;
-  margin: 5px;
-`;
-
-const StyledSelect = styled.select`
-  padding: 2px 6px;
-  margin: 5px;
-`;
-
-const StyledOption = styled.option`
-  padding: 2px 6px;
-  margin: 5px;
-`;
-
-const StyledButton = styled.button`
-  margin: 5px;
-  padding: 5px 10px;
-  font-size: 0.8rem;
-  border-radius: 3px;
-  border: none;
-  cursor: pointer;
-  color: white;
-  background: #336396;
-  &:hover {
-    background: #244569;
-  }
-`;
 
 const Conversation: React.FC<ConversationProps> = ({
   conversation,

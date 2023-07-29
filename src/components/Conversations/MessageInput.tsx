@@ -40,8 +40,8 @@ const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey, messag
       <MessageInputBottomContainer>
         <StyledButton onClick={handleSend}>Send</StyledButton>
         <StyledButton type="button" onClick={checkTokenCount}>calc</StyledButton>
-        <InfoText>入力トークン数: {inputTokenCount}</InfoText>
-        <InfoText>現在のトークン数: {totalTokenCount}</InfoText>
+        <InfoText>input: {inputTokenCount}</InfoText>
+        <InfoText>messages: {totalTokenCount}</InfoText>
       </MessageInputBottomContainer>
     </MessageInputContainer>
   );

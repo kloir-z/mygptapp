@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 
-
 export const MessageInputContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -14,9 +13,8 @@ export const MessageInputBottomContainer = styled.div`
 `;
 
 export const StyledTextarea = styled.textarea`
+  width: calc(100% - 10px);
   margin: 5px;
-  width: 100%;
-  margin-top: 10px;
   padding: 10px;
   height: auto;
   resize: none;

@@ -66,8 +66,17 @@ const StyledOption = styled.option`
 `;
 
 const StyledButton = styled.button`
-  padding: 1px 6px;
   margin: 5px;
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  border-radius: 3px;
+  border: none;
+  cursor: pointer;
+  color: white;
+  background: #336396;
+  &:hover {
+    background: #244569;
+  }
 `;
 
 const Conversation: React.FC<ConversationProps> = ({
@@ -78,11 +87,9 @@ const Conversation: React.FC<ConversationProps> = ({
   const [apiKey, setApiKey] = useState('');
   const [model, setModel] = useState('gpt-3.5-turbo-0613'); 
   const [messages, setMessages] = useState<ConversationData[]>(conversation.revisions[0].conversation);
-  const [tokenCount, setTokenCount] = useState<number>(0);  
 
   useEffect(() => {
     setMessages(conversation.revisions[0].conversation);
-    getAndSetTokenCount(conversation.revisions[0].conversation, model, setTokenCount);
   }, [conversation, model]);
   
   const updateConversation  = async (messageContent: string, role: string, apiKey: string) => { 
@@ -95,7 +102,6 @@ const Conversation: React.FC<ConversationProps> = ({
       }]
     };
     sendMessage(updatedConversation);
-    await getAndSetTokenCount(finalMessages, model, setTokenCount);
   };
 
   return (
@@ -115,9 +121,14 @@ const Conversation: React.FC<ConversationProps> = ({
         ))}
       </MessagesContainer>
       <InputContainer>
-        <MessageInput sendMessage={updateConversation} apiKey={apiKey} />
-      </InputContainer>
-      <div>現在のトークン数: {tokenCount}</div>
+       <MessageInput 
+          sendMessage={updateConversation} 
+          apiKey={apiKey} 
+          getAndSetTokenCount={getAndSetTokenCount} 
+          messages={messages} 
+          model={model}
+        />
+        </InputContainer>
     </ConversationContainer>
   );
 };

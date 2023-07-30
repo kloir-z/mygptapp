@@ -30,16 +30,16 @@ const Conversations: React.FC = () => {
     setShowMenu(prevState => !prevState);
   };
 
-useEffect(() => {
-  const fetchUserConversations = async () => {
-    const fetchedConversations = await fetchConversations(user?.uid);
-    const conversations: ConversationType[] = fetchedConversations.map((message: any) => ({id: message.id, ...message} as ConversationType));
-    setConversations(conversations);
-    console.log(conversations);
-  };
+  useEffect(() => {
+    const fetchUserConversations = async () => {
+      const fetchedConversations = await fetchConversations(user?.uid);
+      const conversations: ConversationType[] = fetchedConversations.map((message: any) => ({id: message.id, ...message} as ConversationType));
+      setConversations(conversations);
+      console.log(conversations);
+    };
 
-  fetchUserConversations();
-}, [user?.uid]);
+    fetchUserConversations();
+  }, [user?.uid]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -107,29 +107,38 @@ useEffect(() => {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!activeConversation) return;
+  
+    const currentIndex = conversations.findIndex(
+      (conv) => conv.id === activeConversation.id
+    );
+  
     let newIndex;
-    if (activeConversation) {
-      const currentIndex = conversations.findIndex(
-        (conv) => conv.id === activeConversation.id
-      );
-      if (e.keyCode === 38 && currentIndex > 0) { // Up key
-        newIndex = currentIndex - 1;
-      } else if (e.keyCode === 40 && currentIndex < conversations.length - 1) { // Down key
-        newIndex = currentIndex + 1;
-      }
-    } else if (e.keyCode === 38 || e.keyCode === 40) { // If no conversation selected yet
-      newIndex = 0;
+    if (e.keyCode === 38 && currentIndex > 0) {
+      // Up key
+      newIndex = currentIndex - 1;
+    } else if (e.keyCode === 40 && currentIndex < conversations.length - 1) {
+      // Down key
+      newIndex = currentIndex + 1;
     }
+  
     if (newIndex !== undefined) {
       changeConversation(newIndex);
     }
   };
 
   const toggleEditingTitle = (id: string) => {
-    setEditingTitles(prev => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+    if (editingTitles[id] === undefined) {
+      setEditingTitles(prev => ({
+        ...prev,
+        [id]: true,
+      }));
+    } else {
+      setEditingTitles(prev => ({
+        ...prev,
+        [id]: !prev[id],
+      }));
+    }
   };
 
    return (

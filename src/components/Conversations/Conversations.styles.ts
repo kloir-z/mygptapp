@@ -4,7 +4,7 @@ export const ConversationWrapper = styled.div`
   display: flex;
 `;
 
-export const Sidebar = styled.div`
+export const StyledSidebarDiv = styled.div`
   margin: 5px;
   width: 190px;
   height: 95svh;

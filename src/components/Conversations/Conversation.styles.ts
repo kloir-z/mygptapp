@@ -18,7 +18,7 @@ export const Message = styled.pre<{role: string}>`
   padding: 10px;
   margin: 5px;
   text-align: left;
-  font-family: Meiryo;
+  font-family: Mairyo;
   font-size: 0.8rem;
   color: #ebebeb;
   white-space: pre-wrap;

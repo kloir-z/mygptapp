@@ -21,6 +21,7 @@ export const ConversationItem = styled.div<{ active: boolean }>`
   cursor: default;
   display: flex; 
   justify-content: space-between;
+  color: #ebebeb;
   .edit-icon {
     opacity: 0;
     transition: opacity 0.1s ease-in-out;
@@ -55,6 +56,7 @@ export const StyledInput = styled.input`
 `;
 
 export const Placeholder = styled.div`
+  color: #ebebeb;
   margin: 1rem;
   flex: 1;
 `;

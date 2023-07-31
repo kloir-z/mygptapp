@@ -32,7 +32,7 @@ export const ConversationContainer = styled.div`
 export const MessagesContainer = styled.div`
   margin: 5px 0px;
   overflow-y: auto;
-  height: calc(100vh - 200px);
+  height: calc(100vh - 140px);
 `;
 
 export const InputContainer = styled.div`

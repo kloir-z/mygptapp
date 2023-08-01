@@ -46,6 +46,7 @@ export const Message = styled.div<{role: string}>`
   font-size: 0.8rem;
   color: #ebebeb;
   white-space: pre-wrap;
+  word-break: break-word;
 `;
 
 const getColor = (role: string) => {

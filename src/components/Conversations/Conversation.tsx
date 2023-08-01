@@ -2,23 +2,16 @@ import React, { useEffect, useState } from 'react';
 import MessageInput from './MessageInput';
 import { ConversationType, ConversationData } from './Conversations.types';
 import { getAIResponse, getAndSetTokenCount } from './openAIUtil';
-import { Message,ConversationContainer, MessagesContainer, InputContainer, StyledInput, StyledSelect, StyledOption, StyledButton } from './Conversation.styles'
+import { Message, ConversationContainer, MessagesContainer, InputContainer } from './Conversation.styles'
 
 type ConversationProps = {
   conversation: ConversationType;
-  setConversations: React.Dispatch<React.SetStateAction<ConversationType[]>>;
-  setActiveConversation: React.Dispatch<React.SetStateAction<ConversationType | null>>;
+  model: string;
+  apiKey: string;
   sendMessage: (updatedConversation: ConversationType) => Promise<void>;
-  toggleMenu: () => void;
 };
 
-const Conversation: React.FC<ConversationProps> = ({
-  conversation,
-  sendMessage,
-  toggleMenu
-}) => {
-  const [apiKey, setApiKey] = useState('');
-  const [model, setModel] = useState('gpt-3.5-turbo-0613'); 
+const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey, sendMessage}) => {
   const [messages, setMessages] = useState<ConversationData[]>(conversation.revisions[0].conversation);
 
   useEffect(() => {
@@ -39,13 +32,6 @@ const Conversation: React.FC<ConversationProps> = ({
 
   return (
     <ConversationContainer>
-      <StyledButton onClick={toggleMenu}>Menu</StyledButton>
-      <StyledInput type="password" value={apiKey} onChange={e => setApiKey(e.target.value)} placeholder="API Key" />
-      <StyledSelect value={model} onChange={e => setModel(e.target.value)}>  
-        <StyledOption value="gpt-3.5-turbo-16k-0613">gpt-3.5-turbo-16k-0613</StyledOption>
-        <StyledOption value="gpt-3.5-turbo-0613">gpt-3.5-turbo-0613</StyledOption>
-        <StyledOption value="gpt-4-0613">gpt-4-0613</StyledOption>
-      </StyledSelect>
       <MessagesContainer>
         {messages.map((message: ConversationData, index: number) => (
           <Message key={index} role={message.role}>
@@ -54,14 +40,14 @@ const Conversation: React.FC<ConversationProps> = ({
         ))}
       </MessagesContainer>
       <InputContainer>
-       <MessageInput 
+        <MessageInput 
           sendMessage={updateConversation} 
           apiKey={apiKey} 
           getAndSetTokenCount={getAndSetTokenCount} 
           messages={messages} 
           model={model}
         />
-        </InputContainer>
+      </InputContainer>
     </ConversationContainer>
   );
 };

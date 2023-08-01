@@ -1,13 +1,10 @@
 import styled from '@emotion/styled';
 
-export const MessageInputContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-`;
-
 export const MessageInputBottomContainer = styled.div`
+  min-height: 35px;
   display: flex;
+  flex-grow: 0;
+  flex-shrink: 0;
   flex-direction: row;
   align-items: flex-start;
 `;

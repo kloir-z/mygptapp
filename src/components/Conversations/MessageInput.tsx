@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { getAndSetTokenCount } from './openAIUtil';
 import { ConversationData } from './Conversations.types';
-import { MessageInputContainer, MessageInputBottomContainer, StyledTextarea, StyledButton, InfoText } from './MessageInput.styles'
+import { MessageInputBottomContainer, StyledTextarea, StyledButton, InfoText } from './MessageInput.styles'
 
 type MessageInputProps = {
   sendMessage: (message: string, role: string, apiKey: string) => void;
@@ -30,7 +30,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey, messag
   };
 
   return (
-    <MessageInputContainer>
+    <>
       <StyledTextarea 
         value={message} 
         onChange={e => setMessage(e.target.value)}
@@ -39,10 +39,10 @@ const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey, messag
       <MessageInputBottomContainer>
         <StyledButton onClick={handleSend}>Send</StyledButton>
         <StyledButton type="button" onClick={checkTokenCount}>calc</StyledButton>
-        <InfoText>input: {inputTokenCount}</InfoText>
-        <InfoText>messages: {totalTokenCount}</InfoText>
+        <InfoText>in: {inputTokenCount}</InfoText>
+        <InfoText>m: {totalTokenCount}</InfoText>
       </MessageInputBottomContainer>
-    </MessageInputContainer>
+    </>
   );
 };
 export default MessageInput;

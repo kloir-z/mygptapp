@@ -62,7 +62,7 @@ export const CancelIcon = styled.div`
 `;
 
 export const ConversationItem = styled.div<{ active: boolean }>`
-  font-family: MairyoUI;
+  font-family: MeiryoUI, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
   font-size: 0.8rem;
   background-color: ${props => props.active ? '#70777e' : '#474c57'}; 
   padding: 10px; 

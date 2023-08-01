@@ -33,7 +33,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ block: 'end', behavior: 'auto' });
   };
 
   useEffect(() => {

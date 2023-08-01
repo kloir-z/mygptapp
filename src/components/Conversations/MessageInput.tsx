@@ -33,7 +33,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey, messag
 
   useEffect(() => {
     if (textAreaRef.current && textAreaRef.current.scrollTop + textAreaRef.current.clientHeight >= textAreaRef.current.scrollHeight) {
-      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'auto' });
     }
   }, [message]);
 

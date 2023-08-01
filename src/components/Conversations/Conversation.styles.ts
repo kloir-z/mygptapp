@@ -42,7 +42,7 @@ export const Message = styled.div<{role: string}>`
   padding: 10px;
   margin: 2px;
   text-align: left;
-  font-family: Mairyo;
+  font-family: MeiryoUI, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
   font-size: 0.8rem;
   color: #ebebeb;
   white-space: pre-wrap;

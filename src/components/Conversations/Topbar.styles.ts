@@ -12,6 +12,7 @@ export const StyledInput = styled.input`
   padding: 2px 6px;
   margin: 5px;
   font-size: 0.8rem;
+  width: 50px;
 `;
 
 export const StyledSelect = styled.select`

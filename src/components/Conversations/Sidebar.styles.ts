@@ -6,12 +6,12 @@ export const SidebarContainer = styled.div`
   flex-direction: column;
   flex-grow: 0;
   flex-shrink: 0;
-  margin: 5px;
   width: 190px;
   height: 95svh;
   overflow-y: auto;
   outline: none;
   overflow-y: scroll;
+  direction: rtl;
 
   ::-webkit-scrollbar {
     width: 8px;
@@ -66,7 +66,7 @@ export const ConversationItem = styled.div<{ active: boolean }>`
   font-size: 0.8rem;
   background-color: ${props => props.active ? '#70777e' : '#474c57'}; 
   padding: 10px; 
-  margin: 4px; 
+  margin: 0px 0px 2px 0px; 
   cursor: default;
   display: flex; 
   justify-content: space-between;
@@ -98,20 +98,6 @@ export const ConversationItem = styled.div<{ active: boolean }>`
   }
 `;
 
-export const StyledButton = styled.button`
-  margin: 5px;
-  padding: 5px 10px;
-  font-size: 0.8rem;
-  border-radius: 3px;
-  border: none;
-  cursor: pointer;
-  color: white;
-  background: #336396;
-  &:hover {
-    background: #244569;
-  }
-`;
-
 export const StyledInput = styled.input`
   font-family: MairyoUI;
   font-size: 0.8rem;
@@ -134,10 +120,12 @@ export const TitleLeft = styled.div`
   white-space: nowrap;
   overflow: hidden;
   padding-right: 5px;
+  direction: ltr; 
 `;
 
 export const TitleRight = styled.div`
   position: absolute;
   right: 10px;
+  direction: ltr; 
 `;
 

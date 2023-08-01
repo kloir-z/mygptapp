@@ -10,8 +10,8 @@ export const MessageInputBottomContainer = styled.div`
 `;
 
 export const StyledTextarea = styled.textarea`
-  width: calc(100% - 10px);
-  margin: 5px;
+  width: calc(100% - 12px);
+  margin: 2px;
   padding: 10px;
   height: auto;
   resize: none;
@@ -27,7 +27,7 @@ export const StyledTextarea = styled.textarea`
 `;
 
 export const StyledButton = styled.button`
-  margin: 5px;
+  margin: 3px 20px 3px 3px;
   padding: 5px 10px;
   font-size: 0.8rem;
   border-radius: 3px;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import MessageInput from './MessageInput';
 import { ConversationType, ConversationData } from './Conversations.types';
 import { getAIResponse, getAndSetTokenCount } from './openAIUtil';
@@ -30,6 +30,16 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
     sendMessage(updatedConversation);
   };
 
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   return (
     <ConversationContainer>
       <MessagesContainer>
@@ -38,6 +48,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
             {message.content}
           </Message>
         ))}
+        <div ref={messagesEndRef} />
       </MessagesContainer>
       <InputContainer>
         <MessageInput 

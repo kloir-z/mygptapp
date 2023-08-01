@@ -40,26 +40,12 @@ export const InputContainer = styled.div`
 export const Message = styled.div<{role: string}>`
   background-color: ${props => getColor(props.role)};
   padding: 10px;
-  margin: 5px;
+  margin: 2px;
   text-align: left;
   font-family: Mairyo;
   font-size: 0.8rem;
   color: #ebebeb;
   white-space: pre-wrap;
-`;
-
-export const StyledButton = styled.button`
-  margin: 5px;
-  padding: 5px 10px;
-  font-size: 0.8rem;
-  border-radius: 3px;
-  border: none;
-  cursor: pointer;
-  color: white;
-  background: #336396;
-  &:hover {
-    background: #244569;
-  }
 `;
 
 const getColor = (role: string) => {

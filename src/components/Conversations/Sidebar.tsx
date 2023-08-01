@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { StyledButton, StyledInput, ConversationItem, SidebarContainer, TitleLeft, TitleRight } from './Sidebar.styles';
+import { StyledInput, ConversationItem, SidebarContainer, TitleLeft, TitleRight } from './Sidebar.styles';
 import { ConversationType } from './Conversations.types';
 import { FiEdit2 } from 'react-icons/fi';
 import { FaTrash, FaCheck, FaTimes } from 'react-icons/fa';

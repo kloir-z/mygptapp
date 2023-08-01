@@ -11,17 +11,3 @@ export const Placeholder = styled.div`
   margin: 1rem;
   flex: 1;
 `;
-
-export const StyledButton = styled.button`
-  margin: 5px;
-  padding: 5px 10px;
-  font-size: 0.8rem;
-  border-radius: 3px;
-  border: none;
-  cursor: pointer;
-  color: white;
-  background: #336396;
-  &:hover {
-    background: #244569;
-  }
-`;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { getAndSetTokenCount } from './openAIUtil';
 import { ConversationData } from './Conversations.types';
 import { MessageInputBottomContainer, StyledTextarea, StyledButton, InfoText } from './MessageInput.styles'
@@ -29,12 +29,21 @@ const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey, messag
     setMessage('');
   };
 
+  const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  useEffect(() => {
+    if (textAreaRef.current && textAreaRef.current.scrollTop + textAreaRef.current.clientHeight >= textAreaRef.current.scrollHeight) {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+  }, [message]);
+
   return (
     <>
       <StyledTextarea 
         value={message} 
         onChange={e => setMessage(e.target.value)}
         rows={message.split('\n').length || 1}
+        ref={textAreaRef} 
       />
       <MessageInputBottomContainer>
         <StyledButton onClick={handleSend}>Send</StyledButton>

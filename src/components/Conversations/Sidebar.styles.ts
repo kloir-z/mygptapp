@@ -6,7 +6,7 @@ export const SidebarContainer = styled.div`
   flex-direction: column;
   flex-grow: 0;
   flex-shrink: 0;
-  width: 190px;
+  width: 150px;
   height: 95svh;
   overflow-y: auto;
   outline: none;
@@ -106,6 +106,7 @@ export const StyledInput = styled.input`
   border: 0px;
   margin: 0px;
   width: 100%;
+  direction: ltr;
 `;
 
 export const Placeholder = styled.div`
@@ -120,7 +121,7 @@ export const TitleLeft = styled.div`
   white-space: nowrap;
   overflow: hidden;
   padding-right: 5px;
-  direction: ltr; 
+  direction: ltr;
 `;
 
 export const TitleRight = styled.div`

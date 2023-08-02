@@ -23,13 +23,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
     });
   
-    auth.getRedirectResult().then((result) => {
-      if (result.user) {
-        setUser(result.user);
-      }
-    }).catch((error) => {
-      console.error(error);
-    });
+    // ページロード時だけリダイレクト結果を取得する
+    if (window.performance.navigation.type === PerformanceNavigation.TYPE_RELOAD) {
+      auth.getRedirectResult().then((result) => {
+        if (result.user) {
+          setUser(result.user);
+        }
+      }).catch((error) => {
+        console.error(error);
+      });
+    }
   }, []);
   
   return (

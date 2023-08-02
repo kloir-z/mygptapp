@@ -9,17 +9,12 @@ import Conversation from '../Conversations/Conversation'
 
 const App: React.FC = () => {
   const { user } = useContext(AuthContext);
-  if (!user) {
-    // handle the case when authContext is not available
-    // for example, return null or some placeholder
-    return null;
-  }
-
   const [conversations, setConversations] = useState<ConversationType[]>([]);
   const [activeConversation, setActiveConversation] = useState<ConversationType | null>(null);
   const [showMenu, setShowMenu] = useState(true);
   const [model, setModel] = useState('gpt-3.5-turbo-0613'); 
   const [apiKey, setApiKey] = useState('');
+
 
   useEffect(() => {
     const fetchUserConversations = async () => {

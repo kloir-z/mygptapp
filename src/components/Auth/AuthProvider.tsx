@@ -23,13 +23,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
     });
   
-//    auth.getRedirectResult().then((result) => {
-//      if (result.user) {
-//        setUser(result.user);
-//      }
-//    }).catch((error) => {
-//      console.error(error);
-//    });
+      auth.getRedirectResult().then((result) => {
+        if (result.user) {
+          setUser(result.user);
+        }
+      }).catch((error) => {
+        console.error(error);
+      });
     return unsubscribe;  
   }, []);
   

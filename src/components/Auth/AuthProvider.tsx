@@ -15,7 +15,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const auth = firebase.auth();
     const provider = new firebase.auth.GoogleAuthProvider();
   
-    auth.onAuthStateChanged((currentUser) => {
+    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
       if (currentUser) {
         setUser(currentUser);
       } else {
@@ -30,6 +30,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 //    }).catch((error) => {
 //      console.error(error);
 //    });
+    return unsubscribe;  
   }, []);
   
   return (

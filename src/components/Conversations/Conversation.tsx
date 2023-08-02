@@ -36,17 +36,9 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
     messagesEndRef.current?.scrollIntoView({ block: 'end', behavior: 'auto' });
   };
 
-useEffect(() => {
-  const handleResize = () => {
+  useEffect(() => {
     scrollToBottom();
-  };
-
-  window.addEventListener("resize", handleResize);
-
-  return () => {
-    window.removeEventListener("resize", handleResize);
-  };
-}, [messages]);
+  }, [messages]);
 
   return (
     <ConversationContainer>

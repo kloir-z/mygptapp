@@ -11,32 +11,27 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
 
-useEffect(() => {
-  const auth = firebase.auth();
-  const provider = new firebase.auth.GoogleAuthProvider();
-
-  const handleAuthStateChanged = (currentUser) => {
-    if (currentUser) {
-      setUser(currentUser);
-    } else {
-      auth.signInWithRedirect(provider);
-    }
-  };
-
-  const handleRedirectResult = (result) => {
-    if (result.user) {
-      setUser(result.user);
-    }
-  };
-
-  auth.onAuthStateChanged(handleAuthStateChanged);
-  auth.getRedirectResult().then(handleRedirectResult).catch(console.error);
-
-  return () => {
-    auth.onAuthStateChanged(handleAuthStateChanged);
-  };
-}, [firebase.auth, firebase.auth.GoogleAuthProvider]);
-
+  useEffect(() => {
+    const auth = firebase.auth();
+    const provider = new firebase.auth.GoogleAuthProvider();
+  
+    auth.onAuthStateChanged((currentUser) => {
+      if (currentUser) {
+        setUser(currentUser);
+      } else {
+        auth.signInWithRedirect(provider);
+      }
+    });
+  
+    auth.getRedirectResult().then((result) => {
+      if (result.user) {
+        setUser(result.user);
+      }
+    }).catch((error) => {
+      console.error(error);
+    });
+  }, []);
+  
   return (
     <AuthContext.Provider value={{ user, setUser }}>
       {children}

@@ -17,6 +17,7 @@ ReactDOM.render(
             flex-direction: column;
             height: 100vh;
             height: 100svh;
+            color: #ebebeb;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
             'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
             sans-serif;

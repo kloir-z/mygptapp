@@ -36,6 +36,10 @@ const App: React.FC = () => {
     setConversations(updatedConversations);
   };
 
+  if (!user) {
+    return <>loading...</>;
+  }
+
   return (
     <>
       <Topbar

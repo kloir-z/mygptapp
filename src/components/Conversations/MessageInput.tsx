@@ -15,6 +15,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey, messag
   const [message, setMessage] = useState('');
   const [inputTokenCount, setInputTokenCount] = useState<number>(0);
   const [totalTokenCount, setTotalTokenCount] = useState<number>(0);
+  const [scrollHeight, setScrollHeight] = useState<number>(0);
 
   const checkTokenCount = () => {
     getAndSetTokenCount([...messages], model, setTotalTokenCount);
@@ -35,25 +36,25 @@ const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey, messag
     if(textAreaRef.current){
       textAreaRef.current.style.height = 'auto';
       textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`;
+      setScrollHeight(textAreaRef.current.scrollHeight);
     }
   }, [message]);
 
   useEffect(() => {
-    const observer = new MutationObserver(() => {
-      if (window.scrollY + window.innerHeight + 40 >= document.body.scrollHeight) {
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'auto' });
-      }
-    });
-  
-    if (textAreaRef.current) {
-      observer.observe(textAreaRef.current, { attributes: true, attributeFilter: ['style'] });
+    const windowHeight = window.innerHeight;
+    const bodyHeight = document.body.scrollHeight;
+    const scrollPosition = window.pageYOffset;
+
+    const isContentHeightChanged = scrollHeight !== bodyHeight;
+    const isNearBottom = (bodyHeight - scrollPosition - windowHeight) <= 50; // 50px の範囲内であれば下部とみなす
+
+    if (isContentHeightChanged && isNearBottom) {
+      setTimeout(() => {
+        window.scrollTo(0, document.body.scrollHeight);
+      }, 5); //テキストエリアが広がった後にtriggerさせる想定
     }
-    
-    return () => {
-      observer.disconnect();
-    }
-  }, []);
-  
+
+  }, [scrollHeight]);
 
   return (
     <>

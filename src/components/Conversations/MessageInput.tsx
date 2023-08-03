@@ -15,7 +15,6 @@ const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey, messag
   const [message, setMessage] = useState('');
   const [inputTokenCount, setInputTokenCount] = useState<number>(0);
   const [totalTokenCount, setTotalTokenCount] = useState<number>(0);
-  const [debugInfo, setDebugInfo] = useState({scrollTop: 0, clientHeight: 0, scrollHeight: 0}); 
 
   const checkTokenCount = () => {
     getAndSetTokenCount([...messages], model, setTotalTokenCount);
@@ -37,24 +36,27 @@ const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey, messag
       textAreaRef.current.style.height = 'auto';
       textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`;
     }
-    setDebugInfo({
-      scrollTop: window.scrollY, 
-      clientHeight: window.innerHeight,
-      scrollHeight: document.body.scrollHeight
-    }); // 更新
-    if (window.scrollY + window.innerHeight + 40 >= document.body.scrollHeight) {
-      window.scrollTo({ top: document.body.scrollHeight, behavior: 'auto' });
-    }
   }, [message]);
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      if (window.scrollY + window.innerHeight + 40 >= document.body.scrollHeight) {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'auto' });
+      }
+    });
+  
+    if (textAreaRef.current) {
+      observer.observe(textAreaRef.current, { attributes: true, attributeFilter: ['style'] });
+    }
+    
+    return () => {
+      observer.disconnect();
+    }
+  }, []);
+  
 
   return (
     <>
-      <div style={{display:'flex', flexDirection: 'row'}}>
-        <InfoText>a: {debugInfo.scrollTop}</InfoText>
-        <InfoText>b: {debugInfo.clientHeight}</InfoText>
-        <InfoText>a+b: {debugInfo.scrollTop + debugInfo.clientHeight}</InfoText>
-        <InfoText>c: {debugInfo.scrollHeight}</InfoText>
-      </div>
       <StyledTextarea 
         value={message} 
         onChange={e => setMessage(e.target.value)}

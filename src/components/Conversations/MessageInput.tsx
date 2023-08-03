@@ -15,6 +15,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey, messag
   const [message, setMessage] = useState('');
   const [inputTokenCount, setInputTokenCount] = useState<number>(0);
   const [totalTokenCount, setTotalTokenCount] = useState<number>(0);
+  const [debugInfo, setDebugInfo] = useState({scrollTop: 0, clientHeight: 0, scrollHeight: 0}); 
 
   const checkTokenCount = () => {
     getAndSetTokenCount([...messages], model, setTotalTokenCount);
@@ -32,13 +33,19 @@ const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey, messag
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
-    if (textAreaRef.current && textAreaRef.current.scrollTop + textAreaRef.current.clientHeight >= textAreaRef.current.scrollHeight) {
+    setDebugInfo({
+      scrollTop: window.scrollY, 
+      clientHeight: window.innerHeight,
+      scrollHeight: document.body.scrollHeight
+    }); // 更新
+    if (window.scrollY + window.innerHeight + 40 >= document.body.scrollHeight) {
       window.scrollTo({ top: document.body.scrollHeight, behavior: 'auto' });
     }
   }, [message]);
 
   return (
     <>
+      <div style={{display:'flex', flexDirection: 'row'}}><InfoText>a: {debugInfo.scrollTop}</InfoText>      <InfoText>b: {debugInfo.clientHeight}</InfoText>      <InfoText>c: {debugInfo.scrollHeight}</InfoText></div>
       <StyledTextarea 
         value={message} 
         onChange={e => setMessage(e.target.value)}

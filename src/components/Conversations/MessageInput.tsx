@@ -33,6 +33,10 @@ const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey, messag
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
+    if(textAreaRef.current){
+      textAreaRef.current.style.height = 'auto';
+      textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`;
+    }
     setDebugInfo({
       scrollTop: window.scrollY, 
       clientHeight: window.innerHeight,
@@ -45,7 +49,12 @@ const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey, messag
 
   return (
     <>
-      <div style={{display:'flex', flexDirection: 'row'}}><InfoText>a: {debugInfo.scrollTop}</InfoText>      <InfoText>b: {debugInfo.clientHeight}</InfoText>      <InfoText>c: {debugInfo.scrollHeight}</InfoText></div>
+      <div style={{display:'flex', flexDirection: 'row'}}>
+        <InfoText>a: {debugInfo.scrollTop}</InfoText>
+        <InfoText>b: {debugInfo.clientHeight}</InfoText>
+        <InfoText>a+b: {debugInfo.scrollTop + debugInfo.clientHeight}</InfoText>
+        <InfoText>c: {debugInfo.scrollHeight}</InfoText>
+      </div>
       <StyledTextarea 
         value={message} 
         onChange={e => setMessage(e.target.value)}

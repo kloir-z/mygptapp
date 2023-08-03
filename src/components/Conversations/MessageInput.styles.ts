@@ -15,7 +15,7 @@ export const StyledTextarea = styled.textarea`
   padding: 10px;
   height: auto;
   resize: none;
-  overflow: auto;
+  overflow: hidden;
   padding: 10px 15px;
   font-size: 0.8rem;
   border-radius: 3px;

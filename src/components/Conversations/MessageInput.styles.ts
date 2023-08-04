@@ -10,7 +10,7 @@ export const MessageInputBottomContainer = styled.div`
 `;
 
 export const StyledTextarea = styled.textarea`
-  width: 100%;
+  width: calc(100% - 4px);
   margin: 4px;
   padding: 10px;
   height: auto;

@@ -35,7 +35,6 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, model, setModel, set
   const apiKeyButtonRef = useRef<HTMLButtonElement | null>(null);
   const [popupPosition, setPopupPosition] = useState<{ top: number; left: number } | null>(null);
 
-
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (apiKeyButtonRef.current !== event.target && apiKeyInputRef.current && !apiKeyInputRef.current.contains(event.target as Node)) {

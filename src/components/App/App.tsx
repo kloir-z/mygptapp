@@ -59,25 +59,25 @@ const App: React.FC = () => {
       />
       <MainContainer>
         {showMenu && (
-          <div {...handlers}>
-            <Sidebar
-              conversations={conversations}
-              activeConversation={activeConversation}
-              setConversations={setConversations}
-              setActiveConversation={setActiveConversation}
-            />
-          </div>
-        )}
-        {activeConversation ? (
-          <Conversation
-            conversation={activeConversation}
-            model={model}
-            apiKey={apiKey}
-            sendMessage={handleMessageSend}
+          <Sidebar
+            conversations={conversations}
+            activeConversation={activeConversation}
+            setConversations={setConversations}
+            setActiveConversation={setActiveConversation}
           />
-        ) : (
-          <Placeholder>Please select a conversation</Placeholder>
         )}
+        <div {...handlers}>
+          {activeConversation ? (
+            <Conversation
+              conversation={activeConversation}
+              model={model}
+              apiKey={apiKey}
+              sendMessage={handleMessageSend}
+            />
+          ) : (
+            <Placeholder>Please select a conversation</Placeholder>
+          )}
+        </div>
       </MainContainer>
     </>
   );

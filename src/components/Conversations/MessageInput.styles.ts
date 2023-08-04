@@ -1,15 +1,16 @@
 import styled from '@emotion/styled';
 
+export const MessageInputContainer = styled.div`
+  position: relative;
+`;
+
 export const MessageInputBottomContainer = styled.div`
-  min-height: 35px;
   display: flex;
-  flex-grow: 0;
-  flex-shrink: 0;
-  flex-direction: row;
-  align-items: flex-start;
+  flex-direction: row-reverse;
 `;
 
 export const StyledTextarea = styled.textarea`
+  position: relative;
   width: calc(100% - 8px);
   margin: 4px;
   padding: 10px;
@@ -26,22 +27,51 @@ export const StyledTextarea = styled.textarea`
 ;
 `;
 
-export const StyledButton = styled.button`
-  margin: 3px 20px 3px 3px;
+export const CalcTokenButton = styled.button`
+  margin: 4px;
   padding: 5px 10px;
   font-size: 0.8rem;
   border-radius: 3px;
   border: none;
   cursor: pointer;
-  color: white;
+  color: #ebebeb;
   background: #336396;
   &:hover {
     background: #244569;
   }
 `;
 
-export const InfoText = styled.div`
-  margin: 5px;
+export const SendButton = styled.button`
+  position: absolute;
+  right: 8px;
+  bottom: 12px;
+  margin: 0px;
+  padding: 5px 10px;
   font-size: 0.8rem;
-  color: #ebebeb;
+  border-radius: 3px;
+  border: none;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.5); 
+  background: rgba(51, 99, 150, 0.5);
+  &:hover {
+    background: rgba(65, 125, 189, 0.5);
+  }
+`;
+
+export const InputTokenText = styled.div`
+  position: absolute;
+  right: 47px;
+  bottom: 10px;
+  margin: 0px;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5); 
+`;
+
+export const MessageTokenText = styled.div`
+  position: absolute;
+  right: 15px;
+  top: -21px;
+  margin: 0px;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5); 
 `;

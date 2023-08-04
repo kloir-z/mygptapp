@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { getAndSetTokenCount } from './openAIUtil';
 import { ConversationData } from './Conversations.types';
-import { MessageInputBottomContainer, StyledTextarea, StyledButton, InfoText } from './MessageInput.styles'
+import { MessageInputContainer, MessageInputBottomContainer, StyledTextarea, CalcTokenButton, SendButton, InputTokenText, MessageTokenText } from './MessageInput.styles'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 
 type MessageInputProps = {
   sendMessage: (message: string, role: string, apiKey: string) => void;
@@ -58,17 +60,19 @@ const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey, messag
 
   return (
     <>
+      <MessageInputContainer>
       <StyledTextarea 
         value={message} 
         onChange={e => setMessage(e.target.value)}
         rows={message.split('\n').length || 1}
         ref={textAreaRef} 
       />
+        <SendButton onClick={handleSend}><FontAwesomeIcon icon={faPaperPlane} /></SendButton>
+        <InputTokenText>{inputTokenCount}</InputTokenText>
+        <MessageTokenText>{totalTokenCount}</MessageTokenText>
+      </MessageInputContainer>
       <MessageInputBottomContainer>
-        <StyledButton onClick={handleSend}>Send</StyledButton>
-        <StyledButton type="button" onClick={checkTokenCount}>calc</StyledButton>
-        <InfoText>in: {inputTokenCount}</InfoText>
-        <InfoText>m: {totalTokenCount}</InfoText>
+        <CalcTokenButton type="button" onClick={checkTokenCount}>CalcToken</CalcTokenButton>
       </MessageInputBottomContainer>
     </>
   );

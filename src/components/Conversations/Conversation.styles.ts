@@ -8,7 +8,8 @@ export const ConversationContainer = styled.div`
 
 export const MessagesContainer = styled.div`
   margin: 0px;
-  height: calc(100svh - 120px);
+  height: calc(100vh - 104px);
+  height: calc(100svh - 104px);
   overflow-y: scroll;
 
   ::-webkit-scrollbar {

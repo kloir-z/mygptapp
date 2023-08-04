@@ -122,6 +122,15 @@ export const TitleLeft = styled.div`
   overflow: hidden;
   padding-right: 5px;
   direction: ltr;
+  width: calc(100% - 30px);
+  overflow-x: auto;
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: transparent;
+  }
 `;
 
 export const TitleRight = styled.div`

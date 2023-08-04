@@ -2,11 +2,12 @@ import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from '../Auth/AuthContext';
 import { ConversationType } from '../Conversations/Conversations.types';
 import { fetchConversations, updateConversations  } from '../Auth/firebase';
-import { MainContainer, Placeholder } from './App.styles'
+import { MainContainer, Placeholder, SidebarWrapper  } from './App.styles'
 import Topbar from '../Conversations/Topbar'
 import Sidebar from '../Conversations/Sidebar'
 import Conversation from '../Conversations/Conversation'
 import { useSwipeable } from 'react-swipeable';
+import { CSSTransition } from 'react-transition-group';
 
 const App: React.FC = () => {
   const { user } = useContext(AuthContext);
@@ -59,12 +60,14 @@ const App: React.FC = () => {
       />
       <MainContainer>
         {showMenu && (
+        <SidebarWrapper open={showMenu} {...handlers}>
           <Sidebar
             conversations={conversations}
             activeConversation={activeConversation}
             setConversations={setConversations}
             setActiveConversation={setActiveConversation}
           />
+          </SidebarWrapper>
         )}
         <div {...handlers}>
           {activeConversation ? (

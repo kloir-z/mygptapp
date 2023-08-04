@@ -16,13 +16,11 @@ export const StyledInput = styled.input`
 `;
 
 export const StyledSelect = styled.select`
-  padding: 2px 6px;
   margin: 5px;
   font-size: 0.8rem;
 `;
 
 export const StyledOption = styled.option`
-  padding: 2px 6px;
   margin: 5px;
   font-size: 0.8rem;
 `;

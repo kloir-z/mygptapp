@@ -13,6 +13,7 @@ export const StyledTextarea = styled.textarea`
   position: relative;
   width: calc(100% - 8px);
   margin: 4px;
+  margin-bottom: 0px;
   padding: 10px;
   height: auto;
   resize: none;
@@ -29,22 +30,23 @@ export const StyledTextarea = styled.textarea`
 
 export const CalcTokenButton = styled.button`
   margin: 4px;
+  margin-top: 0px;
   padding: 5px 10px;
   font-size: 0.8rem;
   border-radius: 3px;
   border: none;
   cursor: pointer;
-  color: #ebebeb;
-  background: #336396;
+  color: rgba(255, 255, 255, 0.5); 
+  background: rgba(51, 99, 150, 0.5);
   &:hover {
-    background: #244569;
+    background: rgba(65, 125, 189, 0.5);
   }
 `;
 
 export const SendButton = styled.button`
   position: absolute;
   right: 8px;
-  bottom: 12px;
+  bottom: 8px;
   margin: 0px;
   padding: 5px 10px;
   font-size: 0.8rem;
@@ -61,7 +63,7 @@ export const SendButton = styled.button`
 export const InputTokenText = styled.div`
   position: absolute;
   right: 47px;
-  bottom: 10px;
+  bottom: 6px;
   margin: 0px;
   font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.5); 

@@ -45,9 +45,9 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, model, setModel, set
             <StyledInput type="password" value={apiKey} onChange={e => setApiKey(e.target.value)} placeholder="API Key" />
 
             <StyledSelect value={model} onChange={e => setModel(e.target.value)}>  
-                <StyledOption value="gpt-3.5-turbo-16k-0613">gpt-3.5-turbo-16k-0613</StyledOption>
-                <StyledOption value="gpt-3.5-turbo-0613">gpt-3.5-turbo-0613</StyledOption>
-                <StyledOption value="gpt-4-0613">gpt-4-0613</StyledOption>
+                <StyledOption value="gpt-3.5-turbo-16k-0613">gpt3.5(16k)</StyledOption>
+                <StyledOption value="gpt-3.5-turbo-0613">gpt3.5(4k)</StyledOption>
+                <StyledOption value="gpt-4-0613">gpt4(8k)</StyledOption>
             </StyledSelect>
         </TopbarContainer>
     );

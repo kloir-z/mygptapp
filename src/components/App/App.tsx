@@ -6,6 +6,7 @@ import { MainContainer, Placeholder } from './App.styles'
 import Topbar from '../Conversations/Topbar'
 import Sidebar from '../Conversations/Sidebar'
 import Conversation from '../Conversations/Conversation'
+import { useSwipeable } from 'react-swipeable';
 
 const App: React.FC = () => {
   const { user } = useContext(AuthContext);
@@ -15,6 +16,9 @@ const App: React.FC = () => {
   const [model, setModel] = useState('gpt-3.5-turbo-0613'); 
   const [apiKey, setApiKey] = useState('');
 
+  const handlers = useSwipeable({
+    onSwipedLeft: () => setShowMenu(false)
+  });
 
   useEffect(() => {
     const fetchUserConversations = async () => {
@@ -55,12 +59,14 @@ const App: React.FC = () => {
       />
       <MainContainer>
         {showMenu && (
-          <Sidebar
-            conversations={conversations}
-            activeConversation={activeConversation}
-            setConversations={setConversations}
-            setActiveConversation={setActiveConversation}
-          />
+          <div {...handlers}>
+            <Sidebar
+              conversations={conversations}
+              activeConversation={activeConversation}
+              setConversations={setConversations}
+              setActiveConversation={setActiveConversation}
+            />
+          </div>
         )}
         {activeConversation ? (
           <Conversation

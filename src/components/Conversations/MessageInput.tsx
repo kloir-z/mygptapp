@@ -45,17 +45,13 @@ const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey, messag
   useEffect(() => {
     const windowHeight = window.innerHeight;
     const bodyHeight = document.body.scrollHeight;
-    const scrollPosition = window.pageYOffset;
+    const scrollPosition = window.scrollY;
 
-    const isContentHeightChanged = scrollHeight !== bodyHeight;
-    const isNearBottom = (bodyHeight - scrollPosition - windowHeight) <= 50; // 50px の範囲内であれば下部とみなす
-
-    if (isContentHeightChanged && isNearBottom) {
+    if (scrollHeight !== bodyHeight && (bodyHeight - scrollPosition - windowHeight) <= 50) {
       setTimeout(() => {
         window.scrollTo(0, document.body.scrollHeight);
-      }, 5); //テキストエリアが広がった後にtriggerさせる想定
+      }, 5);
     }
-
   }, [scrollHeight]);
 
   return (

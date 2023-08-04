@@ -8,11 +8,23 @@ export const TopbarContainer = styled.div`
   overflow: hidden;
 `;
 
+export const ApiKeyInputPopup = styled.div<{ top?: number; left?: number }>`
+  position: absolute;
+  padding: 10px 20px;
+  top: ${props => (props.top ? `${props.top}px` : "0px")};
+  left: ${props => (props.left ? `${props.left}px` : "0px")};
+  z-index: 1;
+  color: #ebebeb;
+  font-size: 0.8rem;
+  background: #6c727e;
+  border: 2px solid #ebebeb;
+`;
+
 export const StyledInput = styled.input`
   padding: 2px 6px;
   margin: 5px;
   font-size: 0.8rem;
-  width: 50px;
+  width: 100px;
 `;
 
 export const StyledSelect = styled.select`
@@ -32,7 +44,21 @@ export const StyledButton = styled.button`
   border-radius: 3px;
   border: none;
   cursor: pointer;
-  color: white;
+  color: #ebebeb;
+  background: #336396;
+  &:hover {
+    background: #244569;
+  }
+`;
+
+export const ApiKeyButton = styled.button`
+  margin: 3px;
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  border-radius: 3px;
+  border: none;
+  cursor: pointer;
+  color: #ebebeb;
   background: #336396;
   &:hover {
     background: #244569;

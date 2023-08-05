@@ -3,6 +3,7 @@ import MessageInput from './MessageInput';
 import { ConversationType, ConversationData } from './Conversations.types';
 import { getAIResponse, getAndSetTokenCount } from './openAIUtil';
 import { Message, ConversationContainer, MessagesContainer, InputContainer } from './Conversation.styles'
+import { StyledTextarea } from './MessageInput.styles'
 import { PrismLight as SyntaxHighlighter, Prism as SyntaxHighlighterPrism } from 'react-syntax-highlighter';
 import syntaxStyle from 'react-syntax-highlighter/dist/cjs/styles/prism/one-dark';
 
@@ -26,8 +27,13 @@ type ConversationProps = {
   forwardedRef: React.RefObject<HTMLDivElement>;
 };
 
-const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation, model, apiKey, sendMessage}) => {
+const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation, model, apiKey, sendMessage }) => {
   const [messages, setMessages] = useState<ConversationData[]>(conversation.revisions[0].conversation);
+  const [editingMessageIndex, setEditingMessageIndex] = useState<number | null>(null);
+  const [editingMessageContent, setEditingMessageContent] = useState<string | null>(null);
+  const [prevMessageCount, setPrevMessageCount] = useState<number>(messages.length);
+
+
 
   useEffect(() => {
     setMessages(conversation.revisions[0].conversation);
@@ -52,7 +58,10 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
   };
 
   useEffect(() => {
-    scrollToBottom();
+    if (messages.length !== prevMessageCount) {
+      scrollToBottom();
+      setPrevMessageCount(messages.length);
+    }
   }, [messages]);
 
   const splitContent = (content: string) => {
@@ -79,12 +88,60 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
     return parts;
   };
 
+  const onDoubleClickMessage = (index: number) => {
+    setEditingMessageContent(messages[index]?.content || null);
+    setEditingMessageIndex(index);
+  };
+
+  const handleContentChange = (index: number, newContent: string) => {
+    setMessages(prevMessages => {
+      const updatedMessages = [...prevMessages];
+      updatedMessages[index].content = newContent;
+      return updatedMessages;
+    });
+  };
+
+  const handleCancelEditing = () => {
+    if (editingMessageIndex !== null && editingMessageContent !== null) {
+      handleContentChange(editingMessageIndex, editingMessageContent);
+    }
+    setEditingMessageIndex(null);
+    setEditingMessageContent(null);
+  };
+
+  const editTextAreaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  useEffect(() => {
+    if (editTextAreaRef.current && editingMessageIndex !== null) {
+      const content = messages[editingMessageIndex]?.content;
+      if (content) {
+        editTextAreaRef.current.style.height = 'auto';
+        editTextAreaRef.current.style.height = `${editTextAreaRef.current.scrollHeight}px`;
+      }
+    }
+  }, [editingMessageIndex !== null ? messages[editingMessageIndex]?.content : '', editingMessageIndex]);
+
   return (
     <ConversationContainer>
       <MessagesContainer ref={forwardedRef}>
       {messages.map((message: ConversationData, index: number) => (
-        <Message key={index} role={message.role}>
-          {splitContent(message.content)}
+          <Message key={index} role={message.role} onDoubleClick={() => onDoubleClickMessage(index)}>
+          {editingMessageIndex === index ? (
+            <>
+              <StyledTextarea
+                value={message.content}
+                onChange={e => handleContentChange(index, e.target.value)}
+                rows={message.content.split('\n').length || 1}
+                ref={editTextAreaRef} 
+              />
+              <>
+                <button onClick={() => setEditingMessageIndex(null)}>OK</button>
+                <button onClick={handleCancelEditing}>Cancel</button>
+              </>
+            </>
+          ) : (
+            splitContent(message.content)
+          )}
         </Message>
       ))}
         <div ref={messagesEndRef} />

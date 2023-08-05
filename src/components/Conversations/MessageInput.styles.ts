@@ -19,10 +19,11 @@ export const StyledTextarea = styled.textarea`
   resize: none;
   overflow: hidden;
   padding: 10px 15px;
-  font-size: 0.8rem;
   border-radius: 3px;
   border: 1px solid #576374;
   box-sizing: border-box;
+  font-family: MeiryoUI, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+  font-size: 0.8rem;
   color: #ebebeb;
   background-color: #4c586a;
 ;

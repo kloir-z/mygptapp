@@ -11,8 +11,8 @@ export const TopbarContainer = styled.div`
 export const ApiKeyInputPopup = styled.div<{ top?: number; left?: number }>`
   position: absolute;
   padding: 10px 20px;
-  top: ${props => (props.top ? `${props.top}px` : "0px")};
-  left: ${props => (props.left ? `${props.left}px` : "0px")};
+  top: calc(${props => (props.top ? `${props.top}px` : "0px")} + 2px);
+  left: calc(${props => (props.left ? `${props.left}px` : "0px")} - 50px);
   z-index: 1;
   color: #ebebeb;
   font-size: 0.8rem;

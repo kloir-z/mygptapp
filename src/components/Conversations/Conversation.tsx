@@ -9,9 +9,10 @@ type ConversationProps = {
   model: string;
   apiKey: string;
   sendMessage: (updatedConversation: ConversationType) => Promise<void>;
+  forwardedRef: React.RefObject<HTMLDivElement>;
 };
 
-const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey, sendMessage}) => {
+const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation, model, apiKey, sendMessage}) => {
   const [messages, setMessages] = useState<ConversationData[]>(conversation.revisions[0].conversation);
 
   useEffect(() => {
@@ -42,7 +43,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
 
   return (
     <ConversationContainer>
-      <MessagesContainer>
+      <MessagesContainer ref={forwardedRef}>
         {messages.map((message: ConversationData, index: number) => (
           <Message key={index} role={message.role}>
             {message.content}

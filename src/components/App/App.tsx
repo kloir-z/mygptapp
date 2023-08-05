@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { AuthContext } from '../Auth/AuthContext';
 import { ConversationType } from '../Conversations/Conversations.types';
 import { fetchConversations, updateConversations  } from '../Auth/firebase';
@@ -14,6 +14,17 @@ const App: React.FC = () => {
   const [showMenu, setShowMenu] = useState(true);
   const [model, setModel] = useState('gpt-3.5-turbo-0613'); 
   const [apiKey, setApiKey] = useState('');
+  const messageContainerRef = useRef<HTMLDivElement | null>(null);
+
+  const scrollToBottom = () => {
+    if(messageContainerRef.current) {
+      messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
+    }
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [showMenu]);
 
   useEffect(() => {
     const fetchUserConversations = async () => {
@@ -63,6 +74,7 @@ const App: React.FC = () => {
           )}
           {activeConversation ? (
             <Conversation
+              forwardedRef={messageContainerRef}
               conversation={activeConversation}
               model={model}
               apiKey={apiKey}

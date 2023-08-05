@@ -24,7 +24,7 @@ ReactDOM.render(
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             background-color: #282c34;
-            overflow-y: scroll;
+            overflow: scroll;
 
             ::-webkit-scrollbar {
               width: 8px;

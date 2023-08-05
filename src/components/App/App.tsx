@@ -2,12 +2,10 @@ import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from '../Auth/AuthContext';
 import { ConversationType } from '../Conversations/Conversations.types';
 import { fetchConversations, updateConversations  } from '../Auth/firebase';
-import { MainContainer, Placeholder, SidebarWrapper  } from './App.styles'
+import { MainContainer, Placeholder } from './App.styles'
 import Topbar from '../Conversations/Topbar'
 import Sidebar from '../Conversations/Sidebar'
 import Conversation from '../Conversations/Conversation'
-import { useSwipeable } from 'react-swipeable';
-import { CSSTransition } from 'react-transition-group';
 
 const App: React.FC = () => {
   const { user } = useContext(AuthContext);
@@ -16,10 +14,6 @@ const App: React.FC = () => {
   const [showMenu, setShowMenu] = useState(true);
   const [model, setModel] = useState('gpt-3.5-turbo-0613'); 
   const [apiKey, setApiKey] = useState('');
-
-  const handlers = useSwipeable({
-    onSwipedLeft: () => setShowMenu(false)
-  });
 
   useEffect(() => {
     const fetchUserConversations = async () => {
@@ -60,16 +54,13 @@ const App: React.FC = () => {
       />
       <MainContainer>
         {showMenu && (
-        <SidebarWrapper open={showMenu} {...handlers}>
           <Sidebar
             conversations={conversations}
             activeConversation={activeConversation}
             setConversations={setConversations}
             setActiveConversation={setActiveConversation}
           />
-          </SidebarWrapper>
-        )}
-        <div {...handlers}>
+          )}
           {activeConversation ? (
             <Conversation
               conversation={activeConversation}
@@ -80,7 +71,6 @@ const App: React.FC = () => {
           ) : (
             <Placeholder>Please select a conversation</Placeholder>
           )}
-        </div>
       </MainContainer>
     </>
   );

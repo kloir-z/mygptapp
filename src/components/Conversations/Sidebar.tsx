@@ -3,6 +3,7 @@ import { StyledInput, ConversationItem, SidebarContainer, TitleLeft, TitleRight 
 import { ConversationType } from './Conversations.types';
 import { FiEdit2 } from 'react-icons/fi';
 import { FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
+import { handleClickOutside, handleEscape, handleKeyDown } from './sidebarHandlers';
 
 type SidebarProps = {
   conversations: ConversationType[];
@@ -33,39 +34,22 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, se
   };
   
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (inputRef.current && !inputRef.current.contains(event.target as Node)) {
-        const id = Object.keys(editingTitles).find(key => editingTitles[key]);
-        if (id) {
-          toggleEditingTitle(id);
-        }
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
+    const boundHandleClickOutside = handleClickOutside(inputRef, editingTitles, toggleEditingTitle);
+    document.addEventListener('mousedown', boundHandleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('mousedown', boundHandleClickOutside);
     };
   }, [editingTitles]);
+  
 
   useEffect(() => {
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        const id = Object.keys(editingTitles).find(key => editingTitles[key]);
-        if (id) {
-          setConversations((prev: ConversationType[]) => prev.map(conv => 
-            conv.id === id ? {...conv, title: originalTitle} : conv
-          ));
-          toggleEditingTitle(id);
-        }
-      }
-    };
-  
-    document.addEventListener("keydown", handleEscape);
+    const boundHandleEscape = handleEscape(editingTitles, originalTitle, setConversations, toggleEditingTitle);
+    document.addEventListener("keydown", boundHandleEscape);
     return () => {
-      document.removeEventListener("keydown", handleEscape);
+      document.removeEventListener("keydown", boundHandleEscape);
     };
   }, [editingTitles, originalTitle]);
+  
 
   const changeConversation = (index: number) => {
     if (Object.values(editingTitles).some(isEditing => isEditing)) {
@@ -81,27 +65,8 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, se
     }));
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    let newIndex;
-    if (activeConversation) {
-      const currentIndex = conversations.findIndex(
-        (conv) => conv.id === activeConversation.id
-      );
-      if (e.keyCode === 38 && currentIndex > 0) { // Up key
-        newIndex = currentIndex - 1;
-      } else if (e.keyCode === 40 && currentIndex < conversations.length - 1) { // Down key
-        newIndex = currentIndex + 1;
-      }
-    } else if (e.keyCode === 38 || e.keyCode === 40) { // If no conversation selected yet
-      newIndex = 0;
-    }
-    if (newIndex !== undefined) {
-      setActiveConversation(conversations[newIndex]);
-    }
-  };
-
   return (
-    <SidebarContainer tabIndex={0} onKeyDown={(e) => handleKeyDown(e)}>
+    <SidebarContainer tabIndex={0} onKeyDown={handleKeyDown(activeConversation, conversations, setActiveConversation)}>
         {conversations.map((conversation, index) => (
         <ConversationItem 
           key={index} 

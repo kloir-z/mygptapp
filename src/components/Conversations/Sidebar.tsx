@@ -26,11 +26,11 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, se
 
   const confirmDeletion = () => {
     setConversations((prev: ConversationType[]) => prev.filter((conv: ConversationType) => conv.id !== deletingId));
-    setDeletingId(null);  // Reset the deletingId
+    setDeletingId(null);
   };
 
   const cancelDeletion = () => {
-    setDeletingId(null);  // Reset the deletingId
+    setDeletingId(null);
   };
   
   useEffect(() => {
@@ -40,7 +40,6 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, se
       document.removeEventListener('mousedown', boundHandleClickOutside);
     };
   }, [editingTitles]);
-  
 
   useEffect(() => {
     const boundHandleEscape = handleEscape(editingTitles, originalTitle, setConversations, toggleEditingTitle);
@@ -50,7 +49,6 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, se
     };
   }, [editingTitles, originalTitle]);
   
-
   const changeConversation = (index: number) => {
     if (Object.values(editingTitles).some(isEditing => isEditing)) {
       return;

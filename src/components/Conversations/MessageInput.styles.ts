@@ -12,13 +12,12 @@ export const MessageInputBottomContainer = styled.div`
 export const StyledTextarea = styled.textarea`
   position: relative;
   width: calc(100% - 8px);
+  height: auto;
   margin: 4px;
   margin-bottom: 0px;
-  padding: 10px;
-  height: auto;
+  padding: 10px 15px;
   resize: none;
   overflow: hidden;
-  padding: 10px 15px;
   border-radius: 3px;
   border: 1px solid #576374;
   box-sizing: border-box;

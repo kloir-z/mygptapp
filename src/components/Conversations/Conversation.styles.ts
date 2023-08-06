@@ -5,6 +5,7 @@ export const ConversationContainer = styled.div`
   flex-direction: column;
   flex-grow: 1;
   width: 0px;
+  position: relative;
 `;
 
 export const MessagesContainer = styled.div`
@@ -33,9 +34,9 @@ export const Message = styled.div<{role: string}>`
 `;
 
 export const EditingText = styled.div`
-  position: fixed;
-  right: 4px;
-  top: 35px;
+  position: absolute;
+  right: 10px;
+  top: 2px;
   margin: 0px;
   font-size: 0.8rem;
   color: rgb(12 12 12);
@@ -59,6 +60,25 @@ export const OkCancelButton = styled.button`
   &:hover {
     background: rgba(65, 125, 189, 0.75);
   }
+`;
+
+export const EditTextarea = styled.textarea`
+  position: relative;
+  width: calc(100% - 8px);
+  margin: 4px;
+  margin-bottom: 0px;
+  padding: 25px 10px;
+  height: auto;
+  resize: none;
+  overflow: hidden;
+  border-radius: 3px;
+  border: 1px solid #576374;
+  box-sizing: border-box;
+  font-family: MeiryoUI, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+  font-size: 0.8rem;
+  color: #ebebeb;
+  background-color: #4c586a;
+;
 `;
 
 const getColor = (role: string) => {

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import MessageInput from './MessageInput';
 import { ConversationType, ConversationData } from './Conversations.types';
 import { getAIResponse, getAndSetTokenCount } from './openAIUtil';
-import { Message, ConversationContainer, MessagesContainer, EditingText, OkCancelButton, InputContainer } from './Conversation.styles'
+import { Message, ConversationContainer, MessagesContainer, EditingText, OkCancelButton, InputContainer, EditTextarea } from './Conversation.styles'
 import { StyledTextarea } from './MessageInput.styles'
 import { PrismLight as SyntaxHighlighter, Prism as SyntaxHighlighterPrism } from 'react-syntax-highlighter';
 import syntaxStyle from 'react-syntax-highlighter/dist/cjs/styles/prism/one-dark';
@@ -132,7 +132,7 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
             <Message key={index} role={message.role} onDoubleClick={() => onDoubleClickMessage(index)}>
             {editingMessageIndex === index ? (
               <>
-                <StyledTextarea
+                <EditTextarea
                   value={message.content}
                   onChange={e => handleContentChange(index, e.target.value)}
                   rows={message.content.split('\n').length || 1}

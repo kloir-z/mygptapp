@@ -36,7 +36,7 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
 
   useEffect(() => {
     setMessages(conversation.revisions[0].conversation);
-  }, [conversation, model]);
+  }, [conversation]);
   
   const updateConversation  = async (messageContent: string, role: string, apiKey: string) => { 
     const finalMessages = await getAIResponse(messageContent, role, apiKey, model, messages, setMessages); 
@@ -128,11 +128,31 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
     setTotalTokenUpdateRequired(true);
   }, [conversation]);
 
+  const deleteMessage = (index: number) => {
+    setMessages(prevMessages => {
+      const updatedMessages = [...prevMessages];
+      updatedMessages.splice(index, 1);
+      return updatedMessages;
+    });
+  
+    const updatedConversation = {
+      ...conversation,
+      revisions: [{
+        revision: '0',
+        conversation: messages.filter((_, idx) => idx !== index)
+      }]
+    };
+    sendMessage(updatedConversation);
+    setEditingMessageIndex(null);
+    setEditingMessageContent(null);
+    setTotalTokenUpdateRequired(true);
+  };
+
   return (
     <ConversationContainer>
       <MessagesContainer ref={forwardedRef}>
         {messages.map((message: ConversationData, index: number) => (
-            <Message key={index} role={message.role} onDoubleClick={() => onDoubleClickMessage(index)}>
+          <Message key={index} role={message.role} onDoubleClick={() => onDoubleClickMessage(index)}>
             {editingMessageIndex === index ? (
               <>
                 <EditTextarea
@@ -145,6 +165,7 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
                   <EditingText>Editing...
                     <OkCancelButton onClick={() => setEditingMessageIndex(null)}>OK</OkCancelButton>
                     <OkCancelButton onClick={handleCancelEditing}>Cancel</OkCancelButton>
+                    <OkCancelButton onClick={() => deleteMessage(index)}>Delete</OkCancelButton>
                   </EditingText>
                 </>
               </>

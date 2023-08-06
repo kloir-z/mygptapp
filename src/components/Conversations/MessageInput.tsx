@@ -4,6 +4,7 @@ import { ConversationData } from './Conversations.types';
 import { MessageInputContainer, MessageInputBottomContainer, StyledTextarea, CalcTokenButton, SendButton, InputTokenText, MessageTokenText } from './MessageInput.styles'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
+import { Spinner } from './Sppiner'
 
 type MessageInputProps = {
   sendMessage: (message: string, role: string, apiKey: string) => void;
@@ -18,10 +19,13 @@ const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey, messag
   const [inputTokenCount, setInputTokenCount] = useState<number>(0);
   const [totalTokenCount, setTotalTokenCount] = useState<number>(0);
   const [scrollHeight, setScrollHeight] = useState<number>(0);
+  const [loading, setLoading] = useState(false);
 
-  const checkTokenCount = () => {
-    getAndSetTokenCount([...messages], model, setTotalTokenCount);
-    getAndSetTokenCount([{role: 'user', content: message}], model, setInputTokenCount);
+  const checkTokenCount = async () => {
+    setLoading(true);
+    await getAndSetTokenCount([...messages], model, setTotalTokenCount);
+    await getAndSetTokenCount([{role: 'user', content: message}], model, setInputTokenCount);
+    setLoading(false);
   };
 
   const handleSend = () => {
@@ -64,8 +68,17 @@ const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey, messag
         ref={textAreaRef} 
       />
         <SendButton onClick={handleSend}><FontAwesomeIcon icon={faPaperPlane} /></SendButton>
-        <InputTokenText>{inputTokenCount}</InputTokenText>
-        <MessageTokenText>{totalTokenCount}</MessageTokenText>
+        {loading ? (
+          <>
+            <InputTokenText><Spinner /></InputTokenText>
+            <MessageTokenText><Spinner /></MessageTokenText>
+          </>
+        ) : (
+          <>
+            <InputTokenText>{inputTokenCount}</InputTokenText>
+            <MessageTokenText>{totalTokenCount}</MessageTokenText>
+          </>
+        )}
       </MessageInputContainer>
       <MessageInputBottomContainer>
         <CalcTokenButton type="button" onClick={checkTokenCount}>CalcToken</CalcTokenButton>

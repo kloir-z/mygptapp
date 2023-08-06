@@ -12,24 +12,6 @@ export const SidebarContainer = styled.div`
   outline: none;
   overflow-y: scroll;
   direction: rtl;
-
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
-  ::-webkit-scrollbar-track {
-    background: #282c34;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: #525252a6;
-    border-radius: 4px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
-
-  // Firefox
-  scrollbar-width: thin;
-  scrollbar-color: #525252 #282c34;
 `;
 
 const iconCss = css`
@@ -125,12 +107,13 @@ export const TitleLeft = styled.div`
   width: calc(100% - 30px);
   overflow-x: auto;
   ::-webkit-scrollbar {
-    width: 10px;
+    width: 0px;
+    height: 0px;
   }
 
-  ::-webkit-scrollbar-thumb {
-    background-color: transparent;
-  }
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: #525252 #282c34;
 `;
 
 export const TitleRight = styled.div`

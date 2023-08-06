@@ -4,6 +4,7 @@ export const ConversationContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  width: 0px;
 `;
 
 export const MessagesContainer = styled.div`
@@ -11,24 +12,6 @@ export const MessagesContainer = styled.div`
   height: calc(100vh - 112px);
   height: calc(100svh - 112px);
   overflow-y: scroll;
-
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
-  ::-webkit-scrollbar-track {
-    background: #282c34;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: #525252a6;
-    border-radius: 4px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
-
-  // Firefox
-  scrollbar-width: thin;
-  scrollbar-color: #525252 #282c34;
 `;
 
 export const InputContainer = styled.div`

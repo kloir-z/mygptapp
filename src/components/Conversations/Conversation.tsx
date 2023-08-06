@@ -33,8 +33,6 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
   const [editingMessageContent, setEditingMessageContent] = useState<string | null>(null);
   const [prevMessageCount, setPrevMessageCount] = useState<number>(messages.length);
 
-
-
   useEffect(() => {
     setMessages(conversation.revisions[0].conversation);
   }, [conversation, model]);
@@ -130,27 +128,27 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
   return (
     <ConversationContainer>
       <MessagesContainer ref={forwardedRef}>
-      {messages.map((message: ConversationData, index: number) => (
-          <Message key={index} role={message.role} onDoubleClick={() => onDoubleClickMessage(index)}>
-          {editingMessageIndex === index ? (
-            <>
-              <StyledTextarea
-                value={message.content}
-                onChange={e => handleContentChange(index, e.target.value)}
-                rows={message.content.split('\n').length || 1}
-                ref={editTextAreaRef} 
-              />
+        {messages.map((message: ConversationData, index: number) => (
+            <Message key={index} role={message.role} onDoubleClick={() => onDoubleClickMessage(index)}>
+            {editingMessageIndex === index ? (
               <>
-                <EditingText>Editing...</EditingText>
-                <OkCancelButton right="65px" onClick={() => setEditingMessageIndex(null)}>OK</OkCancelButton>
-                <OkCancelButton right="2px" onClick={handleCancelEditing}>Cancel</OkCancelButton>
+                <StyledTextarea
+                  value={message.content}
+                  onChange={e => handleContentChange(index, e.target.value)}
+                  rows={message.content.split('\n').length || 1}
+                  ref={editTextAreaRef} 
+                />
+                <>
+                  <EditingText>Editing...</EditingText>
+                  <OkCancelButton right="65px" onClick={() => setEditingMessageIndex(null)}>OK</OkCancelButton>
+                  <OkCancelButton right="2px" onClick={handleCancelEditing}>Cancel</OkCancelButton>
+                </>
               </>
-            </>
-          ) : (
-            splitContent(message.content)
-          )}
-        </Message>
-      ))}
+            ) : (
+              splitContent(message.content)
+            )}
+          </Message>
+        ))}
         <div ref={messagesEndRef} />
       </MessagesContainer>
       <InputContainer>

@@ -12,9 +12,11 @@ type MessageInputProps = {
   messages: ConversationData[];
   apiKey: string;
   model: string;
+  totalTokenUpdateRequired: boolean;
+  setTotalTokenUpdateRequired: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey, messages, model }) => {
+const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey, messages, model, totalTokenUpdateRequired, setTotalTokenUpdateRequired }) => {
   const [message, setMessage] = useState('');
   const [inputTokenCount, setInputTokenCount] = useState<number>(0);
   const [totalTokenCount, setTotalTokenCount] = useState<number>(0);
@@ -22,7 +24,6 @@ const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey, messag
   const [inputTokenLoading, setInputTokenLoading] = useState(false);
   const [totalTokenLoading, setTotalTokenLoading] = useState(false);
   const [inputTokenUpdateRequired, setInputTokenUpdateRequired] = useState(false);
-  const [totalTokenUpdateRequired, setTotalTokenUpdateRequired] = useState(false);
 
   const checkTokenCount = async () => {
     if (inputTokenUpdateRequired) {

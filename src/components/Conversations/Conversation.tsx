@@ -32,6 +32,7 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
   const [editingMessageIndex, setEditingMessageIndex] = useState<number | null>(null);
   const [editingMessageContent, setEditingMessageContent] = useState<string | null>(null);
   const [prevMessageCount, setPrevMessageCount] = useState<number>(messages.length);
+  const [totalTokenUpdateRequired, setTotalTokenUpdateRequired] = useState(false);
 
   useEffect(() => {
     setMessages(conversation.revisions[0].conversation);
@@ -47,6 +48,7 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
       }]
     };
     sendMessage(updatedConversation);
+    setTotalTokenUpdateRequired(true);
   };
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -123,6 +125,7 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
     setMessages(conversation.revisions[0].conversation);
     setEditingMessageIndex(null);
     setEditingMessageContent(null);
+    setTotalTokenUpdateRequired(true);
   }, [conversation, model]);
 
   return (
@@ -159,6 +162,8 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
           getAndSetTokenCount={getAndSetTokenCount} 
           messages={messages} 
           model={model}
+          totalTokenUpdateRequired={totalTokenUpdateRequired}
+          setTotalTokenUpdateRequired={setTotalTokenUpdateRequired}
         />
       </InputContainer>
     </ConversationContainer>

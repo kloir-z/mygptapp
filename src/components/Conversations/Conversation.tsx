@@ -29,7 +29,6 @@ type ConversationProps = {
 const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation, model, apiKey, sendMessage }) => {
   const [messages, setMessages] = useState<ConversationData[]>(conversation.revisions[0].conversation);
   const [editingMessageIndex, setEditingMessageIndex] = useState<number | null>(null);
-  const [editingMessageContent, setEditingMessageContent] = useState<string | null>(null);
   const [totalTokenUpdateRequired, setTotalTokenUpdateRequired] = useState(false);
   const [tempMessageContent, setTempMessageContent] = useState<string | null>(null);
   const [containerHeight, setContainerHeight] = useState<number>(0);
@@ -97,7 +96,6 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
   };
 
   const onDoubleClickMessage = (index: number) => {
-    setEditingMessageContent(messages[index]?.content || null);
     setEditingMessageIndex(index);
     setTempMessageContent(messages[index]?.content || null);
   };
@@ -138,7 +136,6 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
   useEffect(() => {
     setMessages(conversation.revisions[0].conversation);
     setEditingMessageIndex(null);
-    setEditingMessageContent(null);
     setTotalTokenUpdateRequired(true);
     scrollToBottom();
   }, [conversation]);
@@ -159,7 +156,6 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
     };
     sendMessage(updatedConversation);
     setEditingMessageIndex(null);
-    setEditingMessageContent(null);
     setTotalTokenUpdateRequired(true);
   };
 

@@ -17,6 +17,21 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, se
   const [originalTitle, setOriginalTitle] = useState<string>("");
   const [editingTitles, setEditingTitles] = useState<Record<string, boolean>>({});
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState<string>("");
+  const [editingId, setEditingId] = useState<string | null>(null);
+
+  const confirmEdit = () => {
+    setConversations((prev: ConversationType[]) => prev.map((conv: ConversationType) => 
+      conv.id === editingId ? {...conv, title: editingTitle} : conv
+    ));
+    setEditingId(null);
+    setEditingTitle("");
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditingTitle("");
+  };
 
   const isDeleting = (id: string) => deletingId === id;
 
@@ -56,32 +71,47 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, se
     setActiveConversation(conversations[index]);
   };
 
-  const toggleEditingTitle = (id: string) => {
-    setEditingTitles(prev => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+  const toggleEditingTitle = (id: string, title: string) => {
+    if (id === editingId) {
+      cancelEdit();
+    } else {
+      setEditingId(id);
+      setEditingTitle(title);
+    }
   };
 
   return (
-    <SidebarContainer tabIndex={0} onKeyDown={handleKeyDown(activeConversation, conversations, setActiveConversation)}>
+    <SidebarContainer tabIndex={0}>
         {conversations.map((conversation, index) => (
         <ConversationItem 
           key={index} 
-          onClick={() => changeConversation(index)}
+          onClick={() => setActiveConversation(conversation)}
           active={activeConversation?.id === conversation.id}
         >
-          {editingTitles[conversation.id] ? (
-            <StyledInput 
-              ref={inputRef}
-              value={conversation.title} 
-              onChange={(e) => {
-                const newTitle = e.target.value;
-                setConversations((prev: ConversationType[]) => prev.map((conv: ConversationType) => 
-                  conv.id === conversation.id ? {...conv, title: newTitle} : conv
-                ));
-              }}
-            />
+          {editingId === conversation.id ? (
+            <>
+              <StyledInput 
+                ref={inputRef}
+                value={editingTitle} 
+                onChange={(e) => setEditingTitle(e.target.value)}
+              />
+              <TitleRight>
+                <FaCheck 
+                  className="EditIcon"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    confirmEdit();
+                  }} 
+                />
+                <FaTimes 
+                  className="EditIcon"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    cancelEdit();
+                  }} 
+                />
+              </TitleRight>
+            </>
           ) : (
             <>
               <TitleLeft>{conversation.title}</TitleLeft>
@@ -108,8 +138,7 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, se
                     className="EditIcon"
                     onClick={(event) => {
                       event.stopPropagation();
-                      toggleEditingTitle(conversation.id);
-                      setOriginalTitle(conversation.title);
+                      toggleEditingTitle(conversation.id, conversation.title);
                     }} 
                   />
                   <FaTrash 

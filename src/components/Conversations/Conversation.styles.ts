@@ -42,17 +42,13 @@ export const EditingText = styled.div`
   background-color: white;
   opacity: 0.5;
   padding: 4px;
-  padding-right: 112px;
   border-radius: 3px; 
+  display: flex;
+  align-items: center;
 `;
 
-type OkCancelButtonProps = {
-  right?: string;
-};
-
-export const OkCancelButton = styled.button<OkCancelButtonProps>`
-  margin: 4px;
-  margin-top: 0px;
+export const OkCancelButton = styled.button`
+  margin: 2px;
   padding: 5px 10px;
   font-size: 0.8rem;
   border-radius: 3px;
@@ -63,9 +59,6 @@ export const OkCancelButton = styled.button<OkCancelButtonProps>`
   &:hover {
     background: rgba(65, 125, 189, 0.75);
   }
-  position: fixed;
-  top: 37px;
-  right: ${props => props.right || '0px'};
 `;
 
 const getColor = (role: string) => {

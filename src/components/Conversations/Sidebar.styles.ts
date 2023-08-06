@@ -7,7 +7,8 @@ export const SidebarContainer = styled.div`
   flex-grow: 0;
   flex-shrink: 0;
   width: 150px;
-  height: 95svh;
+  height: calc(100vh - 33px);
+  height: calc(100svh - 33px);
   overflow-y: auto;
   outline: none;
   overflow-y: scroll;

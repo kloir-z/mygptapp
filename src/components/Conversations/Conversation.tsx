@@ -139,9 +139,10 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
                   ref={editTextAreaRef} 
                 />
                 <>
-                  <EditingText>Editing...</EditingText>
-                  <OkCancelButton right="65px" onClick={() => setEditingMessageIndex(null)}>OK</OkCancelButton>
-                  <OkCancelButton right="2px" onClick={handleCancelEditing}>Cancel</OkCancelButton>
+                  <EditingText>Editing...
+                    <OkCancelButton onClick={() => setEditingMessageIndex(null)}>OK</OkCancelButton>
+                    <OkCancelButton onClick={handleCancelEditing}>Cancel</OkCancelButton>
+                  </EditingText>
                 </>
               </>
             ) : (

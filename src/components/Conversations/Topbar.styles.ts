@@ -44,23 +44,9 @@ export const StyledButton = styled.button`
   border-radius: 3px;
   border: none;
   cursor: pointer;
-  color: #ebebeb;
-  background: #336396;
+  color: rgba(255, 255, 255, 0.75); 
+  background: rgba(51, 99, 150, 0.75);
   &:hover {
-    background: #244569;
-  }
-`;
-
-export const ApiKeyButton = styled.button`
-  margin: 3px;
-  padding: 5px 10px;
-  font-size: 0.8rem;
-  border-radius: 3px;
-  border: none;
-  cursor: pointer;
-  color: #ebebeb;
-  background: #336396;
-  &:hover {
-    background: #244569;
+    background: rgba(65, 125, 189, 0.75);
   }
 `;

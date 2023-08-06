@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import MessageInput from './MessageInput';
 import { ConversationType, ConversationData } from './Conversations.types';
 import { getAIResponse, getAndSetTokenCount } from './openAIUtil';
-import { Message, ConversationContainer, MessagesContainer, InputContainer } from './Conversation.styles'
+import { Message, ConversationContainer, MessagesContainer, EditingText, OkCancelButton, InputContainer } from './Conversation.styles'
 import { StyledTextarea } from './MessageInput.styles'
 import { PrismLight as SyntaxHighlighter, Prism as SyntaxHighlighterPrism } from 'react-syntax-highlighter';
 import syntaxStyle from 'react-syntax-highlighter/dist/cjs/styles/prism/one-dark';
@@ -121,6 +121,12 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
     }
   }, [editingMessageIndex !== null ? messages[editingMessageIndex]?.content : '', editingMessageIndex]);
 
+  useEffect(() => {
+    setMessages(conversation.revisions[0].conversation);
+    setEditingMessageIndex(null);
+    setEditingMessageContent(null);
+  }, [conversation, model]);
+
   return (
     <ConversationContainer>
       <MessagesContainer ref={forwardedRef}>
@@ -135,8 +141,9 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
                 ref={editTextAreaRef} 
               />
               <>
-                <button onClick={() => setEditingMessageIndex(null)}>OK</button>
-                <button onClick={handleCancelEditing}>Cancel</button>
+                <EditingText>Editing...</EditingText>
+                <OkCancelButton right="65px" onClick={() => setEditingMessageIndex(null)}>OK</OkCancelButton>
+                <OkCancelButton right="2px" onClick={handleCancelEditing}>Cancel</OkCancelButton>
               </>
             </>
           ) : (

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { TopbarContainer, StyledButton, ApiKeyButton, StyledInput, ApiKeyInputPopup, StyledSelect, StyledOption } from './Topbar.styles';
+import { TopbarContainer, StyledButton, StyledInput, ApiKeyInputPopup, StyledSelect, StyledOption } from './Topbar.styles';
 import { ConversationType } from './Conversations.types';
 import { v4 as uuidv4 } from 'uuid'; 
 
@@ -78,7 +78,7 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, model, setModel, set
             setConversations((prev: ConversationType[]) => [...prev, newConv]);
             setActiveConversation(newConv);
             }}>New</StyledButton>
-            <ApiKeyButton ref={apiKeyButtonRef} onClick={handleApiKeyButtonClick}>API Key</ApiKeyButton>
+            <StyledButton ref={apiKeyButtonRef} onClick={handleApiKeyButtonClick}>API Key</StyledButton>
             {showApiKeyInput && (
               <ApiKeyInputPopup ref={apiKeyInputRef} top={popupPosition?.top} left={popupPosition?.left}>
                 Set your OpenAI API key here.

@@ -49,6 +49,42 @@ export const Message = styled.div<{role: string}>`
   word-break: break-word;
 `;
 
+export const EditingText = styled.div`
+  position: fixed;
+  right: 4px;
+  top: 35px;
+  margin: 0px;
+  font-size: 0.8rem;
+  color: rgb(12 12 12);
+  background-color: white;
+  opacity: 0.5;
+  padding: 4px;
+  padding-right: 112px;
+  border-radius: 3px; 
+`;
+
+type OkCancelButtonProps = {
+  right?: string;
+};
+
+export const OkCancelButton = styled.button<OkCancelButtonProps>`
+  margin: 4px;
+  margin-top: 0px;
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  border-radius: 3px;
+  border: none;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.75); 
+  background: rgba(51, 99, 150, 0.75);
+  &:hover {
+    background: rgba(65, 125, 189, 0.75);
+  }
+  position: fixed;
+  top: 37px;
+  right: ${props => props.right || '0px'};
+`;
+
 const getColor = (role: string) => {
   switch (role) {
     case 'system':

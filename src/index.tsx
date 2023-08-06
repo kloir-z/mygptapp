@@ -24,7 +24,7 @@ ReactDOM.render(
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             background-color: #282c34;
-            overflow: scroll;
+            overflow-y: scroll;
 
             ::-webkit-scrollbar {
               width: 8px;
@@ -43,10 +43,6 @@ ReactDOM.render(
             // Firefox
             scrollbar-width: thin;
             scrollbar-color: #525252 #282c34;
-          }
-          code {
-            font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-            monospace;
           }
         `}
       />

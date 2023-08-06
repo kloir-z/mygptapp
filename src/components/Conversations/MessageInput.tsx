@@ -19,13 +19,24 @@ const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey, messag
   const [inputTokenCount, setInputTokenCount] = useState<number>(0);
   const [totalTokenCount, setTotalTokenCount] = useState<number>(0);
   const [scrollHeight, setScrollHeight] = useState<number>(0);
-  const [loading, setLoading] = useState(false);
+  const [inputTokenLoading, setInputTokenLoading] = useState(false);
+  const [totalTokenLoading, setTotalTokenLoading] = useState(false);
+  const [inputTokenUpdateRequired, setInputTokenUpdateRequired] = useState(false);
+  const [totalTokenUpdateRequired, setTotalTokenUpdateRequired] = useState(false);
 
   const checkTokenCount = async () => {
-    setLoading(true);
-    await getAndSetTokenCount([...messages], model, setTotalTokenCount);
-    await getAndSetTokenCount([{role: 'user', content: message}], model, setInputTokenCount);
-    setLoading(false);
+    if (inputTokenUpdateRequired) {
+      setInputTokenLoading(true);
+      await getAndSetTokenCount([{role: 'user', content: message}], model, setInputTokenCount);
+      setInputTokenLoading(false);
+      setInputTokenUpdateRequired(false);
+    }
+    if (totalTokenUpdateRequired) {
+      setTotalTokenLoading(true);
+      await getAndSetTokenCount([...messages], model, setTotalTokenCount);
+      setTotalTokenLoading(false);
+      setTotalTokenUpdateRequired(false);
+    }
   };
 
   const handleSend = () => {
@@ -34,6 +45,8 @@ const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey, messag
     }
     sendMessage(message, 'user', apiKey);
     setMessage('');
+    setInputTokenUpdateRequired(true);
+    setTotalTokenUpdateRequired(true);
   };
 
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -44,6 +57,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey, messag
       textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`;
       setScrollHeight(textAreaRef.current.scrollHeight);
     }
+    setInputTokenUpdateRequired(true);
   }, [message]);
 
   useEffect(() => {
@@ -68,15 +82,23 @@ const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey, messag
         ref={textAreaRef} 
       />
         <SendButton onClick={handleSend}><FontAwesomeIcon icon={faPaperPlane} /></SendButton>
-        {loading ? (
+        {inputTokenLoading ? (
           <>
             <InputTokenText><Spinner /></InputTokenText>
+          </>
+        ) : (
+          <>
+            <InputTokenText>{inputTokenUpdateRequired ? ' ' : inputTokenCount}</InputTokenText>
+          </>
+        )}
+        
+        {totalTokenLoading ? (
+          <>
             <MessageTokenText><Spinner /></MessageTokenText>
           </>
         ) : (
           <>
-            <InputTokenText>{inputTokenCount}</InputTokenText>
-            <MessageTokenText>{totalTokenCount}</MessageTokenText>
+            <MessageTokenText>{totalTokenUpdateRequired ? ' ' : totalTokenCount}</MessageTokenText>
           </>
         )}
       </MessageInputContainer>

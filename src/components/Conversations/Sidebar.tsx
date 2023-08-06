@@ -14,8 +14,6 @@ type SidebarProps = {
 
 const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, setConversations, setActiveConversation }) => {
   const inputRef = useRef<HTMLInputElement>(null);  
-  const [originalTitle, setOriginalTitle] = useState<string>("");
-  const [editingTitles, setEditingTitles] = useState<Record<string, boolean>>({});
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState<string>("");
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -48,29 +46,6 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, se
     setDeletingId(null);
   };
   
-  useEffect(() => {
-    const boundHandleClickOutside = handleClickOutside(inputRef, editingTitles, toggleEditingTitle);
-    document.addEventListener('mousedown', boundHandleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', boundHandleClickOutside);
-    };
-  }, [editingTitles]);
-
-  useEffect(() => {
-    const boundHandleEscape = handleEscape(editingTitles, originalTitle, setConversations, toggleEditingTitle);
-    document.addEventListener("keydown", boundHandleEscape);
-    return () => {
-      document.removeEventListener("keydown", boundHandleEscape);
-    };
-  }, [editingTitles, originalTitle]);
-  
-  const changeConversation = (index: number) => {
-    if (Object.values(editingTitles).some(isEditing => isEditing)) {
-      return;
-    }
-    setActiveConversation(conversations[index]);
-  };
-
   const toggleEditingTitle = (id: string, title: string) => {
     if (id === editingId) {
       cancelEdit();

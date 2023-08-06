@@ -5,7 +5,9 @@ export const SidebarContainer = styled.div`
   flex-direction: column;
   flex-grow: 0;
   flex-shrink: 0;
-  width: 150px;
+  min-width: 150px;
+  max-width: 250px;
+  width: 20%;
   height: calc(100vh - 33px);
   height: calc(100svh - 33px);
   overflow-y: auto;

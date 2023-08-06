@@ -126,7 +126,7 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
     setEditingMessageIndex(null);
     setEditingMessageContent(null);
     setTotalTokenUpdateRequired(true);
-  }, [conversation, model]);
+  }, [conversation]);
 
   return (
     <ConversationContainer>

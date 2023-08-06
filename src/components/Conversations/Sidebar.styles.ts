@@ -15,35 +15,6 @@ export const SidebarContainer = styled.div`
   direction: rtl;
 `;
 
-const iconCss = css`
-  opacity: 0;
-  transition: opacity 0.1s ease-in-out;
-  background-color: #555;
-  padding: 3px;
-
-  &:hover {
-    opacity: 1;
-  }
-`;
-
-export const EditIcon = styled.div`
-  ${iconCss}
-  margin-right: 10px;
-`;
-
-export const DeleteIcon = styled.div`
-  ${iconCss}
-`;
-
-export const ConfirmIcon = styled.div`
-  ${iconCss}
-  margin-right: 10px;
-`;
-
-export const CancelIcon = styled.div`
-  ${iconCss}
-`;
-
 export const ConversationItem = styled.div<{ active: boolean }>`
   font-family: MeiryoUI, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
   font-size: 0.8rem;
@@ -55,29 +26,20 @@ export const ConversationItem = styled.div<{ active: boolean }>`
   justify-content: space-between;
   position: relative;
   overflow: hidden;
-  height: 1.2rem;
+  height: 1rem;
   flex-grow: 0;
   flex-shrink: 0;
   color: #ebebeb;
-  .edit-icon,
-  .delete-icon,
-  .confirm-icon,
-  .cancel-icon {
+  .EditIcon {
+    font-size: 0.8rem;
     opacity: 0;
     transition: opacity 0.1s ease-in-out;
     background-color: #555;
-    padding: 3px;
+    padding: 2px;
   }
 
-  &:hover .edit-icon,
-  &:hover .delete-icon,
-  &:hover .confirm-icon,
-  &:hover .cancel-icon {
+  &:hover .EditIcon {
     opacity: 1;
-  }
-  
-  .edit-icon, .confirm-icon {
-    margin-right: 10px;
   }
 `;
 
@@ -119,7 +81,11 @@ export const TitleLeft = styled.div`
 
 export const TitleRight = styled.div`
   position: absolute;
-  right: 10px;
+  right: 0px;
+  top: 0px;
+  display: flex;
+  flex-direction: column;
   direction: ltr; 
+  z-index: 1;
 `;
 

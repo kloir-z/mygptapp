@@ -13,9 +13,9 @@ type SidebarProps = {
 };
 
 const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, setConversations, setActiveConversation }) => {
-  const [editingTitles, setEditingTitles] = useState<Record<string, boolean>>({});
   const inputRef = useRef<HTMLInputElement>(null);  
   const [originalTitle, setOriginalTitle] = useState<string>("");
+  const [editingTitles, setEditingTitles] = useState<Record<string, boolean>>({});
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const isDeleting = (id: string) => deletingId === id;
@@ -24,12 +24,12 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, se
     setDeletingId(id);
   };
 
-  const confirmDeletion = () => {
-    setConversations((prev: ConversationType[]) => prev.filter((conv: ConversationType) => conv.id !== deletingId));
+  const cancelDeletion = () => {
     setDeletingId(null);
   };
 
-  const cancelDeletion = () => {
+  const confirmDeletion = () => {
+    setConversations((prev: ConversationType[]) => prev.filter((conv: ConversationType) => conv.id !== deletingId));
     setDeletingId(null);
   };
   
@@ -88,14 +88,14 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, se
               {isDeleting(conversation.id) ? (
                 <TitleRight>
                   <FaCheck 
-                    className="confirm-icon"
+                    className="EditIcon"
                     onClick={(event) => {
                       event.stopPropagation();
                       confirmDeletion();
                     }} 
                   />
                   <FaTimes 
-                    className="cancel-icon"
+                    className="EditIcon"
                     onClick={(event) => {
                       event.stopPropagation();
                       cancelDeletion();
@@ -105,7 +105,7 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, se
               ) : (
                 <TitleRight>
                   <FiEdit2 
-                    className="edit-icon"
+                    className="EditIcon"
                     onClick={(event) => {
                       event.stopPropagation();
                       toggleEditingTitle(conversation.id);
@@ -113,7 +113,7 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, se
                     }} 
                   />
                   <FaTrash 
-                    className="delete-icon"
+                    className="EditIcon"
                     onClick={(event) => {
                       event.stopPropagation();
                       setDeletingConversation(conversation.id);

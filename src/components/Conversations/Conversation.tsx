@@ -3,7 +3,6 @@ import MessageInput from './MessageInput';
 import { ConversationType, ConversationData } from './Conversations.types';
 import { getAIResponse, getAndSetTokenCount } from './openAIUtil';
 import { Message, ConversationContainer, MessagesContainer, EditingText, OkCancelButton, InputContainer, EditTextarea } from './Conversation.styles'
-import { StyledTextarea } from './MessageInput.styles'
 import { PrismLight as SyntaxHighlighter, Prism as SyntaxHighlighterPrism } from 'react-syntax-highlighter';
 import syntaxStyle from 'react-syntax-highlighter/dist/cjs/styles/prism/one-dark';
 
@@ -31,12 +30,9 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
   const [messages, setMessages] = useState<ConversationData[]>(conversation.revisions[0].conversation);
   const [editingMessageIndex, setEditingMessageIndex] = useState<number | null>(null);
   const [editingMessageContent, setEditingMessageContent] = useState<string | null>(null);
-  const [prevMessageCount, setPrevMessageCount] = useState<number>(messages.length);
   const [totalTokenUpdateRequired, setTotalTokenUpdateRequired] = useState(false);
-
-  useEffect(() => {
-    setMessages(conversation.revisions[0].conversation);
-  }, [conversation]);
+  const [tempMessageContent, setTempMessageContent] = useState<string | null>(null);
+  const [containerHeight, setContainerHeight] = useState<number>(0);
   
   const updateConversation  = async (messageContent: string, role: string, apiKey: string) => { 
     const finalMessages = await getAIResponse(messageContent, role, apiKey, model, messages, setMessages); 
@@ -54,15 +50,27 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ block: 'end', behavior: 'auto' });
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ block: 'end', behavior: 'auto' });
+    }, 0);
   };
 
   useEffect(() => {
-    if (messages.length !== prevMessageCount) {
-      scrollToBottom();
-      setPrevMessageCount(messages.length);
+    if (forwardedRef.current) {
+      setContainerHeight(forwardedRef.current.scrollHeight);
     }
   }, [messages]);
+
+  useEffect(() => {
+    if (forwardedRef.current) {
+      const { scrollHeight, scrollTop, clientHeight } = forwardedRef.current;
+      const isWithin50pxFromBottom = (scrollHeight - scrollTop - clientHeight) <= 50;
+  
+      if (isWithin50pxFromBottom) {
+        scrollToBottom();
+      }
+    }
+  }, [containerHeight]);
 
   const splitContent = (content: string) => {
     const codeRegex = /```(\w+)?\n([^`]+)```/g;
@@ -91,41 +99,48 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
   const onDoubleClickMessage = (index: number) => {
     setEditingMessageContent(messages[index]?.content || null);
     setEditingMessageIndex(index);
+    setTempMessageContent(messages[index]?.content || null);
   };
 
-  const handleContentChange = (index: number, newContent: string) => {
-    setMessages(prevMessages => {
-      const updatedMessages = [...prevMessages];
-      updatedMessages[index].content = newContent;
-      return updatedMessages;
-    });
+  const handleContentChange = (newContent: string) => {
+    setTempMessageContent(newContent);
+  };  
+
+  const handleConfirmEditing = (index: number) => {
+    if (tempMessageContent !== null) {
+      setMessages(prevMessages => {
+        const updatedMessages = [...prevMessages];
+        updatedMessages[index].content = tempMessageContent;
+        return updatedMessages;
+      });
+    }
+    setEditingMessageIndex(null);
+    setTempMessageContent(null);
   };
 
   const handleCancelEditing = () => {
-    if (editingMessageIndex !== null && editingMessageContent !== null) {
-      handleContentChange(editingMessageIndex, editingMessageContent);
-    }
     setEditingMessageIndex(null);
-    setEditingMessageContent(null);
+    setTempMessageContent(null);
   };
 
   const editTextAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
     if (editTextAreaRef.current && editingMessageIndex !== null) {
-      const content = messages[editingMessageIndex]?.content;
+      const content = tempMessageContent;
       if (content) {
         editTextAreaRef.current.style.height = 'auto';
         editTextAreaRef.current.style.height = `${editTextAreaRef.current.scrollHeight}px`;
       }
     }
-  }, [editingMessageIndex !== null ? messages[editingMessageIndex]?.content : '', editingMessageIndex]);
+  }, [tempMessageContent, editingMessageIndex]);  
 
   useEffect(() => {
     setMessages(conversation.revisions[0].conversation);
     setEditingMessageIndex(null);
     setEditingMessageContent(null);
     setTotalTokenUpdateRequired(true);
+    scrollToBottom();
   }, [conversation]);
 
   const deleteMessage = (index: number) => {
@@ -156,14 +171,14 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
             {editingMessageIndex === index ? (
               <>
                 <EditTextarea
-                  value={message.content}
-                  onChange={e => handleContentChange(index, e.target.value)}
-                  rows={message.content.split('\n').length || 1}
+                  value={tempMessageContent || ''}
+                  onChange={e => handleContentChange(e.target.value)}
+                  rows={tempMessageContent?.split('\n').length || 1}
                   ref={editTextAreaRef} 
                 />
                 <>
                   <EditingText>Editing...
-                    <OkCancelButton onClick={() => setEditingMessageIndex(null)}>OK</OkCancelButton>
+                    <OkCancelButton onClick={() => handleConfirmEditing(index)}>OK</OkCancelButton>
                     <OkCancelButton onClick={handleCancelEditing}>Cancel</OkCancelButton>
                     <OkCancelButton onClick={() => deleteMessage(index)}>Delete</OkCancelButton>
                   </EditingText>

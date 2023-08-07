@@ -3,7 +3,6 @@ import { StyledInput, ConversationItem, SidebarContainer, TitleLeft, TitleRight 
 import { ConversationType } from './Conversations.types';
 import { FiEdit2 } from 'react-icons/fi';
 import { FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
-import { handleClickOutside, handleEscape, handleKeyDown } from './sidebarHandlers';
 
 type SidebarProps = {
   conversations: ConversationType[];

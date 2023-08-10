@@ -41,7 +41,7 @@ export const EditingText = styled.div`
   font-size: 0.8rem;
   color: rgb(12 12 12);
   background-color: white;
-  opacity: 0.5;
+  opacity: 0.7;
   padding: 4px;
   border-radius: 3px; 
   display: flex;
@@ -84,7 +84,7 @@ export const EditTextarea = styled.textarea`
 const getColor = (role: string) => {
   switch (role) {
     case 'system':
-      return 'lightgray';
+      return '#1a222c';
     case 'user':
       return '#4c586a';
     case 'assistant':

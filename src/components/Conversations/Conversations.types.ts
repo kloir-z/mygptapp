@@ -13,3 +13,14 @@ export type ConversationType = {
   title: string;
   revisions: RevisionData[];
 };
+
+export type SystemPromptType = {
+  id: string;
+  title: string;
+  content: string;
+};
+
+export type ConversationsResult = {
+  messages: ConversationType[];
+  systemPrompts: SystemPromptType[];
+};

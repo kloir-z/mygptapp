@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import MessageInput from './MessageInput';
-import { ConversationType, ConversationData } from './Conversations.types';
-import { getAIResponse, getAndSetTokenCount } from './openAIUtil';
+import { ConversationType, ConversationData, SystemPromptType } from './Conversations.types';
+import { getAIResponse, getAndSetTokenCount, getYoutubeTranscript } from './openAIUtil';
 import { Message, ConversationContainer, MessagesContainer, EditingText, OkCancelButton, InputContainer, EditTextarea } from './Conversation.styles'
 import { SyntaxHighlight } from './SyntaxHighlight'
 
@@ -11,14 +11,17 @@ type ConversationProps = {
   apiKey: string;
   sendMessage: (updatedConversation: ConversationType) => Promise<void>;
   forwardedRef: React.RefObject<HTMLDivElement>;
+  systemprompts: SystemPromptType[];
 };
 
-const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation, model, apiKey, sendMessage }) => {
+const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation, model, apiKey, sendMessage, systemprompts }) => {
   const [messages, setMessages] = useState<ConversationData[]>(conversation.revisions[0].conversation);
   const [editingMessageIndex, setEditingMessageIndex] = useState<number | null>(null);
   const [totalTokenUpdateRequired, setTotalTokenUpdateRequired] = useState(false);
   const [tempMessageContent, setTempMessageContent] = useState<string | null>(null);
   const [containerHeight, setContainerHeight] = useState<number>(0);
+  const [showTranscriptPopup, setShowTranscriptPopup] = useState(false);
+  const [youtubeUrl, setYoutubeUrl] = useState<string | null>(null);
   
   const updateConversation  = async (messageContent: string, role: string, apiKey: string) => { 
     const finalMessages = await getAIResponse(messageContent, role, apiKey, model, messages, setMessages); 
@@ -84,6 +87,10 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
     setTempMessageContent(null);
   };
 
+  const showInitialMenu = () => {
+    return !messages.some(message => message.role === 'assistant');
+  };
+
   const editTextAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
@@ -121,10 +128,64 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
     setEditingMessageIndex(null);
     setTotalTokenUpdateRequired(true);
   };
+  
+  const handleSystemPromptSelection = (selectedPromptId: string) => {
+    if (selectedPromptId === 'none') {
+      setMessages(prevMessages => prevMessages.slice(1));
+    } else {
+      const selectedPrompt = systemprompts.find(prompt => prompt.id === selectedPromptId);
+      if (selectedPrompt) {
+        setMessages(prevMessages => {
+          const updatedMessages = [...prevMessages];
+          updatedMessages[0] = { content: selectedPrompt.content, role: 'system' };
+          return updatedMessages;
+        });
+      }
+    }
+  };
 
+  const handleGetYtbTranscript = async () => {
+    if (youtubeUrl) {
+      const transcript = await getYoutubeTranscript(youtubeUrl);
+      if (transcript) {
+        setMessages(prevMessages => [
+          ...prevMessages,
+          { content: transcript, role: 'user' }
+        ]);
+          const updatedConversation = {
+          ...conversation,
+          revisions: [{
+            revision: '0',
+            conversation: messages.concat({ content: transcript, role: 'user' })
+          }]
+        };
+        sendMessage(updatedConversation);
+      }
+    }
+  };
+  
   return (
     <ConversationContainer>
       <MessagesContainer ref={forwardedRef}>
+        {showInitialMenu() && (
+          <>
+            <select onChange={e => handleSystemPromptSelection(e.target.value)}>
+              <option value="">System Prompts</option>
+              <option value="none">None</option>
+              {systemprompts.map(prompt => (
+                <option key={prompt.id} value={prompt.id}>{prompt.title}</option>
+              ))}
+            </select>
+            <button onClick={() => setShowTranscriptPopup(true)}>getytbtranscript</button>
+            {showTranscriptPopup && (
+              <div>
+                <input type="text" placeholder="YouTube URL" onChange={e => setYoutubeUrl(e.target.value)} />
+                <button onClick={handleGetYtbTranscript}>OK</button>
+                <button onClick={() => setShowTranscriptPopup(false)}>Cancel</button>
+              </div>
+            )}
+          </>
+        )}
         {messages.map((message: ConversationData, index: number) => (
           <Message key={index} role={message.role} onDoubleClick={() => onDoubleClickMessage(index)}>
             {editingMessageIndex === index ? (

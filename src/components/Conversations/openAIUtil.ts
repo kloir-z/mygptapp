@@ -88,3 +88,22 @@ export const getAndSetTokenCount = async (messages: ConversationData[], model: s
   const tokenCount = await countTokens(messages, model);
   setTokenCount(tokenCount);
 };
+
+export const getYoutubeTranscript = async (youtubeUrl: string): Promise<string | null> => {
+  const endpoint = "https://asia-northeast2-my-pj-20230703.cloudfunctions.net/get_ytb_trans";
+  const params = { url: youtubeUrl };
+
+  try {
+    const response = await fetch(`${endpoint}?url=${params.url}`);
+
+    if (response.status === 200) {
+      const data = await response.json();
+      return data['transcript'];
+    } else {
+      return `Error: ${response.status}, ${response.statusText}`;
+    }
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};

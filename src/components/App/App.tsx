@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
 import { AuthContext } from '../Auth/AuthContext';
-import { ConversationType } from '../Conversations/Conversations.types';
+import { ConversationType, SystemPromptType } from '../Conversations/Conversations.types';
 import { fetchConversations, updateConversations  } from '../Auth/firebase';
 import { MainContainer, Placeholder } from './App.styles'
 import Topbar from '../Conversations/Topbar'
@@ -11,6 +11,7 @@ const App: React.FC = () => {
   const { user } = useContext(AuthContext);
   const [conversations, setConversations] = useState<ConversationType[]>([]);
   const [activeConversation, setActiveConversation] = useState<ConversationType | null>(null);
+  const [systemprompts, setSystemPrompts] = useState<SystemPromptType[]>([]);
   const [showMenu, setShowMenu] = useState(true);
   const [model, setModel] = useState('gpt-3.5-turbo-0613'); 
   const [apiKey, setApiKey] = useState('');
@@ -28,10 +29,14 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const fetchUserConversations = async () => {
-      const fetchedConversations = await fetchConversations(user?.uid);
-      const conversations: ConversationType[] = fetchedConversations.map((message: any) => ({id: message.id, ...message} as ConversationType));
+      const result = await fetchConversations(user?.uid);
+      if (Array.isArray(result)) return;
+      const { messages, systemPrompts } = result;
+      const conversations: ConversationType[] = messages.map((message: any) => ({id: message.id, ...message} as ConversationType));
+      const systemprompts: SystemPromptType[] = systemPrompts.map((systemPrompt: any) => ({id: systemPrompt.id, ...systemPrompt} as SystemPromptType));
       setConversations(conversations);
-      console.log(conversations);
+      setSystemPrompts(systemprompts);
+      console.log(systemprompts);
     };
 
     fetchUserConversations();
@@ -79,6 +84,7 @@ const App: React.FC = () => {
               model={model}
               apiKey={apiKey}
               sendMessage={handleMessageSend}
+              systemprompts={systemprompts}
             />
           ) : (
             <Placeholder>Please select a conversation</Placeholder>

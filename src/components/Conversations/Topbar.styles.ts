@@ -44,9 +44,9 @@ export const StyledButton = styled.button`
   border-radius: 3px;
   border: none;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.75); 
-  background: rgba(51, 99, 150, 0.75);
+  color: rgba(255, 255, 255, 0.85); 
+  background: rgba(51, 99, 150, 0.85);
   &:hover {
-    background: rgba(65, 125, 189, 0.75);
+    background: rgba(65, 125, 189, 0.85);
   }
 `;

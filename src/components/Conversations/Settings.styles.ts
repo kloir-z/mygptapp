@@ -44,11 +44,13 @@ export const SystemPromptTextarea = styled.textarea`
   width: 70svw;
   max-width: 600px;
   height: auto;
+  max-height: 40vh;
+  max-height: 40svh;
   margin: 4px;
   margin-bottom: 0px;
   padding: 10px 15px;
   resize: none;
-  overflow: hidden;
+  overflow-y: auto;
   border-radius: 3px;
   border: 1px solid #576374;
   box-sizing: border-box;

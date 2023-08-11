@@ -2,8 +2,9 @@ import React, { useEffect, useState, useRef } from 'react';
 import MessageInput from './MessageInput';
 import { ConversationType, ConversationData, SystemPromptType } from './Conversations.types';
 import { getAIResponse, getAndSetTokenCount, getYoutubeTranscript } from './openAIUtil';
-import { Message, ConversationContainer, MessagesContainer, EditingText, OkCancelButton, InputContainer, EditTextarea } from './Conversation.styles'
+import { Message, ConversationContainer, MessagesContainer, EditingText, OkCancelButton, InputContainer, EditTextarea, StyledSelect, StyledOption, StyledButton, StyledInput } from './Conversation.styles'
 import { SyntaxHighlight } from './SyntaxHighlight'
+
 
 type ConversationProps = {
   conversation: ConversationType;
@@ -131,16 +132,23 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
   
   const handleSystemPromptSelection = (selectedPromptId: string) => {
     if (selectedPromptId === 'none') {
-      setMessages(prevMessages => prevMessages.slice(1));
-    } else {
-      const selectedPrompt = systemprompts.find(prompt => prompt.id === selectedPromptId);
-      if (selectedPrompt) {
-        setMessages(prevMessages => {
-          const updatedMessages = [...prevMessages];
-          updatedMessages[0] = { content: selectedPrompt.content, role: 'system' };
-          return updatedMessages;
-        });
+      if (messages[0]?.role === 'system') {
+        setMessages(prevMessages => prevMessages.slice(1));
       }
+      return;
+    }
+  
+    const selectedPrompt = systemprompts.find(prompt => prompt.id === selectedPromptId);
+    if (selectedPrompt) {
+      setMessages(prevMessages => {
+        const updatedMessages = [...prevMessages];
+        if (updatedMessages[0]?.role === 'system') {
+          updatedMessages[0] = { content: selectedPrompt.content, role: 'system' };
+        } else {
+          updatedMessages.unshift({ content: selectedPrompt.content, role: 'system' });
+        }
+        return updatedMessages;
+      });
     }
   };
 
@@ -169,20 +177,19 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
       <MessagesContainer ref={forwardedRef}>
         {showInitialMenu() && (
           <>
-            <select onChange={e => handleSystemPromptSelection(e.target.value)}>
-              <option value="">System Prompts</option>
-              <option value="none">None</option>
+            <StyledSelect onChange={e => handleSystemPromptSelection(e.target.value)}>
+              <StyledOption value="none">None</StyledOption>
               {systemprompts.map(prompt => (
-                <option key={prompt.id} value={prompt.id}>{prompt.title}</option>
+                <StyledOption key={prompt.id} value={prompt.id}>{prompt.title}</StyledOption>
               ))}
-            </select>
-            <button onClick={() => setShowTranscriptPopup(true)}>getytbtranscript</button>
+            </StyledSelect>
+            <StyledButton onClick={() => setShowTranscriptPopup(true)}>getytbtranscript</StyledButton>
             {showTranscriptPopup && (
-              <div>
-                <input type="text" placeholder="YouTube URL" onChange={e => setYoutubeUrl(e.target.value)} />
-                <button onClick={handleGetYtbTranscript}>OK</button>
-                <button onClick={() => setShowTranscriptPopup(false)}>Cancel</button>
-              </div>
+              <>
+                <StyledInput type="text" placeholder="YouTube URL" onChange={e => setYoutubeUrl(e.target.value)} />
+                <StyledButton onClick={handleGetYtbTranscript}>OK</StyledButton>
+                <StyledButton onClick={() => setShowTranscriptPopup(false)}>Cancel</StyledButton>
+              </>
             )}
           </>
         )}

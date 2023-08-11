@@ -69,7 +69,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ sendMessage, apiKey, messag
     if (scrollHeight !== bodyHeight && (bodyHeight - scrollPosition - windowHeight) <= 50) {
       setTimeout(() => {
         window.scrollTo(0, document.body.scrollHeight);
-      }, 5);
+      }, 0);
     }
   }, [scrollHeight]);
 

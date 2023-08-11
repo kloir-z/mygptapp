@@ -52,6 +52,6 @@ const updateSystemPrompts = async (userId?: string, systemprompts: SystemPromptT
   });
 };
 
-export { firebase, fetchConversations, updateConversations };
+export { firebase, fetchConversations, updateConversations, updateSystemPrompts };
 
 export default firebase; 

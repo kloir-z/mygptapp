@@ -8,25 +8,6 @@ export const TopbarContainer = styled.div`
   overflow: hidden;
 `;
 
-export const ApiKeyInputPopup = styled.div<{ top?: number; left?: number }>`
-  position: absolute;
-  padding: 10px 20px;
-  top: calc(${props => (props.top ? `${props.top}px` : "0px")} + 2px);
-  left: calc(${props => (props.left ? `${props.left}px` : "0px")} - 50px);
-  z-index: 1;
-  color: #ebebeb;
-  font-size: 0.8rem;
-  background: #6c727e;
-  border: 2px solid #ebebeb;
-`;
-
-export const StyledInput = styled.input`
-  padding: 2px 6px;
-  margin: 5px;
-  font-size: 0.8rem;
-  width: 100px;
-`;
-
 export const StyledSelect = styled.select`
   margin: 5px;
   font-size: 0.8rem;

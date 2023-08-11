@@ -1,18 +1,21 @@
 import React, { useState, useRef, useEffect } from "react";
-import { TopbarContainer, StyledButton, StyledInput, ApiKeyInputPopup, StyledSelect, StyledOption } from './Topbar.styles';
-import { ConversationType } from './Conversations.types';
+import { TopbarContainer, StyledButton, StyledSelect, StyledOption } from './Topbar.styles';
+import { ConversationType, SystemPromptType } from '../Conversations/Conversations.types';
 import { v4 as uuidv4 } from 'uuid'; 
+import SettingsModal from './SettingsModal'; 
 
 type TopbarProps = {
     conversations: ConversationType[];
     model: string;
-    setModel: Function;
+    setModel: React.Dispatch<React.SetStateAction<string>>;
     apiKey: string;
-    setApiKey: Function;
+    setApiKey: React.Dispatch<React.SetStateAction<string>>;
     activeConversation: ConversationType | null;
-    setConversations: Function;
-    setActiveConversation: Function;
-    setShowMenu: Function;
+    setConversations: React.Dispatch<React.SetStateAction<ConversationType[]>>;
+    setActiveConversation: React.Dispatch<React.SetStateAction<ConversationType | null>>;
+    setShowMenu: React.Dispatch<React.SetStateAction<boolean>>;
+    systemprompts: SystemPromptType[];
+    setSystemPrompts: React.Dispatch<React.SetStateAction<SystemPromptType[]>>;
   };
 
 const createNewConversation = (): ConversationType => {
@@ -28,12 +31,12 @@ const createNewConversation = (): ConversationType => {
     };
   };
   
-const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, model, setModel, setConversations, setActiveConversation, setShowMenu }) => {
+const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, model, setModel, setConversations, setActiveConversation, setShowMenu, systemprompts, setSystemPrompts }) => {
   const [showApiKeyInput, setShowApiKeyInput] = useState(false);
   const [tempApiKey, setTempApiKey] = useState(apiKey);
   const apiKeyInputRef = useRef<HTMLDivElement | null>(null);
   const apiKeyButtonRef = useRef<HTMLButtonElement | null>(null);
-  const [popupPosition, setPopupPosition] = useState<{ top: number; left: number } | null>(null);
+  const [showSettings, setShowSettings] = useState(false);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -48,25 +51,9 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, model, setModel, set
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [apiKey]);
-  
 
     const toggleMenu = () => {
         setShowMenu((prevState: Boolean) => !prevState);
-    };
-
-    const handleOkClick = () => {
-      setApiKey(tempApiKey);
-      setShowApiKeyInput(false);
-    };
-
-    const handleApiKeyButtonClick = () => {
-      setShowApiKeyInput(prevState => {
-        if (!prevState && apiKeyButtonRef.current) {
-          const rect = apiKeyButtonRef.current.getBoundingClientRect();
-          setPopupPosition({ top: rect.bottom, left: rect.left });
-        }
-        return !prevState;
-      });
     };
 
     return(
@@ -78,26 +65,8 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, model, setModel, set
             setConversations((prev: ConversationType[]) => [...prev, newConv]);
             setActiveConversation(newConv);
             }}>New</StyledButton>
-            <StyledButton ref={apiKeyButtonRef} onClick={handleApiKeyButtonClick}>API Key</StyledButton>
-            {showApiKeyInput && (
-              <ApiKeyInputPopup ref={apiKeyInputRef} top={popupPosition?.top} left={popupPosition?.left}>
-                Set your OpenAI API key here.
-                <br></br>
-                <StyledInput 
-                  type="password" 
-                  value={tempApiKey}
-                  onChange={e => setTempApiKey(e.target.value)} 
-                  onKeyDown={e => {
-                    if (e.key === 'Enter') {
-                      handleOkClick();
-                    }
-                  }} 
-                  placeholder="API Key" 
-                />
-                <StyledButton onClick={handleOkClick}>OK</StyledButton>
-              </ApiKeyInputPopup>
-            )}
-
+            <StyledButton onClick={() => setShowSettings(true)}>Settings</StyledButton>
+            <SettingsModal show={showSettings} onClose={() => setShowSettings(false)} apiKey={apiKey} setApiKey={setApiKey} systemprompts={systemprompts} setSystemPrompts={setSystemPrompts}/>
             <StyledSelect value={model} onChange={e => setModel(e.target.value)}>  
                 <StyledOption value="gpt-3.5-turbo-16k-0613">gpt3.5(16k)</StyledOption>
                 <StyledOption value="gpt-3.5-turbo-0613">gpt3.5(4k)</StyledOption>

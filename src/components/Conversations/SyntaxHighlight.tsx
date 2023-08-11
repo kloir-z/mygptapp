@@ -14,7 +14,7 @@ SyntaxHighlighter.registerLanguage('javascript', javascript);
 SyntaxHighlighter.registerLanguage('css', css);
 
 export const SyntaxHighlight = (content: string) => {
-    const codeRegex = /```(\w+)?\n([^`]+)```/g;
+    const codeRegex = /```(\w+)?\n([\s\S]+?)```/g;
     const parts = [];
     let lastIndex = 0;
   

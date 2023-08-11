@@ -6,6 +6,7 @@ import { MainContainer, Placeholder } from './App.styles'
 import Topbar from '../Conversations/Topbar'
 import Sidebar from '../Conversations/Sidebar'
 import Conversation from '../Conversations/Conversation'
+import SystemPromptSettings from '../Conversations/SystemPromptSettings'; 
 
 const App: React.FC = () => {
   const { user } = useContext(AuthContext);
@@ -67,6 +68,8 @@ const App: React.FC = () => {
         setConversations={setConversations}
         setActiveConversation={setActiveConversation}
         setShowMenu={setShowMenu}
+        systemprompts={systemprompts}
+        setSystemPrompts={setSystemPrompts}
       />
       <MainContainer>
         {showMenu && (

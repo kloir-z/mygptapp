@@ -40,8 +40,8 @@ export const StyledInput = styled.input`
 
 export const SystemPromptTextarea = styled.textarea`
   position: relative;
-  width: 95vw;
-  width: 95svw;
+  width: 70vw;
+  width: 70svw;
   max-width: 600px;
   height: auto;
   margin: 4px;

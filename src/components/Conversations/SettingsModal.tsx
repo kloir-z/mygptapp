@@ -3,7 +3,7 @@ import { AuthContext } from '../Auth/AuthContext';
 import SystemPromptSettings from './SystemPromptSettings'; 
 import { SystemPromptType } from '../Conversations/Conversations.types';
 import { updateSystemPrompts  } from '../Auth/firebase';
-import { StyledButton, StyledInput } from './SettingsModal.styles';
+import { StyledButton, StyledInput } from './Settings.styles';
 
 type SettingsModalProps = {
   show: boolean;

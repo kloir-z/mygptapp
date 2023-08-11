@@ -16,6 +16,7 @@ const App: React.FC = () => {
   const [model, setModel] = useState('gpt-3.5-turbo-0613'); 
   const [apiKey, setApiKey] = useState('');
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
+  const [sidebarWidth, setSidebarWidth] = useState(200); // 200はデフォルト値
 
   const scrollToBottom = () => {
     if(messageContainerRef.current) {
@@ -51,6 +52,23 @@ const App: React.FC = () => {
     setConversations(updatedConversations);
   };
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    // タッチが始まったら、moveとendのイベントリスナーを追加
+    document.addEventListener('touchmove', handleTouchMove);
+    document.addEventListener('touchend', handleTouchEnd);
+  };
+
+  const handleTouchMove = (e: TouchEvent) => {
+    // タッチ位置を取得してサイドバーの幅を変更
+    setSidebarWidth(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    // タッチが終了したら、イベントリスナーを削除
+    document.removeEventListener('touchmove', handleTouchMove);
+    document.removeEventListener('touchend', handleTouchEnd);
+  };
+
   if (!user) {
     return <>loading...</>;
   }
@@ -70,7 +88,13 @@ const App: React.FC = () => {
       />
       <MainContainer>
         {showMenu && (
+          <div 
+            onMouseDown={handleMouseDown} 
+            onTouchStart={handleTouchStart}
+            style={{ cursor: 'col-resize' }}
+          ></div>
           <Sidebar
+            style={{ width: sidebarWidth }}
             conversations={conversations}
             activeConversation={activeConversation}
             setConversations={setConversations}

@@ -1,12 +1,11 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
 import { AuthContext } from '../Auth/AuthContext';
 import { ConversationType, SystemPromptType } from '../Conversations/Conversations.types';
-import { fetchConversations, updateConversations  } from '../Auth/firebase';
+import { fetchConversations, updateConversations, deleteConversation } from '../Auth/firebase';
 import { MainContainer, Placeholder } from './App.styles'
 import Topbar from '../Conversations/Topbar'
 import Sidebar from '../Conversations/Sidebar'
 import Conversation from '../Conversations/Conversation'
-import SystemPromptSettings from '../Conversations/SystemPromptSettings'; 
 
 const App: React.FC = () => {
   const { user } = useContext(AuthContext);
@@ -17,6 +16,7 @@ const App: React.FC = () => {
   const [model, setModel] = useState('gpt-3.5-turbo-0613'); 
   const [apiKey, setApiKey] = useState('');
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
+  const [receivingId, setReceivingId] = useState('');
 
   const scrollToBottom = () => {
     if(messageContainerRef.current) {
@@ -52,6 +52,11 @@ const App: React.FC = () => {
     setConversations(updatedConversations);
   };
 
+  const handleDeleteConversation = async (id: string) => {
+    await deleteConversation(user?.uid, id);
+    setConversations(conversations.filter(conv => conv.id !== id));
+  };
+
   if (!user) {
     return <>loading...</>;
   }
@@ -78,6 +83,8 @@ const App: React.FC = () => {
             activeConversation={activeConversation}
             setConversations={setConversations}
             setActiveConversation={setActiveConversation}
+            sendMessage={handleMessageSend}
+            deleteConversation={handleDeleteConversation}
           />
           )}
           {activeConversation ? (
@@ -88,6 +95,8 @@ const App: React.FC = () => {
               apiKey={apiKey}
               sendMessage={handleMessageSend}
               systemprompts={systemprompts}
+              receivingId={receivingId}
+              setReceivingId={setReceivingId}
             />
           ) : (
             <Placeholder>Please select a conversation</Placeholder>

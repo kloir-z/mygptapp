@@ -44,6 +44,21 @@ const updateConversations = async (userId?: string, conversations: ConversationT
   });
 };
 
+const deleteConversation = async (userId?: string, conversationId?: string) => {
+  if (!userId || !conversationId) return;
+
+  const docRef = firestore.collection("conversations").doc(userId);
+  const doc = await docRef.get();
+  const data = doc.data();
+  if (!data || !data.messages) return;
+
+  const updatedMessages = data.messages.filter((message: ConversationType) => message.id !== conversationId);
+
+  await docRef.update({
+    messages: updatedMessages,
+  });
+};
+
 const updateSystemPrompts = async (userId?: string, systemprompts: SystemPromptType[] = []) => {
   if (!userId) return;
 
@@ -52,6 +67,6 @@ const updateSystemPrompts = async (userId?: string, systemprompts: SystemPromptT
   });
 };
 
-export { firebase, fetchConversations, updateConversations, updateSystemPrompts };
+export { firebase, fetchConversations, updateConversations, deleteConversation, updateSystemPrompts };
 
 export default firebase; 

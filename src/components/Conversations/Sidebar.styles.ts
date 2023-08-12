@@ -30,9 +30,10 @@ export const ConversationItem = styled.div<{ active: boolean }>`
   color: #ebebeb;
   .Icon {
     font-size: 0.8rem;
-    transition: opacity 0.1s ease-in-out;
-    background-color: #555;
-    padding: 2px;
+    transition: opacity 0.2s ease-in-out;
+    background-color: #b3b3b3;
+    border-radius: 3px;
+    padding: 4px;
     margin-left: 10px;
   }
 `;

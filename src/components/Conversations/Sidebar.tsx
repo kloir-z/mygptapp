@@ -8,9 +8,11 @@ type SidebarProps = {
   activeConversation: ConversationType | null;
   setConversations: Function;
   setActiveConversation: Function;
+  sendMessage: (updatedConversation: ConversationType) => Promise<void>;
+  deleteConversation: (id: string) => Promise<void>;
 };
 
-const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, setConversations, setActiveConversation }) => {
+const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, setConversations, setActiveConversation, sendMessage, deleteConversation }) => {
   const inputRef = useRef<HTMLInputElement>(null);  
   const [editingTitle, setEditingTitle] = useState<string>("");
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -25,10 +27,15 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, se
   };
 
   const confirmEdit = () => {
-    setConversations((prev: ConversationType[]) => prev.map((conv: ConversationType) => 
-      conv.id === editingId ? {...conv, title: editingTitle} : conv
-    ));
-    cancelEdit();
+    const updatedConversation = conversations.find((conv: ConversationType) => conv.id === editingId);
+    if (updatedConversation) {
+      updatedConversation.title = editingTitle;
+      setConversations((prev: ConversationType[]) => prev.map((conv: ConversationType) =>
+        conv.id === editingId ? updatedConversation : conv
+      ));
+      sendMessage(updatedConversation);
+      cancelEdit();
+    }
   };
 
   const cancelEdit = () => {
@@ -38,13 +45,15 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, se
 
   const handleDeleteConversation = (id: string) => {
     if (window.confirm('Are You Sure to Delete?')) {
-      setConversations((prev: ConversationType[]) => prev.filter((conv: ConversationType) => conv.id !== id));
+      deleteConversation(id).then(() => {
+        setConversations((prev: ConversationType[]) => prev.filter((conv: ConversationType) => conv.id !== id));
+      });
     }
   };
 
   return (
     <SidebarContainer tabIndex={0}>
-      {conversations.map((conversation, index) => (
+      {[...conversations].reverse().map((conversation, index) => (
         <ConversationItem 
           key={index} 
           onClick={() => {
@@ -64,9 +73,9 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, se
                 onChange={(e) => setEditingTitle(e.target.value)}
               />
               <TitleRight>
-                <FaCheck className="Icon" onClick={confirmEdit} />
-                <FaTimes className="Icon" onClick={cancelEdit} />
-                <FaTrash className="Icon" onClick={() => handleDeleteConversation(conversation.id)} />
+                <FaCheck className="Icon" style={{color:'green'}} onClick={confirmEdit} />
+                <FaTimes className="Icon" style={{color:'red'}} onClick={cancelEdit} />
+                <FaTrash className="Icon" style={{color:'#404040'}} onClick={() => handleDeleteConversation(conversation.id)} />
               </TitleRight>
             </>
           ) : (

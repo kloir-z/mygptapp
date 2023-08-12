@@ -2,9 +2,10 @@ import React, { useEffect, useState, useRef } from 'react';
 import MessageInput from './MessageInput';
 import { ConversationType, ConversationData, SystemPromptType } from './Conversations.types';
 import { getAIResponse, getAndSetTokenCount, getYoutubeTranscript } from './openAIUtil';
-import { Message, ConversationContainer, MessagesContainer, EditingText, OkCancelButton, InputContainer, EditTextarea, StyledSelect, StyledOption, StyledButton, StyledInput } from './Conversation.styles'
+import { Message, ConversationContainer, MessagesContainer, EditingText, InputContainer, EditTextarea, StyledSelect, StyledOption, StyledButton, StyledInput } from './Conversation.styles'
 import { SyntaxHighlight } from './SyntaxHighlight'
 import { Spinner } from './Sppiner'
+import { FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
 
 type ConversationProps = {
   conversation: ConversationType;
@@ -13,9 +14,11 @@ type ConversationProps = {
   sendMessage: (updatedConversation: ConversationType) => Promise<void>;
   forwardedRef: React.RefObject<HTMLDivElement>;
   systemprompts: SystemPromptType[];
+  receivingId: string;
+  setReceivingId: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation, model, apiKey, sendMessage, systemprompts }) => {
+const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation, model, apiKey, sendMessage, systemprompts, receivingId, setReceivingId }) => {
   const [messages, setMessages] = useState<ConversationData[]>(conversation.revisions[0].conversation);
   const [editingMessageIndex, setEditingMessageIndex] = useState<number | null>(null);
   const [totalTokenUpdateRequired, setTotalTokenUpdateRequired] = useState(false);
@@ -24,9 +27,14 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
   const [showTranscriptPopup, setShowTranscriptPopup] = useState(false);
   const [youtubeUrl, setYoutubeUrl] = useState<string | null>(null);
   const [loadingTranscript, setLoadingTranscript] = useState(false);
-  
-  const updateConversation  = async (messageContent: string, role: string, apiKey: string) => { 
-    const finalMessages = await getAIResponse(messageContent, role, apiKey, model, messages, setMessages); 
+  const stopReceiving = useRef(false); 
+
+  const awaitGetAIResponse = async (messageContent: string, role: string, apiKey: string): Promise<void> => {
+    stopReceiving.current = false
+    setReceivingId(conversation.id)
+    const finalMessages = await getAIResponse(messageContent, role, apiKey, model, messages, setMessages, stopReceiving);
+    setReceivingId('')
+    stopReceiving.current = false
     const updatedConversation = {
       ...conversation,
       revisions: [{
@@ -36,6 +44,10 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
     };
     sendMessage(updatedConversation);
     setTotalTokenUpdateRequired(true);
+  };
+
+  const handleStopReceiving = () => {
+    stopReceiving.current = true
   };
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -150,9 +162,8 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
       return;
     }
   
-    const selectedPrompt = systemprompts.find(prompt => prompt.id === selectedPromptId);
+  const selectedPrompt = systemprompts.find(prompt => prompt.id === selectedPromptId);
     if (selectedPrompt) {
-      // マップから対応する機能を取得して実行
       const action = systemPromptActions[selectedPrompt.title];
       if (action) {
         action();
@@ -172,12 +183,10 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
     }
   };
   
-
-
   const handleGetYtbTranscript = async () => {
     if (youtubeUrl) {
-      const transcript = await getYoutubeTranscript(youtubeUrl);
       setLoadingTranscript(true);
+      const transcript = await getYoutubeTranscript(youtubeUrl);
       if (transcript) {
         setMessages(prevMessages => [
           ...prevMessages,
@@ -213,10 +222,15 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
                 <StyledButton onClick={handleGetYtbTranscript}>OK</StyledButton>
               </>
             )}
-            {loadingTranscript && <Spinner />}
           </>
         )}
-        {messages.map((message: ConversationData, index: number) => (
+        {messages.map((message: ConversationData, index: number) => {
+  console.log('index:', index, 'receivingId:', receivingId, 'conversation.id:', conversation.id);
+          if (index === messages.length - 1 && receivingId !== '' && conversation.id !== receivingId) {
+            return null;
+          }
+
+          return (
           <Message key={index} role={message.role} onDoubleClick={() => onDoubleClickMessage(index)}>
             {editingMessageIndex === index ? (
               <>
@@ -228,9 +242,9 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
                 />
                 <>
                   <EditingText>Editing...
-                    <OkCancelButton onClick={() => handleConfirmEditing(index)}>OK</OkCancelButton>
-                    <OkCancelButton onClick={handleCancelEditing}>Cancel</OkCancelButton>
-                    <OkCancelButton onClick={() => deleteMessage(index)}>Delete</OkCancelButton>
+                    <FaCheck className="Icon" style={{color:'green'}} onClick={() => handleConfirmEditing(index)}/>
+                    <FaTimes className="Icon" style={{color:'red'}} onClick={handleCancelEditing}/>
+                    <FaTrash className="Icon" style={{color:'#404040'}} onClick={() => deleteMessage(index)}/>
                   </EditingText>
                 </>
               </>
@@ -238,18 +252,21 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
               SyntaxHighlight(message.content)
             )}
           </Message>
-        ))}
+          );
+        })}
+        {loadingTranscript && <Spinner />}
         <div ref={messagesEndRef} />
       </MessagesContainer>
       <InputContainer>
         <MessageInput 
-          sendMessage={updateConversation} 
+          awaitGetAIResponse={awaitGetAIResponse} 
           apiKey={apiKey} 
           getAndSetTokenCount={getAndSetTokenCount} 
           messages={messages} 
           model={model}
           totalTokenUpdateRequired={totalTokenUpdateRequired}
           setTotalTokenUpdateRequired={setTotalTokenUpdateRequired}
+          handleStopReceiving={handleStopReceiving}
         />
       </InputContainer>
     </ConversationContainer>

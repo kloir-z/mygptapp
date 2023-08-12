@@ -21,7 +21,7 @@ const sendToOpenAI = async (messageContent: string, role: string, apiKey: string
   return response;
 };
 
-export const getAIResponse = async (messageContent: string, role: string, apiKey: string, model: string, messages: ConversationData[], setMessages: React.Dispatch<React.SetStateAction<ConversationData[]>>) => {
+export const getAIResponse = async (messageContent: string, role: string, apiKey: string, model: string, messages: ConversationData[], setMessages: React.Dispatch<React.SetStateAction<ConversationData[]>>, stopReceiving: React.MutableRefObject<boolean>) => {
   setMessages(prev => [...prev, { role: 'user', content: messageContent }]);
   const response = await sendToOpenAI(messageContent, role, apiKey, model, messages);
   const reader = response.body?.getReader();
@@ -35,6 +35,11 @@ export const getAIResponse = async (messageContent: string, role: string, apiKey
 
   try {
     const read = async (): Promise<void> => {
+      if (stopReceiving.current) {
+        reader.cancel();
+        return;
+      }
+      
       const { done, value } = await reader.read();
       if (done) {
         reader.releaseLock();

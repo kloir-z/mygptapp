@@ -11,6 +11,11 @@ const SystemPromptSettings: React.FC<SystemPromptSettingsProps> = ({ systempromp
   const [selectedPromptIndex, setSelectedPromptIndex] = useState<number | null>(null);
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null); 
+
+  const isWhitespace = (str: string) => !str.trim();
+  const canCreate = !isWhitespace(title) && !isWhitespace(content) && !systemprompts.some(prompt => prompt.title === title || prompt.content === content);
+  const canUpdate = selectedPromptIndex !== null && (title !== systemprompts[selectedPromptIndex]?.title || content !== systemprompts[selectedPromptIndex]?.content);
 
   const handleSelectionChange = (index: number) => {
     setSelectedPromptIndex(index === -1 ? null : index);
@@ -18,7 +23,26 @@ const SystemPromptSettings: React.FC<SystemPromptSettingsProps> = ({ systempromp
     setContent(index === -1 ? "" : systemprompts[index]?.content || "");
   };
 
+  const handleCreate = () => {
+    if (canCreate) {
+      const newPrompt: SystemPromptType = {
+        id: Date.now().toString(),
+        title,
+        content,
+      };
+      onUpdate([...systemprompts, newPrompt]);
+      setErrorMessage(null);
+    } else {
+      setErrorMessage("Title or content cannot be empty, whitespace, or already exist!");
+    }
+  };
+
   const handleUpdate = () => {
+    if (isWhitespace(title) || isWhitespace(content)) {
+      setErrorMessage("Title or content cannot be empty or whitespace!");
+      return;
+    }
+
     if (selectedPromptIndex !== null) {
       const updatedPrompt = {
         ...systemprompts[selectedPromptIndex],
@@ -27,15 +51,6 @@ const SystemPromptSettings: React.FC<SystemPromptSettingsProps> = ({ systempromp
       };
       onUpdate(systemprompts.map((prompt, index) => (index === selectedPromptIndex ? updatedPrompt : prompt)));
     }
-  };
-
-  const handleCreate = () => {
-    const newPrompt: SystemPromptType = {
-      id: Date.now().toString(),
-      title,
-      content,
-    };
-    onUpdate([...systemprompts, newPrompt]);
   };
 
   const handleDelete = () => {
@@ -71,10 +86,11 @@ const SystemPromptSettings: React.FC<SystemPromptSettingsProps> = ({ systempromp
       <label>Edit Content:</label>
         <SystemPromptTextarea placeholder="input system prompt" value={content} onChange={(e) => setContent(e.target.value)} rows={content.split('\n').length || 1} ref={textAreaRef} />
         <div>
-        <StyledButton onClick={handleCreate}>Create</StyledButton>
-        <StyledButton onClick={handleUpdate}>Update</StyledButton>
+        <StyledButton disabled={!canCreate} onClick={handleCreate}>Create</StyledButton>
+        <StyledButton disabled={!canUpdate} onClick={handleUpdate}>Update</StyledButton>
         <StyledButton onClick={handleDelete}>Delete</StyledButton>
         </div>
+        {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
     </SystemPromptSettingsContainer>
   );
 };

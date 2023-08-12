@@ -42,7 +42,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ show, onClose, apiKey, se
               onKeyDown={e => { if (e.key === 'Enter') { handleOkClick(); } }} 
               placeholder="API Key" 
             />
-            <StyledButton onClick={handleOkClick}>OK</StyledButton>
+            <StyledButton onClick={handleOkClick}>Set</StyledButton>
             <SystemPromptSettings
               systemprompts={systemprompts}
               onUpdate={handleUpdateSystemPrompts}

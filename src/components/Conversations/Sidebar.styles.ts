@@ -13,7 +13,6 @@ export const SidebarContainer = styled.div`
   overflow-y: auto;
   outline: none;
   overflow-y: scroll;
-  direction: rtl;
 `;
 
 export const ConversationItem = styled.div<{ active: boolean }>`
@@ -24,23 +23,17 @@ export const ConversationItem = styled.div<{ active: boolean }>`
   margin: 0px 0px 2px 0px; 
   cursor: default;
   display: flex; 
+  flex-direction: column;
   justify-content: space-between;
-  position: relative;
-  overflow: hidden;
-  height: 1rem;
   flex-grow: 0;
   flex-shrink: 0;
   color: #ebebeb;
-  .EditIcon {
+  .Icon {
     font-size: 0.8rem;
-    opacity: 0;
     transition: opacity 0.1s ease-in-out;
     background-color: #555;
     padding: 2px;
-  }
-
-  &:hover .EditIcon {
-    opacity: 1;
+    margin-left: 10px;
   }
 `;
 
@@ -51,8 +44,6 @@ export const StyledInput = styled.input`
   padding: 0px 5px;
   border: 0px;
   margin: 0px;
-  width: 100%;
-  direction: ltr;
 `;
 
 export const Placeholder = styled.div`
@@ -62,31 +53,21 @@ export const Placeholder = styled.div`
 `;
 
 export const TitleLeft = styled.div`
-  position: absolute;
-  left: 10px;
   white-space: nowrap;
-  overflow: hidden;
-  padding-right: 5px;
-  direction: ltr;
-  width: calc(100% - 30px);
   overflow-x: auto;
   ::-webkit-scrollbar {
     width: 0px;
     height: 0px;
   }
-
   /* Firefox */
   scrollbar-width: thin;
   scrollbar-color: #525252 #282c34;
 `;
 
 export const TitleRight = styled.div`
-  position: absolute;
-  right: 0px;
-  top: 0px;
+  margin-top: 8px;
   display: flex;
-  flex-direction: column;
-  direction: ltr; 
-  z-index: 1;
+  flex-direction: row;
+  justify-content: flex-end;
 `;
 

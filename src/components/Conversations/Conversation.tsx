@@ -131,26 +131,35 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
   };
   
   const handleSystemPromptSelection = (selectedPromptId: string) => {
-    if (selectedPromptId === 'none') {
-      if (messages[0]?.role === 'system') {
-        setMessages(prevMessages => prevMessages.slice(1));
+  if (selectedPromptId === 'none') {
+    if (messages[0]?.role === 'system') {
+      setMessages(prevMessages => prevMessages.slice(1));
+    }
+    return;
+  }
+
+  const selectedPrompt = systemprompts.find(prompt => prompt.id === selectedPromptId);
+  if (selectedPrompt) {
+    // 「日本語要約」または「英語要約」が選択された場合の条件を追加
+    if (selectedPrompt.title === '日本語要約' || selectedPrompt.title === '英語要約') {
+      // role: 'user'のメッセージが存在しない場合のみポップアップを表示
+      if (!messages.some(message => message.role === 'user')) {
+        setShowTranscriptPopup(true);
       }
-      return;
     }
-  
-    const selectedPrompt = systemprompts.find(prompt => prompt.id === selectedPromptId);
-    if (selectedPrompt) {
-      setMessages(prevMessages => {
-        const updatedMessages = [...prevMessages];
-        if (updatedMessages[0]?.role === 'system') {
-          updatedMessages[0] = { content: selectedPrompt.content, role: 'system' };
-        } else {
-          updatedMessages.unshift({ content: selectedPrompt.content, role: 'system' });
-        }
-        return updatedMessages;
-      });
-    }
-  };
+
+    setMessages(prevMessages => {
+      const updatedMessages = [...prevMessages];
+      if (updatedMessages[0]?.role === 'system') {
+        updatedMessages[0] = { content: selectedPrompt.content, role: 'system' };
+      } else {
+        updatedMessages.unshift({ content: selectedPrompt.content, role: 'system' });
+      }
+      return updatedMessages;
+    });
+  }
+};
+
 
   const handleGetYtbTranscript = async () => {
     if (youtubeUrl) {
@@ -183,12 +192,10 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
                 <StyledOption key={prompt.id} value={prompt.id}>{prompt.title}</StyledOption>
               ))}
             </StyledSelect>
-            <StyledButton onClick={() => setShowTranscriptPopup(true)}>getytbtranscript</StyledButton>
             {showTranscriptPopup && (
               <>
                 <StyledInput type="text" placeholder="YouTube URL" onChange={e => setYoutubeUrl(e.target.value)} />
                 <StyledButton onClick={handleGetYtbTranscript}>OK</StyledButton>
-                <StyledButton onClick={() => setShowTranscriptPopup(false)}>Cancel</StyledButton>
               </>
             )}
           </>

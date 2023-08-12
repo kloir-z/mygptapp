@@ -11,7 +11,6 @@ const SystemPromptSettings: React.FC<SystemPromptSettingsProps> = ({ systempromp
   const [selectedPromptIndex, setSelectedPromptIndex] = useState<number | null>(null);
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
-  const [errorMessage, setErrorMessage] = useState<string | null>(null); 
 
   const isWhitespace = (str: string) => !str.trim();
   const canCreate = !isWhitespace(title) && !isWhitespace(content) && !systemprompts.some(prompt => prompt.title === title || prompt.content === content);
@@ -31,15 +30,11 @@ const SystemPromptSettings: React.FC<SystemPromptSettingsProps> = ({ systempromp
         content,
       };
       onUpdate([...systemprompts, newPrompt]);
-      setErrorMessage(null);
-    } else {
-      setErrorMessage("Title or content cannot be empty, whitespace, or already exist!");
     }
   };
 
   const handleUpdate = () => {
     if (isWhitespace(title) || isWhitespace(content)) {
-      setErrorMessage("Title or content cannot be empty or whitespace!");
       return;
     }
 
@@ -66,7 +61,7 @@ const SystemPromptSettings: React.FC<SystemPromptSettingsProps> = ({ systempromp
   useEffect(() => {
     if(textAreaRef.current){
       textAreaRef.current.style.height = 'auto';
-      textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`;
+      textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight + 2}px`;
     }
   }, [content]);
 
@@ -90,7 +85,6 @@ const SystemPromptSettings: React.FC<SystemPromptSettingsProps> = ({ systempromp
         <StyledButton disabled={!canUpdate} onClick={handleUpdate}>Update</StyledButton>
         <StyledButton onClick={handleDelete}>Delete</StyledButton>
         </div>
-        {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
     </SystemPromptSettingsContainer>
   );
 };

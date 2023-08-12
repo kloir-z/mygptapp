@@ -130,7 +130,11 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
     setTotalTokenUpdateRequired(true);
   };
   
-  const systemPromptActions = {
+  type SystemPromptActions = {
+    [key: string]: () => void;
+  };
+
+  const systemPromptActions: SystemPromptActions = {
     '日本語要約': () => { if (!messages.some(message => message.role === 'user')) setShowTranscriptPopup(true); },
     '英語要約': () => { if (!messages.some(message => message.role === 'user')) setShowTranscriptPopup(true); }
     // 今後他のプロンプトと機能をここに追加

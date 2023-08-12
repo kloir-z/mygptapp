@@ -140,24 +140,23 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
     // 今後他のプロンプトと機能をここに追加
   };
 
-  const handleSystemPromptSelection = (selectedPromptId: string) => {
-    if (selectedPromptId === 'none') {
-      if (messages[0]?.role === 'system') {
-        setMessages(prevMessages => prevMessages.slice(1));
-      }
-      setShowTranscriptPopup(false); // 選択が解除された場合にポップアップを閉じる
-      return;
+const handleSystemPromptSelection = (selectedPromptId: string) => {
+  if (selectedPromptId === 'none') {
+    if (messages[0]?.role === 'system') {
+      setMessages(prevMessages => prevMessages.slice(1));
     }
+    setShowTranscriptPopup(false);
+    return;
+  }
 
-    const selectedPrompt = systemprompts.find(prompt => prompt.id === selectedPromptId);
-    if (selectedPrompt) {
-      // マップから対応する機能を取得して実行
-      const action = systemPromptActions[selectedPrompt.title];
-      if (action) {
-        action();
-      } else {
-        setShowTranscriptPopup(false); // 対応する機能がない場合にポップアップを閉じる
-      }
+  const selectedPrompt = systemprompts.find(prompt => prompt.id === selectedPromptId);
+  if (selectedPrompt) {
+    // マップから対応する機能を取得して実行
+    const action = systemPromptActions[selectedPrompt.title];
+    if (action) {
+      action();
+    } else {
+      setShowTranscriptPopup(false);
     }
 
     setMessages(prevMessages => {
@@ -169,7 +168,8 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
       }
       return updatedMessages;
     });
-  };
+  }
+};
 
 
 

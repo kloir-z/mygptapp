@@ -130,21 +130,29 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
     setTotalTokenUpdateRequired(true);
   };
   
-  const handleSystemPromptSelection = (selectedPromptId: string) => {
-  if (selectedPromptId === 'none') {
-    if (messages[0]?.role === 'system') {
-      setMessages(prevMessages => prevMessages.slice(1));
-    }
-    return;
-  }
+  const systemPromptActions = {
+    '日本語要約': () => { if (!messages.some(message => message.role === 'user')) setShowTranscriptPopup(true); },
+    '英語要約': () => { if (!messages.some(message => message.role === 'user')) setShowTranscriptPopup(true); }
+    // 今後他のプロンプトと機能をここに追加
+  };
 
-  const selectedPrompt = systemprompts.find(prompt => prompt.id === selectedPromptId);
-  if (selectedPrompt) {
-    // 「日本語要約」または「英語要約」が選択された場合の条件を追加
-    if (selectedPrompt.title === '日本語要約' || selectedPrompt.title === '英語要約') {
-      // role: 'user'のメッセージが存在しない場合のみポップアップを表示
-      if (!messages.some(message => message.role === 'user')) {
-        setShowTranscriptPopup(true);
+  const handleSystemPromptSelection = (selectedPromptId: string) => {
+    if (selectedPromptId === 'none') {
+      if (messages[0]?.role === 'system') {
+        setMessages(prevMessages => prevMessages.slice(1));
+      }
+      setShowTranscriptPopup(false); // 選択が解除された場合にポップアップを閉じる
+      return;
+    }
+
+    const selectedPrompt = systemprompts.find(prompt => prompt.id === selectedPromptId);
+    if (selectedPrompt) {
+      // マップから対応する機能を取得して実行
+      const action = systemPromptActions[selectedPrompt.title];
+      if (action) {
+        action();
+      } else {
+        setShowTranscriptPopup(false); // 対応する機能がない場合にポップアップを閉じる
       }
     }
 
@@ -157,8 +165,8 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
       }
       return updatedMessages;
     });
-  }
-};
+  };
+
 
 
   const handleGetYtbTranscript = async () => {

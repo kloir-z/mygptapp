@@ -4,7 +4,7 @@ import { ConversationType, ConversationData, SystemPromptType } from './Conversa
 import { getAIResponse, getAndSetTokenCount, getYoutubeTranscript } from './openAIUtil';
 import { Message, ConversationContainer, MessagesContainer, EditingText, OkCancelButton, InputContainer, EditTextarea, StyledSelect, StyledOption, StyledButton, StyledInput } from './Conversation.styles'
 import { SyntaxHighlight } from './SyntaxHighlight'
-
+import { Spinner } from './Sppiner'
 
 type ConversationProps = {
   conversation: ConversationType;
@@ -23,6 +23,7 @@ const Conversation: React.FC<ConversationProps> = ({ forwardedRef, conversation,
   const [containerHeight, setContainerHeight] = useState<number>(0);
   const [showTranscriptPopup, setShowTranscriptPopup] = useState(false);
   const [youtubeUrl, setYoutubeUrl] = useState<string | null>(null);
+  const [loadingTranscript, setLoadingTranscript] = useState(false);
   
   const updateConversation  = async (messageContent: string, role: string, apiKey: string) => { 
     const finalMessages = await getAIResponse(messageContent, role, apiKey, model, messages, setMessages); 
@@ -176,6 +177,7 @@ const handleSystemPromptSelection = (selectedPromptId: string) => {
   const handleGetYtbTranscript = async () => {
     if (youtubeUrl) {
       const transcript = await getYoutubeTranscript(youtubeUrl);
+      setLoadingTranscript(true);
       if (transcript) {
         setMessages(prevMessages => [
           ...prevMessages,
@@ -188,6 +190,7 @@ const handleSystemPromptSelection = (selectedPromptId: string) => {
             conversation: messages.concat({ content: transcript, role: 'user' })
           }]
         };
+        setLoadingTranscript(false);
         sendMessage(updatedConversation);
       }
     }
@@ -210,6 +213,7 @@ const handleSystemPromptSelection = (selectedPromptId: string) => {
                 <StyledButton onClick={handleGetYtbTranscript}>OK</StyledButton>
               </>
             )}
+            {loadingTranscript && <Spinner />}
           </>
         )}
         {messages.map((message: ConversationData, index: number) => (

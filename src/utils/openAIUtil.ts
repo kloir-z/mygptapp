@@ -34,38 +34,54 @@ export const getAIResponse = async (messageContent: string, role: string, apiKey
   setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
 
   try {
+    let retries = 3;
     const read = async (): Promise<void> => {
       if (stopReceiving.current) {
         reader.cancel();
         return;
       }
-      
-      const { done, value } = await reader.read();
-      if (done) {
-        reader.releaseLock();
-        return;
-      }
+  
+      try {
+        const { done, value } = await reader.read();
+        if (done) {
+          reader.releaseLock();
+          return;
+        }
+  
+        const chunk = decoder.decode(value, { stream: true });
+    
+        console.log(chunk);
+        const jsons = chunk
+          .split('\n')
+          .filter((data) => data.startsWith('data:') && !data.includes('[DONE]'))
+          .map((data) => JSON.parse(data.slice(5)))
+          .filter((data) => data);
 
-      const chunk = decoder.decode(value, { stream: true });
-      const jsons = chunk
-        .split('\n')
-        .filter((data) => data.startsWith('data:') && !data.includes('[DONE]'))
-        .map((data) => JSON.parse(data.slice(5)))
-        .filter((data) => data);
-
-      for (const json of jsons) {
-        if (json.choices) {
-          const aiMessageChunk = json.choices[0]?.delta.content;
-          if (aiMessageChunk) {
-            aiMessageContent += aiMessageChunk;
+        for (const json of jsons) {
+          if (json.choices) {
+            aiMessageContent += json.choices[0]?.delta.content;
             setMessages(prev => prev.map((message, index) => index === prev.length - 1 ? { role: 'assistant', content: aiMessageContent } : message));
           }
         }
+        return read();
+      } catch (error) {
+        console.error('An error occurred:', error);
+
+        if (retries > 0) {
+          retries--;
+          console.log(`Retrying... ${retries} retries left.`);
+          return read();
+        } else {
+          console.log('No more retries, canceling.');
+          console.error(error);
+          reader.cancel();
+          throw error;
+        }
       }
-      return read();
     };
     await read();
   } catch (e) {
+    console.log('streaming error');
     console.error(e);
   }
   let finalMessages = [...messages, { role: 'user', content: messageContent }, { role: 'assistant', content: aiMessageContent }];

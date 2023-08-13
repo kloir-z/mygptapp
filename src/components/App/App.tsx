@@ -37,7 +37,6 @@ const App: React.FC = () => {
       const systemprompts: SystemPromptType[] = systemPrompts.map((systemPrompt: any) => ({id: systemPrompt.id, ...systemPrompt} as SystemPromptType));
       setConversations(conversations);
       setSystemPrompts(systemprompts);
-      console.log(systemprompts);
     };
 
     fetchUserConversations();

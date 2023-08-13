@@ -12,6 +12,9 @@ ReactDOM.render(
           styles={css`
           * {
             p{white-space: pre-wrap;}
+            h1{font-size: 1.3rem}
+            h2{font-size: 1rem}
+            h3{font-size: 0.9rem}
             ::-webkit-scrollbar {
               width: 8px;
               height: 8px;

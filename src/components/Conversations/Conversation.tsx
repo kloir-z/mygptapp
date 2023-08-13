@@ -13,19 +13,19 @@ type ConversationProps = {
   conversation: ConversationType;
   model: string;
   apiKey: string;
-  sendMessage: (updatedConversation: ConversationType) => Promise<void>;
+  handleUpdateConversations: (updatedConversation: ConversationType) => Promise<void>;
   forwardedRef: React.RefObject<HTMLDivElement>;
   systemprompts: SystemPromptType[];
   receivingId: string;
   setReceivingId: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey, sendMessage, systemprompts }) => {
+const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey, handleUpdateConversations, systemprompts }) => {
   const [totalTokenUpdateRequired, setTotalTokenUpdateRequired] = useState(false);
   const [messages, setMessages] = useState<ConversationData[]>(conversation.revisions[0].conversation);
 
-  const { editingMessageIndex, setEditingMessageIndex, tempMessageContent, onDoubleClickMessage, handleContentChange, handleConfirmEditing, handleCancelEditing, deleteMessage, editTextAreaRef } = useEditing({sendMessage, conversation, messages ,setMessages});
-  const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(apiKey, model, conversation, sendMessage, messages, setMessages);
+  const { editingMessageIndex, setEditingMessageIndex, tempMessageContent, onDoubleClickMessage, handleContentChange, handleConfirmEditing, handleCancelEditing, deleteMessage, editTextAreaRef } = useEditing({handleUpdateConversations, conversation, messages ,setMessages});
+  const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(apiKey, model, conversation, handleUpdateConversations, messages, setMessages);
   const { scrollToBottom, messagesEndRef, forwardedRef } = useScroll(messages);
 
   const showInitialMenu = () => {
@@ -46,7 +46,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
           <InitialMenu
             systemprompts={systemprompts}
             conversation={conversation}
-            sendMessage={sendMessage}
+            handleUpdateConversations={handleUpdateConversations}
             messages={messages}
             setMessages={setMessages}
           />

@@ -7,7 +7,7 @@ import { StyledSelect, StyledOption, StyledInput, StyledButton } from './styles/
 type InitialMenuProps = {
   systemprompts: SystemPromptType[];
   conversation: ConversationType;
-  sendMessage: (updatedConversation: any) => Promise<void>;
+  handleUpdateConversations: (updatedConversation: any) => Promise<void>;
   messages: ConversationData[];
   setMessages: React.Dispatch<React.SetStateAction<ConversationData[]>>;
 
@@ -19,7 +19,7 @@ type SystemPromptActionsType = {
     '英語要約': () => void;
   };
 
-const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, conversation, sendMessage, messages, setMessages }) => {
+const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, conversation, handleUpdateConversations, messages, setMessages }) => {
   const [showTranscriptPopup, setShowTranscriptPopup] = useState(false);
   const [youtubeUrl, setYoutubeUrl] = useState<string | null>(null);
   const [loadingTranscript, setLoadingTranscript] = useState(false);
@@ -68,7 +68,7 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, conversation, 
         setMessages(prevMessages => [...prevMessages, { content: transcript, role: 'user' }]);
         const updatedConversation = { ...conversation, revisions: [{ revision: '0', conversation: messages.concat({ content: transcript, role: 'user' }) }]};
         setLoadingTranscript(false);
-        sendMessage(updatedConversation);
+        handleUpdateConversations(updatedConversation);
       }
     }
   };

@@ -42,7 +42,7 @@ const App: React.FC = () => {
     fetchUserConversations();
   }, [user?.uid]);
 
-  const handleMessageSend = async (updatedConversation: ConversationType) => {
+  const handleUpdateConversations = async (updatedConversation: ConversationType) => {
     const updatedConversations = conversations.map(item => 
       item.id === updatedConversation.id ? updatedConversation : item
     );
@@ -82,7 +82,7 @@ const App: React.FC = () => {
             activeConversation={activeConversation}
             setConversations={setConversations}
             setActiveConversation={setActiveConversation}
-            sendMessage={handleMessageSend}
+            handleUpdateConversations={handleUpdateConversations}
             deleteConversation={handleDeleteConversation}
           />
           )}
@@ -92,7 +92,7 @@ const App: React.FC = () => {
               conversation={activeConversation}
               model={model}
               apiKey={apiKey}
-              sendMessage={handleMessageSend}
+              handleUpdateConversations={handleUpdateConversations}
               systemprompts={systemprompts}
               receivingId={receivingId}
               setReceivingId={setReceivingId}

@@ -8,11 +8,11 @@ type SidebarProps = {
   activeConversation: ConversationType | null;
   setConversations: Function;
   setActiveConversation: Function;
-  sendMessage: (updatedConversation: ConversationType) => Promise<void>;
+  handleUpdateConversations: (updatedConversation: ConversationType) => Promise<void>;
   deleteConversation: (id: string) => Promise<void>;
 };
 
-const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, setConversations, setActiveConversation, sendMessage, deleteConversation }) => {
+const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, setConversations, setActiveConversation, handleUpdateConversations, deleteConversation }) => {
   const inputRef = useRef<HTMLInputElement>(null);  
   const [editingTitle, setEditingTitle] = useState<string>("");
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -33,7 +33,7 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, se
       setConversations((prev: ConversationType[]) => prev.map((conv: ConversationType) =>
         conv.id === editingId ? updatedConversation : conv
       ));
-      sendMessage(updatedConversation);
+      handleUpdateConversations(updatedConversation);
       cancelEdit();
     }
   };

@@ -15,13 +15,13 @@ type UseEditingReturnType = {
 };
 
 type UseEditingProps = {
-    sendMessage: (updatedConversation: ConversationType) => Promise<void>;
+    handleUpdateConversations: (updatedConversation: ConversationType) => Promise<void>;
     conversation: ConversationType;
     messages: ConversationData[],
     setMessages: React.Dispatch<React.SetStateAction<ConversationData[]>>
 }
 
-export const useEditing = ({sendMessage, conversation, messages, setMessages}:UseEditingProps ): UseEditingReturnType => {
+export const useEditing = ({handleUpdateConversations, conversation, messages, setMessages}:UseEditingProps ): UseEditingReturnType => {
   const [editingMessageIndex, setEditingMessageIndex] = useState<number | null>(null);
   const [tempMessageContent, setTempMessageContent] = useState<string | null>(null);
 
@@ -59,7 +59,7 @@ export const useEditing = ({sendMessage, conversation, messages, setMessages}:Us
     });
   
     const updatedConversation = { ...conversation, revisions: [{ revision: '0', conversation: messages.filter((_, idx) => idx !== index)}]};
-    sendMessage(updatedConversation);
+    handleUpdateConversations(updatedConversation);
     setEditingMessageIndex(null);
   };
 
@@ -71,7 +71,6 @@ export const useEditing = ({sendMessage, conversation, messages, setMessages}:Us
       if (content) {
         editTextAreaRef.current.style.height = 'auto';
         editTextAreaRef.current.style.height = `${editTextAreaRef.current.scrollHeight}px`;
-        console.log(editTextAreaRef)
       }
     }
   }, [tempMessageContent, editingMessageIndex]);  

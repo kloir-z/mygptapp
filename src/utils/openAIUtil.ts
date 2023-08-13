@@ -49,8 +49,6 @@ export const getAIResponse = async (messageContent: string, role: string, apiKey
         }
   
         const chunk = decoder.decode(value, { stream: true });
-    
-        console.log(chunk);
         const jsons = chunk
           .split('\n')
           .filter((data) => data.startsWith('data:') && !data.includes('[DONE]'))

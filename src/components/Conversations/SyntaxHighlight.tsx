@@ -1,5 +1,8 @@
-import { PrismLight as SyntaxHighlighter, Prism as SyntaxHighlighterPrism } from 'react-syntax-highlighter';
+import React from 'react';
+import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
+import ReactMarkdown from 'react-markdown';
 import syntaxStyle from 'react-syntax-highlighter/dist/cjs/styles/prism/one-dark';
+import gfm from 'remark-gfm';
 
 import bash from 'react-syntax-highlighter/dist/cjs/languages/prism/bash';
 import python from 'react-syntax-highlighter/dist/cjs/languages/prism/python';
@@ -14,25 +17,31 @@ SyntaxHighlighter.registerLanguage('javascript', javascript);
 SyntaxHighlighter.registerLanguage('css', css);
 
 export const SyntaxHighlight = (content: string) => {
-    const codeRegex = /```(\w+)?\n([\s\S]+?)```/g;
-    const parts = [];
-    let lastIndex = 0;
+  const codeRegex = /```(\w+)?\n([\s\S]+?)```/g;
   
-    let match;
-    while ((match = codeRegex.exec(content)) !== null) {
-      parts.push(<span key={lastIndex}>{content.slice(lastIndex, match.index)}</span>);
-      const language = match[1] || 'javascript';
-      parts.push(
-        <SyntaxHighlighter
-          language={language}
-          style={syntaxStyle}
-        >
-          {match[2]}
-        </SyntaxHighlighter>
-      );
-      lastIndex = match.index + match[0].length;
-    }
-    parts.push(<span key={lastIndex + 1}>{content.slice(lastIndex)}</span>);
-  
-    return parts;
-  };
+  const parts = [];
+  let lastIndex = 0;
+
+  let match;
+  while ((match = codeRegex.exec(content)) !== null) {
+    parts.push(
+      <ReactMarkdown key={lastIndex} remarkPlugins={[gfm]}>
+        {content.slice(lastIndex, match.index)}
+      </ReactMarkdown>
+    );
+    const language = match[1] || 'javascript';
+    parts.push(
+      <SyntaxHighlighter language={language} style={syntaxStyle}>
+        {match[2]}
+      </SyntaxHighlighter>
+    );
+    lastIndex = match.index + match[0].length;
+  }
+  parts.push(
+    <ReactMarkdown key={lastIndex + 1} remarkPlugins={[gfm]}>
+      {content.slice(lastIndex)}
+    </ReactMarkdown>
+  );
+
+  return parts;
+};

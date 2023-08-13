@@ -11,6 +11,7 @@ ReactDOM.render(
       <Global
           styles={css`
           * {
+            p{white-space: pre-wrap;}
             ::-webkit-scrollbar {
               width: 8px;
               height: 8px;

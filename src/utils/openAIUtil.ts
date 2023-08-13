@@ -57,8 +57,11 @@ export const getAIResponse = async (messageContent: string, role: string, apiKey
 
         for (const json of jsons) {
           if (json.choices) {
-            aiMessageContent += json.choices[0]?.delta.content;
-            setMessages(prev => prev.map((message, index) => index === prev.length - 1 ? { role: 'assistant', content: aiMessageContent } : message));
+            const aiMessageChunk = json.choices[0]?.delta.content;
+            if (typeof aiMessageChunk === 'string') {
+              aiMessageContent += aiMessageChunk;
+              setMessages(prev => prev.map((message, index) => index === prev.length - 1 ? { role: 'assistant', content: aiMessageContent } : message));
+            }
           }
         }
         return read();

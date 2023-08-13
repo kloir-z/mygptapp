@@ -13,6 +13,7 @@ type MessageListProps = {
   handleConfirmEditing: (index: number) => void;
   handleCancelEditing: () => void;
   deleteMessage: (index: number) => void;
+  editTextAreaRef: React.RefObject<HTMLTextAreaElement>;
 };
 
 const MessageList: React.FC<MessageListProps> = ({
@@ -23,7 +24,8 @@ const MessageList: React.FC<MessageListProps> = ({
   handleContentChange,
   handleConfirmEditing,
   handleCancelEditing,
-  deleteMessage
+  deleteMessage,
+  editTextAreaRef
 }) => {
   return (
     <>
@@ -36,6 +38,7 @@ const MessageList: React.FC<MessageListProps> = ({
                   value={tempMessageContent || ''}
                   onChange={e => handleContentChange(e.target.value)}
                   rows={tempMessageContent?.split('\n').length || 1}
+                  ref={editTextAreaRef} 
                 />
                 <>
                   <EditingText>Editing...

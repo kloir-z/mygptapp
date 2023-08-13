@@ -24,7 +24,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
   const [totalTokenUpdateRequired, setTotalTokenUpdateRequired] = useState(false);
   const [messages, setMessages] = useState<ConversationData[]>(conversation.revisions[0].conversation);
 
-  const { editingMessageIndex, setEditingMessageIndex, tempMessageContent, onDoubleClickMessage, handleContentChange, handleConfirmEditing, handleCancelEditing, deleteMessage } = useEditing({sendMessage, conversation, messages ,setMessages});
+  const { editingMessageIndex, setEditingMessageIndex, tempMessageContent, onDoubleClickMessage, handleContentChange, handleConfirmEditing, handleCancelEditing, deleteMessage, editTextAreaRef } = useEditing({sendMessage, conversation, messages ,setMessages});
   const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(apiKey, model, conversation, sendMessage, messages, setMessages);
   const { scrollToBottom, messagesEndRef, forwardedRef } = useScroll(messages);
 
@@ -60,6 +60,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
           handleConfirmEditing={handleConfirmEditing}
           handleCancelEditing={handleCancelEditing}
           deleteMessage={deleteMessage}
+          editTextAreaRef={editTextAreaRef}
         />
         <div ref={messagesEndRef} />
       </MessagesContainer>

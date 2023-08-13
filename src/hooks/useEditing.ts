@@ -11,6 +11,7 @@ type UseEditingReturnType = {
   handleConfirmEditing: (index: number) => void;
   handleCancelEditing: () => void;
   deleteMessage: (index: number) => void;
+  editTextAreaRef: React.RefObject<HTMLTextAreaElement>;
 };
 
 type UseEditingProps = {
@@ -70,6 +71,7 @@ export const useEditing = ({sendMessage, conversation, messages, setMessages}:Us
       if (content) {
         editTextAreaRef.current.style.height = 'auto';
         editTextAreaRef.current.style.height = `${editTextAreaRef.current.scrollHeight}px`;
+        console.log(editTextAreaRef)
       }
     }
   }, [tempMessageContent, editingMessageIndex]);  
@@ -83,6 +85,7 @@ export const useEditing = ({sendMessage, conversation, messages, setMessages}:Us
     handleContentChange,
     handleConfirmEditing,
     handleCancelEditing,
-    deleteMessage
+    deleteMessage,
+    editTextAreaRef 
   };
 };

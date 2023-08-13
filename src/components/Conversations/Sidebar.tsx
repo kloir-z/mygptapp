@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { StyledInput, ConversationItem, SidebarContainer, TitleLeft, TitleRight } from './Sidebar.styles';
-import { ConversationType } from './Conversations.types';
+import { StyledInput, ConversationItem, SidebarContainer, TitleLeft, TitleRight } from './styles/Sidebar.styles';
+import { ConversationType } from './types/Conversations.types';
 import { FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
 
 type SidebarProps = {

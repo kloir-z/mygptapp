@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
-import { TopbarContainer, StyledButton, StyledSelect, StyledOption } from './Topbar.styles';
-import { ConversationType, SystemPromptType } from '../Conversations/Conversations.types';
+import { TopbarContainer, StyledButton, StyledSelect, StyledOption } from './styles/Topbar.styles';
+import { ConversationType, SystemPromptType } from './types/Conversations.types';
 import { v4 as uuidv4 } from 'uuid'; 
 import SettingsModal from './SettingsModal'; 
 

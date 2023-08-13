@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
-import { ConversationData } from 'src/components/Conversations/Conversations.types';
-import { getAIResponse } from 'src/components/Conversations/openAIUtil';
+import { ConversationData } from 'src/components/Conversations/types/Conversations.types';
+import { getAIResponse } from 'src/utils/openAIUtil';
 
 export const useAIResponse = (
   apiKey: string,

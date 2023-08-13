@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { getAndSetTokenCount } from './openAIUtil';
-import { ConversationData } from './Conversations.types';
-import { MessageInputContainer, MessageInputBottomContainer, StyledTextarea, CalcTokenButton, SendButton, InputTokenText, MessageTokenText } from './MessageInput.styles'
+import { getAndSetTokenCount } from '../../utils/openAIUtil';
+import { ConversationData } from './types/Conversations.types';
+import { MessageInputContainer, MessageInputBottomContainer, StyledTextarea, CalcTokenButton, SendButton, InputTokenText, MessageTokenText } from './styles/MessageInput.styles'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane, faStop } from '@fortawesome/free-solid-svg-icons'
-import { Spinner } from './Sppiner'
+import { Spinner } from './Spinner'
 
 type MessageInputProps = {
   awaitGetAIResponse: (message: string, role: string, apiKey: string) => void;

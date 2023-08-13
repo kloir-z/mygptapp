@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Spinner } from './Sppiner'
-import { getYoutubeTranscript } from 'src/components/Conversations/openAIUtil';
-import { SystemPromptType, ConversationType, ConversationData } from './Conversations.types';
-import { StyledSelect, StyledOption, StyledInput, StyledButton } from './Conversation.styles';
+import { Spinner } from './Spinner'
+import { getYoutubeTranscript } from 'src/utils/openAIUtil';
+import { SystemPromptType, ConversationType, ConversationData } from './types/Conversations.types';
+import { StyledSelect, StyledOption, StyledInput, StyledButton } from './styles/Conversation.styles';
 
 type InitialMenuProps = {
   systemprompts: SystemPromptType[];
@@ -13,7 +13,7 @@ type InitialMenuProps = {
 
 };
 
-type SystemPromptActions = {
+type SystemPromptActionsType = {
     [key: string]: () => void;
     '日本語要約': () => void;
     '英語要約': () => void;
@@ -24,7 +24,7 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, conversation, 
   const [youtubeUrl, setYoutubeUrl] = useState<string | null>(null);
   const [loadingTranscript, setLoadingTranscript] = useState(false);
 
-  const systemPromptActions: SystemPromptActions = {
+  const systemPromptActions: SystemPromptActionsType = {
     '日本語要約': () => { if (!messages.some(message => message.role === 'user')) setShowTranscriptPopup(true); },
     '英語要約': () => { if (!messages.some(message => message.role === 'user')) setShowTranscriptPopup(true); }
     // 他のプロンプトと機能を追加

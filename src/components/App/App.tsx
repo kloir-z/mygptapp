@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
 import { AuthContext } from '../Auth/AuthContext';
-import { ConversationType, SystemPromptType } from '../Conversations/Conversations.types';
+import { ConversationType, SystemPromptType } from '../Conversations/types/Conversations.types';
 import { fetchConversations, updateConversations, deleteConversation } from '../Auth/firebase';
 import { MainContainer, Placeholder } from './App.styles'
 import Topbar from '../Conversations/Topbar'

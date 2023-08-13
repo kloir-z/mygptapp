@@ -1,7 +1,7 @@
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
-import { ConversationType, SystemPromptType, ConversationsResult } from '../Conversations/Conversations.types';
+import { ConversationType, SystemPromptType, ConversationsResult } from '../Conversations/types/Conversations.types';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,

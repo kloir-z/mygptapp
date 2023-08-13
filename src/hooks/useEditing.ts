@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { ConversationType, ConversationData } from 'src/components/Conversations/Conversations.types';
+import { ConversationType, ConversationData } from 'src/components/Conversations/types/Conversations.types';
 
 type UseEditingReturnType = {
   editingMessageIndex: number | null;

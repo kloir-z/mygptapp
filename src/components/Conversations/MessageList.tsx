@@ -1,8 +1,8 @@
 import React from 'react';
-import { ConversationData } from './Conversations.types';
+import { ConversationData } from './types/Conversations.types';
 import { SyntaxHighlight } from './SyntaxHighlight';
 import { FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
-import { Message, EditTextarea, EditingText } from './Conversation.styles';
+import { Message, EditTextarea, EditingText } from './styles/Conversation.styles';
 
 type MessageListProps = {
   messages: ConversationData[];

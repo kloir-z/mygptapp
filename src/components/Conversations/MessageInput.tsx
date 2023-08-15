@@ -28,6 +28,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ awaitGetAIResponse, apiKey,
   const [inputTokenUpdateRequired, setInputTokenUpdateRequired] = useState(false);
   const [isAwaitingResponse, setIsAwaitingResponse] = useState(false); 
   const { setDebugInfo } = useDebugInfo();
+  const isiPhone = /iPhone|iPod/.test(navigator.userAgent);
 
   const checkTokenCount = async () => {
     if (inputTokenUpdateRequired) {
@@ -76,6 +77,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ awaitGetAIResponse, apiKey,
   }, [message]);
 
   useEffect(() => {
+    if (isiPhone) return; 
     const windowHeight = window.innerHeight;
     const bodyHeight = document.body.scrollHeight;
     const scrollPosition = window.pageYOffset || document.body.scrollTop || document.documentElement.scrollTop || window.scrollY;

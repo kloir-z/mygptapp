@@ -8,7 +8,8 @@ const useScroll = (messages: any[]) => {
   const scrollToBottom = () => {
     setTimeout(() => {
       messagesEndRef.current?.scrollIntoView({ block: 'end', behavior: 'auto' });
-    }, 0);
+    }, 5);
+
   };
 
   useEffect(() => {

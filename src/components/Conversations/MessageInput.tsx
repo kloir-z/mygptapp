@@ -5,6 +5,7 @@ import { MessageInputContainer, MessageInputBottomContainer, StyledTextarea, Cal
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane, faStop } from '@fortawesome/free-solid-svg-icons'
 import { Spinner } from './Spinner'
+import { useDebugInfo } from 'src/components/Debugger/DebugContext';
 
 type MessageInputProps = {
   awaitGetAIResponse: (message: string, role: string, apiKey: string) => void;
@@ -26,6 +27,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ awaitGetAIResponse, apiKey,
   const [totalTokenLoading, setTotalTokenLoading] = useState(false);
   const [inputTokenUpdateRequired, setInputTokenUpdateRequired] = useState(false);
   const [isAwaitingResponse, setIsAwaitingResponse] = useState(false); 
+  const { setDebugInfo } = useDebugInfo();
 
   const checkTokenCount = async () => {
     if (inputTokenUpdateRequired) {
@@ -77,6 +79,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ awaitGetAIResponse, apiKey,
     const windowHeight = window.innerHeight;
     const bodyHeight = document.body.scrollHeight;
     const scrollPosition = window.scrollY;
+    setDebugInfo(`winH: ${windowHeight}, bodyH: ${bodyHeight}, scrlPos: ${scrollPosition},  ${bodyHeight - scrollPosition - windowHeight}`);
 
     if (scrollHeight !== bodyHeight && (bodyHeight - scrollPosition - windowHeight) <= 50) {
       setTimeout(() => {

@@ -4,10 +4,12 @@ import App from './components/App/App';
 import { AuthProvider } from './components/Auth/AuthProvider';
 import { Global } from '@emotion/react'
 import { css } from '@emotion/react'
+import { DebugProvider, DebugDisplay } from 'src/components/Debugger/DebugContext';
 
 ReactDOM.render(
   <React.StrictMode>
     <AuthProvider>
+  <DebugProvider>
       <Global
           styles={css`
           * {
@@ -15,6 +17,7 @@ ReactDOM.render(
             h1{font-size: 1.3rem}
             h2{font-size: 1rem}
             h3{font-size: 0.9rem}
+            code{word-break: break-word;width:100%;}
             ::-webkit-scrollbar {
               width: 8px;
               height: 8px;
@@ -52,7 +55,9 @@ ReactDOM.render(
           }
         `}
       />
+      <DebugDisplay />
       <App />
+  </DebugProvider>
     </AuthProvider>
   </React.StrictMode>,
   document.getElementById('root')

@@ -1,4 +1,3 @@
-import React from 'react';
 import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import ReactMarkdown from 'react-markdown';
 import syntaxStyle from 'react-syntax-highlighter/dist/cjs/styles/prism/one-dark';

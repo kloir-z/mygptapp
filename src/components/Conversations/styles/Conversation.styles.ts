@@ -29,7 +29,7 @@ export const Message = styled.div<{role: string}>`
   text-align: left;
   font-family: MeiryoUI, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
   font-size: 0.8rem;
-  /*white-space: pre-wrap;*/
+  white-space: pre-wrap;
   word-break: break-word;
 `;
 

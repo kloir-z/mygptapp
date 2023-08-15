@@ -78,7 +78,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ awaitGetAIResponse, apiKey,
   useEffect(() => {
     const windowHeight = window.innerHeight;
     const bodyHeight = document.body.scrollHeight;
-    const scrollPosition = window.scrollY;
+    const scrollPosition = document.documentElement.scrollTop || window.scrollY;
     setDebugInfo(`winH: ${windowHeight}, bodyH: ${bodyHeight}, scrlPos: ${scrollPosition},  ${bodyHeight - scrollPosition - windowHeight}`);
 
     if (scrollHeight !== bodyHeight && (bodyHeight - scrollPosition - windowHeight) <= 50) {

@@ -42,7 +42,7 @@ const SidebarResizer: React.FC<SidebarResizerProps> = ({ onResize, sidebarWidth 
     onTouchStart={handleTouchStart} 
     style={{
       cursor: 'ew-resize',
-      width: '5px',
+      width: '12px',
       height: '100%',
       position: 'absolute',
       left: sidebarWidth + 1,

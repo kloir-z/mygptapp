@@ -6,6 +6,7 @@ import { MainContainer, Placeholder } from './App.styles'
 import Topbar from '../Conversations/Topbar'
 import Sidebar from '../Conversations/Sidebar'
 import Conversation from '../Conversations/Conversation'
+import SidebarResizer from '../Conversations/SidebarResizer';
 
 const App: React.FC = () => {
   const { user } = useContext(AuthContext);
@@ -17,11 +18,16 @@ const App: React.FC = () => {
   const [apiKey, setApiKey] = useState('');
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
   const [receivingId, setReceivingId] = useState('');
+  const [sidebarWidth, setSidebarWidth] = useState(200);
 
   const scrollToBottom = () => {
     if(messageContainerRef.current) {
       messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
     }
+  };
+
+  const handleResize = (width: number) => {
+    setSidebarWidth(width);
   };
 
   useEffect(() => {
@@ -77,6 +83,7 @@ const App: React.FC = () => {
       />
       <MainContainer>
         {showMenu && (
+          <>
           <Sidebar
             conversations={conversations}
             activeConversation={activeConversation}
@@ -84,7 +91,10 @@ const App: React.FC = () => {
             setActiveConversation={setActiveConversation}
             handleUpdateConversations={handleUpdateConversations}
             deleteConversation={handleDeleteConversation}
+            style={{ width: sidebarWidth }}
           />
+          <SidebarResizer onResize={handleResize} sidebarWidth={sidebarWidth} />
+          </>
           )}
           {activeConversation ? (
             <Conversation

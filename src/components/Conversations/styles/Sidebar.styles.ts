@@ -5,14 +5,15 @@ export const SidebarContainer = styled.div`
   flex-direction: column;
   flex-grow: 0;
   flex-shrink: 0;
-  min-width: 150px;
-  max-width: 250px;
+  min-width: 10px;
+  max-width: 600px;
   width: 20%;
   height: calc(100vh - 33px);
   height: calc(100svh - 33px);
   overflow-y: auto;
   outline: none;
   overflow-y: scroll;
+  position: relative;
 `;
 
 export const ConversationItem = styled.div<{ active: boolean }>`

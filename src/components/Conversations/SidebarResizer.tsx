@@ -22,9 +22,24 @@ const SidebarResizer: React.FC<SidebarResizerProps> = ({ onResize, sidebarWidth 
     document.body.style.userSelect = '';
   };
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    document.addEventListener('touchmove', handleTouchMove);
+    document.addEventListener('touchend', handleTouchEnd);
+  };
+
+  const handleTouchMove = (e: TouchEvent) => {
+    onResize(e.touches[0].clientX);
+  };
+  
+  const handleTouchEnd = () => {
+    document.removeEventListener('touchmove', handleTouchMove);
+    document.removeEventListener('touchend', handleTouchEnd);
+  };
+
   return (
     <div
     onMouseDown={handleMouseDown}
+    onTouchStart={handleTouchStart} 
     style={{
       cursor: 'ew-resize',
       width: '5px',

@@ -66,7 +66,7 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, model, setModel, set
             setActiveConversation(newConv);
             }}>New</StyledButton>
             <StyledButton onClick={() => setShowSettings(true)}>Settings</StyledButton>
-            <SettingsModal show={showSettings} onClose={() => setShowSettings(false)} apiKey={apiKey} setApiKey={setApiKey} systemprompts={systemprompts} setSystemPrompts={setSystemPrompts}/>
+            <SettingsModal show={showSettings} onClose={() => setShowSettings(false)} apiKey={apiKey} setApiKey={setApiKey} systemprompts={systemprompts} setSystemPrompts={setSystemPrompts} />
             <StyledSelect value={model} onChange={e => setModel(e.target.value)}>  
                 <StyledOption value="gpt-3.5-turbo-16k-0613">gpt3.5(16k)</StyledOption>
                 <StyledOption value="gpt-3.5-turbo-0613">gpt3.5(4k)</StyledOption>

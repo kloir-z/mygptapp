@@ -30,6 +30,8 @@ const SystemPromptSettings: React.FC<SystemPromptSettingsProps> = ({ systempromp
         content,
       };
       onUpdate([...systemprompts, newPrompt]);
+      const newIndex = systemprompts.length;
+      setSelectedPromptIndex(newIndex);
     }
   };
 
@@ -49,10 +51,12 @@ const SystemPromptSettings: React.FC<SystemPromptSettingsProps> = ({ systempromp
   };
 
   const handleDelete = () => {
-    if (selectedPromptIndex !== null) {
-      const updatedPrompts = systemprompts.filter((_, index) => index !== selectedPromptIndex);
-      onUpdate(updatedPrompts);
-      handleSelectionChange(-1);
+    if (window.confirm('Are you sure to Delete?')) {
+      if (selectedPromptIndex !== null) {
+        const updatedPrompts = systemprompts.filter((_, index) => index !== selectedPromptIndex);
+        onUpdate(updatedPrompts);
+        handleSelectionChange(-1);
+      }
     }
   };
 
@@ -68,8 +72,8 @@ const SystemPromptSettings: React.FC<SystemPromptSettingsProps> = ({ systempromp
   return (
     <SystemPromptSettingsContainer>
       <label>System Prompt Settings:</label>
-        <StyledSelect onChange={(e) => handleSelectionChange(Number(e.target.value))}>
-          <StyledOption value={-1}>Clear</StyledOption>
+        <StyledSelect value={selectedPromptIndex === null ? -1 : selectedPromptIndex} onChange={(e) => handleSelectionChange(Number(e.target.value))}>
+          <StyledOption value={-1}>New</StyledOption>
           {systemprompts.map((prompt, index) => (
             <StyledOption key={prompt.id} value={index}>
               {prompt.title}
@@ -77,13 +81,13 @@ const SystemPromptSettings: React.FC<SystemPromptSettingsProps> = ({ systempromp
           ))}
         </StyledSelect>
       <label>Edit Title:</label>
-        <StyledInput placeholder="input great title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+        <StyledInput placeholder="None" type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
       <label>Edit Content:</label>
-        <SystemPromptTextarea placeholder="input system prompt" value={content} onChange={(e) => setContent(e.target.value)} rows={content.split('\n').length || 1} ref={textAreaRef} />
+        <SystemPromptTextarea placeholder="None" value={content} onChange={(e) => setContent(e.target.value)} rows={content.split('\n').length || 1} ref={textAreaRef} />
         <div>
         <StyledButton disabled={!canCreate} onClick={handleCreate}>Create</StyledButton>
         <StyledButton disabled={!canUpdate} onClick={handleUpdate}>Update</StyledButton>
-        <StyledButton onClick={handleDelete}>Delete</StyledButton>
+        <StyledButton disabled={selectedPromptIndex === null} onClick={handleDelete}>Delete</StyledButton>
         </div>
     </SystemPromptSettingsContainer>
   );

@@ -6,7 +6,6 @@ export const SidebarContainer = styled.div`
   flex-grow: 0;
   flex-shrink: 0;
   min-width: 10px;
-  max-width: 600px;
   width: 20%;
   height: calc(100vh - 33px);
   height: calc(100svh - 33px);

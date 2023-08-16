@@ -3,9 +3,10 @@ import React from 'react';
 interface SidebarResizerProps {
   onResize: (width: number) => void;
   sidebarWidth: number;
+  maxSidebarWidth?: number;
 }
 
-const SidebarResizer: React.FC<SidebarResizerProps> = ({ onResize, sidebarWidth }) => {
+const SidebarResizer: React.FC<SidebarResizerProps> = ({ onResize, sidebarWidth, maxSidebarWidth }) => {
   const handleMouseDown = (e: React.MouseEvent) => {
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
@@ -13,7 +14,8 @@ const SidebarResizer: React.FC<SidebarResizerProps> = ({ onResize, sidebarWidth 
   };
 
   const handleMouseMove = (e: MouseEvent) => { 
-    onResize(e.clientX);
+    const newWidth = Math.min(e.clientX, maxSidebarWidth ?? Infinity);
+    onResize(newWidth);
   };
 
   const handleMouseUp = () => {
@@ -29,7 +31,8 @@ const SidebarResizer: React.FC<SidebarResizerProps> = ({ onResize, sidebarWidth 
 
   const handleTouchMove = (e: TouchEvent) => {
     e.preventDefault();
-    onResize(e.touches[0].clientX);
+    const newWidth = Math.min(e.touches[0].clientX, maxSidebarWidth ?? Infinity);
+    onResize(newWidth);
   };
   
   const handleTouchEnd = () => {

@@ -19,6 +19,7 @@ const App: React.FC = () => {
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
   const [receivingId, setReceivingId] = useState('');
   const [sidebarWidth, setSidebarWidth] = useState(200);
+  const maxSidebarWidth = 600;
 
   const scrollToBottom = () => {
     if(messageContainerRef.current) {
@@ -91,9 +92,9 @@ const App: React.FC = () => {
             setActiveConversation={setActiveConversation}
             handleUpdateConversations={handleUpdateConversations}
             deleteConversation={handleDeleteConversation}
-            style={{ width: sidebarWidth }}
+            style={{ width: sidebarWidth, maxWidth: maxSidebarWidth }}
           />
-          <SidebarResizer onResize={handleResize} sidebarWidth={sidebarWidth} />
+          <SidebarResizer onResize={handleResize} sidebarWidth={sidebarWidth} maxSidebarWidth={maxSidebarWidth} />
           </>
           )}
           {activeConversation ? (

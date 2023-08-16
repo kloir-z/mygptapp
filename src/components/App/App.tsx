@@ -16,24 +16,13 @@ const App: React.FC = () => {
   const [showMenu, setShowMenu] = useState(true);
   const [model, setModel] = useState('gpt-3.5-turbo-0613'); 
   const [apiKey, setApiKey] = useState('');
-  const messageContainerRef = useRef<HTMLDivElement | null>(null);
   const [receivingId, setReceivingId] = useState('');
   const [sidebarWidth, setSidebarWidth] = useState(200);
   const maxSidebarWidth = 600;
 
-  const scrollToBottom = () => {
-    if(messageContainerRef.current) {
-      messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
-    }
-  };
-
   const handleResize = (width: number) => {
     setSidebarWidth(width);
   };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [showMenu]);
 
   useEffect(() => {
     const fetchUserConversations = async () => {
@@ -99,7 +88,7 @@ const App: React.FC = () => {
           )}
           {activeConversation ? (
             <Conversation
-              forwardedRef={messageContainerRef}
+              showMenu={showMenu}
               conversation={activeConversation}
               model={model}
               apiKey={apiKey}

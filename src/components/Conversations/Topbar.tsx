@@ -59,7 +59,6 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, model, setModel, set
     return(
         <TopbarContainer>
             <StyledButton onClick={toggleMenu}>Menu</StyledButton>
-
             <StyledButton onClick={() => {
             const newConv = createNewConversation();
             setConversations((prev: ConversationType[]) => [...prev, newConv]);

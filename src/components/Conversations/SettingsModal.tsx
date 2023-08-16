@@ -30,7 +30,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ show, onClose, apiKey, se
   return (
     show ? 
     <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }} onMouseDown={onClose}>
-      <div style={{ position: 'relative', background: '#282c34', padding: '20px' }} onMouseDown={e => e.stopPropagation()}>
+      <div style={{ position: 'relative', background: '#282c34', padding: '20px', border: 'solid 1px rgb(83 87 97)', borderRadius: '5px' }} onMouseDown={e => e.stopPropagation()}>
         <div style={{ position: 'absolute', top: '0px', right: '10px', cursor: 'pointer', fontSize: '1.7rem'}} onClick={onClose}>×</div>
         <label>Set your OpenAI API key here.</label><br></br>
         {!apiKey ? (<label style={{ color: 'red' }}>×</label>) : (<label style={{ color: 'green' }}>●</label>)}

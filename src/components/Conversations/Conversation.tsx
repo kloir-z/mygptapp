@@ -14,19 +14,19 @@ type ConversationProps = {
   model: string;
   apiKey: string;
   handleUpdateConversations: (updatedConversation: ConversationType) => Promise<void>;
-  forwardedRef: React.RefObject<HTMLDivElement>;
   systemprompts: SystemPromptType[];
   receivingId: string;
   setReceivingId: React.Dispatch<React.SetStateAction<string>>;
+  showMenu: boolean;
 };
 
-const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey, handleUpdateConversations, systemprompts }) => {
+const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey, handleUpdateConversations, systemprompts, showMenu }) => {
   const [totalTokenUpdateRequired, setTotalTokenUpdateRequired] = useState(false);
   const [messages, setMessages] = useState<ConversationData[]>(conversation.revisions[0].conversation);
 
   const { editingMessageIndex, setEditingMessageIndex, tempMessageContent, onDoubleClickMessage, handleContentChange, handleConfirmEditing, handleCancelEditing, deleteMessage, editTextAreaRef } = useEditing({handleUpdateConversations, conversation, messages ,setMessages});
   const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(apiKey, model, conversation, handleUpdateConversations, messages, setMessages);
-  const { scrollToBottom, messagesEndRef, forwardedRef } = useScroll(messages);
+  const { scrollToBottom, messagesEndRef, messagesContainerRef } = useScroll(messages, showMenu);
 
   const showInitialMenu = () => {
     return !messages.some(message => message.role === 'assistant');
@@ -41,7 +41,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
 
   return (
     <ConversationContainer>
-      <MessagesContainer ref={forwardedRef}>
+      <MessagesContainer ref={messagesContainerRef}>
         {showInitialMenu() && (
           <InitialMenu
             systemprompts={systemprompts}

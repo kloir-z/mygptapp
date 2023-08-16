@@ -28,6 +28,7 @@ const SidebarResizer: React.FC<SidebarResizerProps> = ({ onResize, sidebarWidth 
   };
 
   const handleTouchMove = (e: TouchEvent) => {
+    e.preventDefault();
     onResize(e.touches[0].clientX);
   };
   

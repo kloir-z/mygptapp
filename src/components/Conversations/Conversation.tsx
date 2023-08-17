@@ -27,7 +27,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
 
   const { editingMessageIndex, setEditingMessageIndex, tempMessageContent, onDoubleClickMessage, handleContentChange, handleConfirmEditing, handleCancelEditing, deleteMessage, editTextAreaRef } = useEditing({handleUpdateConversations, conversation, messages ,setMessages});
   const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(apiKey, model, conversation, handleUpdateConversations, messages, setMessages);
-  const { scrollToBottom, messagesEndRef, scrollContainerRef } = useScroll(messages);
+  const { scrollToBottom, messagesEndRef, scrollContainerRef } = useScroll(messages, tempMessageContent);
 
   const showInitialMenu = () => {
     return !messages.some(message => message.role === 'assistant');

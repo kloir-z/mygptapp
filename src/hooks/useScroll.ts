@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { ConversationData } from 'src/components/Conversations/types/Conversations.types';
 
-const useScroll = (messages?: ConversationData[], content?: string) => {
+const useScroll = (messages?: ConversationData[], content?: string | null) => {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const [containerHeight, setContainerHeight] = useState<number>(0);

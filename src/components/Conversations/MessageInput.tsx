@@ -24,13 +24,12 @@ const MessageInput: React.FC<MessageInputProps> = ({ awaitGetAIResponse, apiKey,
   const [message, setMessage] = useState('');
   const [inputTokenCount, setInputTokenCount] = useState<number>(0);
   const [totalTokenCount, setTotalTokenCount] = useState<number>(0);
-  const [scrollHeight, setScrollHeight] = useState<number>(0);
   const [inputTokenLoading, setInputTokenLoading] = useState(false);
   const [totalTokenLoading, setTotalTokenLoading] = useState(false);
   const [inputTokenUpdateRequired, setInputTokenUpdateRequired] = useState(false);
   const [isAwaitingResponse, setIsAwaitingResponse] = useState(false); 
   const { setDebugInfo } = useDebugInfo();
-  const { scrollToBottom, messagesEndRef, scrollContainerRef } = useScroll(undefined, message);
+  const { messagesEndRef, scrollContainerRef } = useScroll(undefined, message);
 
   const checkTokenCount = async () => {
     if (inputTokenUpdateRequired) {
@@ -76,7 +75,6 @@ const MessageInput: React.FC<MessageInputProps> = ({ awaitGetAIResponse, apiKey,
     if(textAreaRef.current){
       textAreaRef.current.style.height = 'auto';
       textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`;
-      setScrollHeight(textAreaRef.current.scrollHeight);
     }
     if(!inputTokenUpdateRequired){
       setInputTokenUpdateRequired(true);

@@ -38,7 +38,9 @@ export const useEditing = ({handleUpdateConversations, conversation, messages, s
     if (tempMessageContent !== null) {
       setMessages(prevMessages => {
         const updatedMessages = [...prevMessages];
-        updatedMessages[index].content = tempMessageContent;
+        if (typeof updatedMessages[index].content === 'string') {
+          updatedMessages[index].content = tempMessageContent;
+        }
         return updatedMessages;
       });
     }

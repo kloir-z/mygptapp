@@ -7,7 +7,6 @@ import Topbar from '../Conversations/Topbar'
 import Sidebar from '../Conversations/Sidebar'
 import Conversation from '../Conversations/Conversation'
 import SidebarResizer from '../Conversations/SidebarResizer';
-import useScroll from 'src/hooks/useScroll'
 
 const App: React.FC = () => {
   const { user } = useContext(AuthContext);
@@ -22,7 +21,6 @@ const App: React.FC = () => {
   const minSidebarWidth = 15;
   const maxSidebarWidth = 600;
   const scrollWrapperRef = useRef(null);
-
 
   const handleResize = (width: number) => {
     setSidebarWidth(width);

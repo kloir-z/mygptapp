@@ -43,13 +43,13 @@ const SidebarResizer: React.FC<SidebarResizerProps> = ({ onResize, sidebarWidth,
   return (
     <div
     onMouseDown={handleMouseDown}
-    onTouchStart={handleTouchStart} 
+    onTouchStart={handleTouchStart}
     style={{
       cursor: 'ew-resize',
-      width: '12px',
+      width: '20px',
       height: 'calc(100svh - 33px)',
       position: 'absolute',
-      left: sidebarWidth + 1,
+      left: sidebarWidth -5,
       top: '33px',
       zIndex: 1,
       }}

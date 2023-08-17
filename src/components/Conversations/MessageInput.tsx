@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { getAndSetTokenCount } from '../../utils/openAIUtil';
 import { ConversationData } from './types/Conversations.types';
-import { MessageInputContainer, MessageInputBottomContainer, StyledTextarea, CalcTokenButton, SendButton, InputTokenText, MessageTokenText } from './styles/MessageInput.styles'
+import { MessageInputContainer, MessageInputBottomContainer, StyledTextarea, CalcTokenButton, SendButton, InputTokenText, MessageTokenText, InputCursorRef } from './styles/MessageInput.styles'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane, faStop } from '@fortawesome/free-solid-svg-icons'
 import { Spinner } from './Spinner'
 import { useDebugInfo } from 'src/components/Debugger/DebugContext';
+import useScroll from 'src/hooks/useScroll'
 
 type MessageInputProps = {
   awaitGetAIResponse: (message: string, role: string, apiKey: string) => void;
@@ -28,7 +29,8 @@ const MessageInput: React.FC<MessageInputProps> = ({ awaitGetAIResponse, apiKey,
   const [inputTokenUpdateRequired, setInputTokenUpdateRequired] = useState(false);
   const [isAwaitingResponse, setIsAwaitingResponse] = useState(false); 
   const { setDebugInfo } = useDebugInfo();
-  const isiPhone = /iPhone|iPod/.test(navigator.userAgent);
+  const { scrollToBottom, messagesEndRef } = useScroll(messages);
+  const inputCursorRef = useRef<HTMLDivElement | null>(null);
 
   const checkTokenCount = async () => {
     if (inputTokenUpdateRequired) {
@@ -77,25 +79,36 @@ const MessageInput: React.FC<MessageInputProps> = ({ awaitGetAIResponse, apiKey,
   }, [message]);
 
   useEffect(() => {
-    if (isiPhone) return; 
-    const windowHeight = window.innerHeight;
-    const bodyHeight = document.body.scrollHeight;
-    const scrollPosition = window.pageYOffset || document.body.scrollTop || document.documentElement.scrollTop || window.scrollY;
-    setDebugInfo(`winH: ${windowHeight}, bodyH: ${bodyHeight}, scrlPos: ${scrollPosition},  ${bodyHeight - scrollPosition - windowHeight}`);
-
-    if (scrollHeight !== bodyHeight && (bodyHeight - scrollPosition - windowHeight) <= 50) {
-      setTimeout(() => {
-        window.scrollTo(0, document.body.scrollHeight);
-      }, 0);
+    const inputCursorPos = inputCursorRef.current?.getBoundingClientRect().top;
+    const messagesEndPos = messagesEndRef.current?.getBoundingClientRect().top;
+    const debugInfoString = `inputCursorPos: ${inputCursorPos}, messagesEndPos: ${messagesEndPos}`;
+    setDebugInfo(debugInfoString);
+  
+    if (inputCursorPos !== undefined && messagesEndPos !== undefined) {
+      const difference = Math.abs(inputCursorPos - messagesEndPos);
+      if (difference <= 150) {
+        setTimeout(() => {
+          scrollToBottom();
+        }, 0);
+      }
     }
   }, [scrollHeight]);
 
   return (
     <>
       <MessageInputContainer>
+      <InputCursorRef ref={inputCursorRef} />
       <StyledTextarea 
         value={message} 
         onChange={e => setMessage(e.target.value)}
+        onInput={() => {
+          if (textAreaRef.current && inputCursorRef.current) {
+            const cursorPos = textAreaRef.current.selectionStart;
+            const currentLine = textAreaRef.current.value.substr(0, cursorPos).split('\n').length - 1;
+            const lineHeight = parseFloat(window.getComputedStyle(textAreaRef.current).lineHeight);
+            inputCursorRef.current.style.top = `${currentLine * lineHeight}px`;
+          }
+        }}
         rows={message.split('\n').length || 1}
         ref={textAreaRef} 
       />
@@ -124,7 +137,9 @@ const MessageInput: React.FC<MessageInputProps> = ({ awaitGetAIResponse, apiKey,
       </MessageInputContainer>
       <MessageInputBottomContainer>
         <CalcTokenButton type="button" onClick={checkTokenCount}>CalcToken</CalcTokenButton>
+        <div ref={messagesEndRef} />
       </MessageInputBottomContainer>
+      
     </>
   );
 };

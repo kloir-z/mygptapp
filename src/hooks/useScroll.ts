@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 
-const useScroll = (messages: any[], showMenu: boolean) => {
+const useScroll = (messages?: any[], showMenu?: boolean) => {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
   const [containerHeight, setContainerHeight] = useState<number>(0);

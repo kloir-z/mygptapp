@@ -4,6 +4,10 @@ export const MessageInputContainer = styled.div`
   position: relative;
 `;
 
+export const InputCursorRef = styled.div`
+  position: absolute;
+`;
+
 export const MessageInputBottomContainer = styled.div`
   display: flex;
   flex-direction: row-reverse;
@@ -23,6 +27,7 @@ export const StyledTextarea = styled.textarea`
   box-sizing: border-box;
   font-family: MeiryoUI, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
   font-size: 0.8rem;
+  line-height: 0.8rem;
   color: #ebebeb;
   background-color: #4c586a;
 ;

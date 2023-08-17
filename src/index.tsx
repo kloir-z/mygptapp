@@ -38,7 +38,7 @@ ReactDOM.render(
           }
           body {
             max-width: 1800px;
-            margin: 0 auto;
+            margin: 0;
             display: flex;
             flex-direction: column;
             height: 100vh;

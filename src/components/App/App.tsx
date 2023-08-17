@@ -18,6 +18,7 @@ const App: React.FC = () => {
   const [apiKey, setApiKey] = useState('');
   const [receivingId, setReceivingId] = useState('');
   const [sidebarWidth, setSidebarWidth] = useState(200);
+  const minSidebarWidth = 15;
   const maxSidebarWidth = 600;
 
   const handleResize = (width: number) => {
@@ -83,7 +84,7 @@ const App: React.FC = () => {
             deleteConversation={handleDeleteConversation}
             style={{ width: sidebarWidth, maxWidth: maxSidebarWidth }}
           />
-          <SidebarResizer onResize={handleResize} sidebarWidth={sidebarWidth} maxSidebarWidth={maxSidebarWidth} />
+          <SidebarResizer onResize={handleResize} sidebarWidth={sidebarWidth} minSidebarWidth={minSidebarWidth} maxSidebarWidth={maxSidebarWidth} />
           </>
           )}
           {activeConversation ? (

@@ -18,19 +18,24 @@ type ConversationProps = {
   receivingId: string;
   setReceivingId: React.Dispatch<React.SetStateAction<string>>;
   showMenu: boolean;
+  scrollWrapperRef: React.RefObject<HTMLDivElement>
 };
 
-const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey, handleUpdateConversations, systemprompts, showMenu }) => {
+const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey, handleUpdateConversations, systemprompts, showMenu, scrollWrapperRef }) => {
   const [totalTokenUpdateRequired, setTotalTokenUpdateRequired] = useState(false);
   const [messages, setMessages] = useState<ConversationData[]>(conversation.revisions[0].conversation);
 
   const { editingMessageIndex, setEditingMessageIndex, tempMessageContent, onDoubleClickMessage, handleContentChange, handleConfirmEditing, handleCancelEditing, deleteMessage, editTextAreaRef } = useEditing({handleUpdateConversations, conversation, messages ,setMessages});
   const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(apiKey, model, conversation, handleUpdateConversations, messages, setMessages);
-  const { scrollToBottom, messagesEndRef, messagesContainerRef } = useScroll(messages, showMenu);
+  const { scrollToBottom, messagesEndRef, scrollContainerRef } = useScroll(messages);
 
   const showInitialMenu = () => {
     return !messages.some(message => message.role === 'assistant');
   };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [showMenu]);
 
   useEffect(() => {
     setMessages(conversation.revisions[0].conversation);
@@ -41,7 +46,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
 
   return (
     <ConversationContainer>
-      <MessagesContainer ref={messagesContainerRef}>
+      <MessagesContainer className="convScrollRef" ref={scrollContainerRef}>
         {showInitialMenu() && (
           <InitialMenu
             systemprompts={systemprompts}
@@ -62,7 +67,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
           deleteMessage={deleteMessage}
           editTextAreaRef={editTextAreaRef}
         />
-        <div ref={messagesEndRef} />
+        <div className="convEndRef" ref={messagesEndRef} />
       </MessagesContainer>
       <InputContainer>
         <MessageInput 
@@ -74,6 +79,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
           totalTokenUpdateRequired={totalTokenUpdateRequired}
           setTotalTokenUpdateRequired={setTotalTokenUpdateRequired}
           handleStopReceiving={handleStopReceiving}
+          scrollWrapperRef={scrollWrapperRef}
         />
       </InputContainer>
     </ConversationContainer>

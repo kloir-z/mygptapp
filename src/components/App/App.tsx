@@ -2,11 +2,12 @@ import React, { useState, useContext, useEffect, useRef } from "react";
 import { AuthContext } from '../Auth/AuthContext';
 import { ConversationType, SystemPromptType } from '../Conversations/types/Conversations.types';
 import { fetchConversations, updateConversations, deleteConversation } from '../Auth/firebase';
-import { MainContainer, Placeholder } from './App.styles'
+import { ScrollWrapper, MainContainer, Placeholder } from './App.styles'
 import Topbar from '../Conversations/Topbar'
 import Sidebar from '../Conversations/Sidebar'
 import Conversation from '../Conversations/Conversation'
 import SidebarResizer from '../Conversations/SidebarResizer';
+import useScroll from 'src/hooks/useScroll'
 
 const App: React.FC = () => {
   const { user } = useContext(AuthContext);
@@ -20,6 +21,8 @@ const App: React.FC = () => {
   const [sidebarWidth, setSidebarWidth] = useState(200);
   const minSidebarWidth = 15;
   const maxSidebarWidth = 600;
+  const scrollWrapperRef = useRef(null);
+
 
   const handleResize = (width: number) => {
     setSidebarWidth(width);
@@ -58,7 +61,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <>
+    <ScrollWrapper ref={scrollWrapperRef}>
       <Topbar
         conversations={conversations}
         model={model}
@@ -97,12 +100,13 @@ const App: React.FC = () => {
               systemprompts={systemprompts}
               receivingId={receivingId}
               setReceivingId={setReceivingId}
+              scrollWrapperRef={scrollWrapperRef}
             />
           ) : (
             <Placeholder>Please select a conversation</Placeholder>
           )}
       </MainContainer>
-    </>
+    </ScrollWrapper>
   );
 }
 

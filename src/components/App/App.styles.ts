@@ -1,5 +1,12 @@
 import styled from "@emotion/styled";
 
+
+export const ScrollWrapper = styled.div`
+  overflow-y: scroll;
+  height: 100vh;
+  height: 100svh;
+`;
+
 export const MainContainer = styled.div`
   display: flex;
   flex-grow: 1;

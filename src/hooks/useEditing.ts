@@ -67,11 +67,8 @@ export const useEditing = ({handleUpdateConversations, conversation, messages, s
 
   useEffect(() => {
     if (editTextAreaRef.current && editingMessageIndex !== null) {
-      const content = tempMessageContent;
-      if (content) {
-        editTextAreaRef.current.style.height = 'auto';
-        editTextAreaRef.current.style.height = `${editTextAreaRef.current.scrollHeight}px`;
-      }
+      editTextAreaRef.current.style.height = 'auto';
+      editTextAreaRef.current.style.height = `${editTextAreaRef.current.scrollHeight}px`;
     }
   }, [tempMessageContent, editingMessageIndex]);  
 

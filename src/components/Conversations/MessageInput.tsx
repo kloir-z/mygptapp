@@ -17,9 +17,10 @@ type MessageInputProps = {
   totalTokenUpdateRequired: boolean;
   setTotalTokenUpdateRequired: React.Dispatch<React.SetStateAction<boolean>>;
   handleStopReceiving: () => void;
+  scrollWrapperRef: React.RefObject<HTMLDivElement>
 };
 
-const MessageInput: React.FC<MessageInputProps> = ({ awaitGetAIResponse, apiKey, messages, model, totalTokenUpdateRequired, setTotalTokenUpdateRequired, handleStopReceiving }) => {
+const MessageInput: React.FC<MessageInputProps> = ({ awaitGetAIResponse, apiKey, messages, model, totalTokenUpdateRequired, setTotalTokenUpdateRequired, handleStopReceiving, scrollWrapperRef }) => {
   const [message, setMessage] = useState('');
   const [inputTokenCount, setInputTokenCount] = useState<number>(0);
   const [totalTokenCount, setTotalTokenCount] = useState<number>(0);
@@ -29,8 +30,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ awaitGetAIResponse, apiKey,
   const [inputTokenUpdateRequired, setInputTokenUpdateRequired] = useState(false);
   const [isAwaitingResponse, setIsAwaitingResponse] = useState(false); 
   const { setDebugInfo } = useDebugInfo();
-  const { scrollToBottom, messagesEndRef } = useScroll(messages);
-  const inputCursorRef = useRef<HTMLDivElement | null>(null);
+  const { scrollToBottom, messagesEndRef, scrollContainerRef } = useScroll(undefined, message);
 
   const checkTokenCount = async () => {
     if (inputTokenUpdateRequired) {
@@ -58,7 +58,6 @@ const MessageInput: React.FC<MessageInputProps> = ({ awaitGetAIResponse, apiKey,
     } finally {
       setIsAwaitingResponse(false);
     }
-    setInputTokenUpdateRequired(true);
     setTotalTokenUpdateRequired(true);
   };
 
@@ -66,6 +65,10 @@ const MessageInput: React.FC<MessageInputProps> = ({ awaitGetAIResponse, apiKey,
     setIsAwaitingResponse(false);
     handleStopReceiving();
   };
+
+  useEffect(() => {
+    scrollContainerRef.current = scrollWrapperRef.current;
+  }, [scrollWrapperRef]);
   
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -75,40 +78,18 @@ const MessageInput: React.FC<MessageInputProps> = ({ awaitGetAIResponse, apiKey,
       textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`;
       setScrollHeight(textAreaRef.current.scrollHeight);
     }
-    setInputTokenUpdateRequired(true);
-  }, [message]);
-
-  useEffect(() => {
-    const inputCursorPos = inputCursorRef.current?.getBoundingClientRect().top;
-    const messagesEndPos = messagesEndRef.current?.getBoundingClientRect().top;
-    const debugInfoString = `inputCursorPos: ${inputCursorPos}, messagesEndPos: ${messagesEndPos}`;
-    setDebugInfo(debugInfoString);
-  
-    if (inputCursorPos !== undefined && messagesEndPos !== undefined) {
-      const difference = Math.abs(inputCursorPos - messagesEndPos);
-      if (difference <= 150) {
-        setTimeout(() => {
-          scrollToBottom();
-        }, 0);
-      }
+    if(!inputTokenUpdateRequired){
+      setInputTokenUpdateRequired(true);
     }
-  }, [scrollHeight]);
+  }, [message]);
 
   return (
     <>
       <MessageInputContainer>
-      <InputCursorRef ref={inputCursorRef} />
+      <InputCursorRef/>
       <StyledTextarea 
         value={message} 
         onChange={e => setMessage(e.target.value)}
-        onInput={() => {
-          if (textAreaRef.current && inputCursorRef.current) {
-            const cursorPos = textAreaRef.current.selectionStart;
-            const currentLine = textAreaRef.current.value.substr(0, cursorPos).split('\n').length - 1;
-            const lineHeight = parseFloat(window.getComputedStyle(textAreaRef.current).lineHeight);
-            inputCursorRef.current.style.top = `${currentLine * lineHeight}px`;
-          }
-        }}
         rows={message.split('\n').length || 1}
         ref={textAreaRef} 
       />
@@ -137,9 +118,8 @@ const MessageInput: React.FC<MessageInputProps> = ({ awaitGetAIResponse, apiKey,
       </MessageInputContainer>
       <MessageInputBottomContainer>
         <CalcTokenButton type="button" onClick={checkTokenCount}>CalcToken</CalcTokenButton>
-        <div ref={messagesEndRef} />
       </MessageInputBottomContainer>
-      
+      <div ref={messagesEndRef}></div>
     </>
   );
 };

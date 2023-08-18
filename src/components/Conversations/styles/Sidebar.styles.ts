@@ -12,6 +12,7 @@ export const SidebarContainer = styled.div`
   outline: none;
   overflow-y: scroll;
   position: relative;
+  overflow-x: 'hidden'
 `;
 
 export const ConversationItem = styled.div<{ active: boolean }>`

@@ -74,8 +74,6 @@ const App: React.FC = () => {
         setSystemPrompts={setSystemPrompts}
       />
       <MainContainer>
-        {showMenu && (
-          <>
           <Sidebar
             conversations={conversations}
             activeConversation={activeConversation}
@@ -83,10 +81,16 @@ const App: React.FC = () => {
             setActiveConversation={setActiveConversation}
             handleUpdateConversations={handleUpdateConversations}
             deleteConversation={handleDeleteConversation}
-            style={{ width: sidebarWidth, maxWidth: maxSidebarWidth }}
+            style={{
+              width: showMenu ? sidebarWidth : 0,
+              maxWidth: maxSidebarWidth,
+              overflowX: 'hidden',
+              minWidth: showMenu ? '10px' : '0px',
+              transition: 'all 0.2s ease'
+            }}
           />
+          {showMenu && (
           <SidebarResizer onResize={handleResize} sidebarWidth={sidebarWidth} minSidebarWidth={minSidebarWidth} maxSidebarWidth={maxSidebarWidth} />
-          </>
           )}
           {activeConversation ? (
             <Conversation

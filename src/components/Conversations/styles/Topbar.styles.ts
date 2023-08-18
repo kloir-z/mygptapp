@@ -11,9 +11,10 @@ export const TopbarContainer = styled.div`
 export const StyledSelect = styled.select`
   margin: 5px;
   font-size: 0.8rem;
-  color: #ebebeb;
+  color: #ffffffe3;
   background-color: #4c586a;
   padding: 2px 4px;
+  border-radius: 3px;
 `;
 
 export const StyledOption = styled.option`
@@ -28,7 +29,7 @@ export const StyledButton = styled.button`
   border-radius: 3px;
   border: none;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.85); 
+  color: #ffffffe3; 
   background: rgba(51, 99, 150, 0.85);
   &:hover {
     background: rgba(65, 125, 189, 0.85);

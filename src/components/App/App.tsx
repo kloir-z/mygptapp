@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect, useRef } from "react";
 import { AuthContext } from '../Auth/AuthContext';
 import { ConversationType, SystemPromptType } from '../Conversations/types/Conversations.types';
 import { fetchConversations, updateConversations, deleteConversation } from '../Auth/firebase';
-import { ScrollWrapper, MainContainer, Placeholder } from './App.styles'
+import { ScrollWrapper, MainContainer, SidebarContainer, Placeholder } from './App.styles'
 import Topbar from '../Conversations/Topbar'
 import Sidebar from '../Conversations/Sidebar'
 import Conversation from '../Conversations/Conversation'
@@ -74,6 +74,7 @@ const App: React.FC = () => {
         setSystemPrompts={setSystemPrompts}
       />
       <MainContainer>
+        <SidebarContainer showMenu={showMenu} sidebarWidth={sidebarWidth} tabIndex={0}>
           <Sidebar
             conversations={conversations}
             activeConversation={activeConversation}
@@ -81,32 +82,26 @@ const App: React.FC = () => {
             setActiveConversation={setActiveConversation}
             handleUpdateConversations={handleUpdateConversations}
             deleteConversation={handleDeleteConversation}
-            style={{
-              width: showMenu ? sidebarWidth : 0,
-              maxWidth: maxSidebarWidth,
-              overflowX: 'hidden',
-              minWidth: showMenu ? '10px' : '0px',
-              transition: 'all 0.2s ease'
-            }}
           />
-          {showMenu && (
-          <SidebarResizer onResize={handleResize} sidebarWidth={sidebarWidth} minSidebarWidth={minSidebarWidth} maxSidebarWidth={maxSidebarWidth} />
-          )}
-          {activeConversation ? (
-            <Conversation
-              showMenu={showMenu}
-              conversation={activeConversation}
-              model={model}
-              apiKey={apiKey}
-              handleUpdateConversations={handleUpdateConversations}
-              systemprompts={systemprompts}
-              receivingId={receivingId}
-              setReceivingId={setReceivingId}
-              scrollWrapperRef={scrollWrapperRef}
-            />
-          ) : (
-            <Placeholder>Please select a conversation</Placeholder>
-          )}
+        </SidebarContainer>
+        {showMenu && (
+        <SidebarResizer onResize={handleResize} sidebarWidth={sidebarWidth} minSidebarWidth={minSidebarWidth} maxSidebarWidth={maxSidebarWidth} />
+        )}
+        {activeConversation ? (
+          <Conversation
+            showMenu={showMenu}
+            conversation={activeConversation}
+            model={model}
+            apiKey={apiKey}
+            handleUpdateConversations={handleUpdateConversations}
+            systemprompts={systemprompts}
+            receivingId={receivingId}
+            setReceivingId={setReceivingId}
+            scrollWrapperRef={scrollWrapperRef}
+          />
+        ) : (
+          <Placeholder>Please select a conversation</Placeholder>
+        )}
       </MainContainer>
     </ScrollWrapper>
   );

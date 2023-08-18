@@ -33,7 +33,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ show, onClose, apiKey, se
       <div style={{ position: 'relative', background: '#282c34', padding: '20px', border: 'solid 1px rgb(83 87 97)', borderRadius: '5px' }} onMouseDown={e => e.stopPropagation()}>
         <div style={{ position: 'absolute', top: '0px', right: '10px', cursor: 'pointer', fontSize: '1.7rem'}} onClick={onClose}>×</div>
         <label>Set your OpenAI API key here.</label><br></br>
-        {!apiKey ? (<label style={{ color: 'red' }}>×</label>) : (<label style={{ color: 'green' }}>●</label>)}
+        <label style={{ color: apiKey ? 'green' : 'red' }}>●</label>
         <StyledInput 
           type="password" 
           value={tempApiKey}

@@ -13,6 +13,22 @@ export const MainContainer = styled.div`
   overflow: hidden;
 `;
 
+export const SidebarContainer = styled.div<{ showMenu: boolean; sidebarWidth: number }>`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 0;
+  flex-shrink: 0;
+  height: calc(100vh - 33px);
+  height: calc(100svh - 33px);
+  overflow-x: hidden;
+  overflow-y: ${props => (props.showMenu ? 'scroll' : 'hidden')};
+  width: ${props => (props.showMenu ? `${props.sidebarWidth}px` : '0')};
+  min-width: ${props => (props.showMenu ? '10px' : '0px')};
+  outline: none;
+  position: relative;
+  transition: all 0.2s ease;
+`;
+
 export const Placeholder = styled.div`
   color: #ebebeb;
   margin: 1rem;

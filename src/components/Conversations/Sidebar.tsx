@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
-import { StyledInput, ConversationItem, SidebarContainer, TitleLeft, TitleRight } from './styles/Sidebar.styles';
+import { StyledInput, ConversationItem, TitleLeft, TitleRight } from './styles/Sidebar.styles';
 import { ConversationType } from './types/Conversations.types';
 import { FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
-
+import { MdOutlineChat } from 'react-icons/md';
 type SidebarProps = {
   conversations: ConversationType[];
   activeConversation: ConversationType | null;
@@ -10,10 +10,9 @@ type SidebarProps = {
   setActiveConversation: Function;
   handleUpdateConversations: (updatedConversation: ConversationType) => Promise<void>;
   deleteConversation: (id: string) => Promise<void>;
-  style?: React.CSSProperties; 
 };
 
-const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, setConversations, setActiveConversation, handleUpdateConversations, deleteConversation, style }) => {
+const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, setConversations, setActiveConversation, handleUpdateConversations, deleteConversation }) => {
   const inputRef = useRef<HTMLInputElement>(null);  
   const [editingTitle, setEditingTitle] = useState<string>("");
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -53,10 +52,10 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, se
   };
 
   return (
-    <SidebarContainer tabIndex={0} style={style}>
+    <>
       {[...conversations].reverse().map((conversation, index) => (
         <ConversationItem 
-          key={index} 
+          key={index}
           onClick={() => {
             if (activeConversation?.id !== conversation.id) {
               setActiveConversation(conversation);
@@ -80,11 +79,11 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, se
               </TitleRight>
             </>
           ) : (
-            <TitleLeft>{conversation.title}</TitleLeft>
+            <TitleLeft><MdOutlineChat /><span> {conversation.title}</span></TitleLeft>
           )}
         </ConversationItem>
       ))}
-    </SidebarContainer>
+    </>
   );
 };
 

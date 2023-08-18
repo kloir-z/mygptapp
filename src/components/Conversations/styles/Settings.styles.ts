@@ -12,7 +12,8 @@ export const StyledSelect = styled.select`
   font-size: 0.8rem;
   color: #ebebeb;
   background-color: #4c586a;
-  padding: 5px 8px;
+  padding: 5px 2px;
+  border-radius: 3px;
 `;
 
 export const StyledOption = styled.option`
@@ -27,7 +28,7 @@ export const StyledButton = styled.button`
   border-radius: 3px;
   border: none;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.85); 
+  color: #ffffffe3;
   background: rgba(51, 99, 150, 0.85);
   &:hover {
     background: rgba(65, 125, 189, 0.85);
@@ -42,11 +43,12 @@ export const StyledButton = styled.button`
 export const StyledInput = styled.input`
   margin: 5px;
   font-size: 0.8rem;
-  color: #ebebeb;
-  background-color: #4c586a;
+  color: #4c586a;
+  background-color: #ebebeb;
   border: solid 1px #ebebeb;
   padding: 5px 4px;
-  width: 100px;
+  width: 200px;
+  border-radius: 3px;
 `;
 
 export const SystemPromptTextarea = styled.textarea`

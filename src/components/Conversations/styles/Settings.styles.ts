@@ -10,6 +10,9 @@ export const SystemPromptSettingsContainer = styled.div`
 export const StyledSelect = styled.select`
   margin: 5px;
   font-size: 0.8rem;
+  color: #ebebeb;
+  background-color: #4c586a;
+  padding: 5px 8px;
 `;
 
 export const StyledOption = styled.option`
@@ -37,9 +40,12 @@ export const StyledButton = styled.button`
 `;
 
 export const StyledInput = styled.input`
-  padding: 2px 6px;
   margin: 5px;
   font-size: 0.8rem;
+  color: #ebebeb;
+  background-color: #4c586a;
+  border: solid 1px #ebebeb;
+  padding: 5px 4px;
   width: 100px;
 `;
 

@@ -11,6 +11,9 @@ export const TopbarContainer = styled.div`
 export const StyledSelect = styled.select`
   margin: 5px;
   font-size: 0.8rem;
+  color: #ebebeb;
+  background-color: #4c586a;
+  padding: 2px 4px;
 `;
 
 export const StyledOption = styled.option`

@@ -52,7 +52,7 @@ export const EditingText = styled.div`
     background-color: #b3b3b3;
     border-radius: 3px;
     padding: 4px;
-    margin-left: 10px;
+    margin-left: 30px;
   }
 `;
 
@@ -78,6 +78,9 @@ export const EditTextarea = styled.textarea`
 export const StyledSelect = styled.select`
   margin: 5px;
   font-size: 0.8rem;
+  color: #ebebeb;
+  background-color: #4c586a;
+  padding: 5px 8px;
 `;
 
 export const StyledOption = styled.option`

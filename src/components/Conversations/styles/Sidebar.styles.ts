@@ -19,7 +19,7 @@ export const ConversationItem = styled.div<{ active: boolean }>`
   font-family: MeiryoUI, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
   font-size: 0.8rem;
   background-color: ${props => props.active ? '#70777e' : '#474c57'}; 
-  padding: 10px; 
+  padding: 5px; 
   margin: 0px 0px 2px 0px; 
   cursor: default;
   display: flex; 
@@ -34,16 +34,16 @@ export const ConversationItem = styled.div<{ active: boolean }>`
     background-color: #b3b3b3;
     border-radius: 3px;
     padding: 4px;
-    margin-left: 10px;
+    margin-left: 30px;
   }
 `;
 
 export const StyledInput = styled.input`
-  font-family: MairyoUI;
   font-size: 0.8rem;
-  background-color: #f7f7f7;
-  padding: 0px 5px;
-  border: 0px;
+  color: #4c586a;
+  background-color: #ebebeb;
+  border: solid 1px #ebebeb;
+  padding: 5px 4px;
   margin: 0px;
 `;
 

@@ -8,9 +8,14 @@ const useScroll = (messages?: ConversationData[], content?: string | null) => {
 
   const scrollToBottom = () => {
     setTimeout(() => {
-      messagesEndRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' });
-      window.scrollTo(0, document.body.scrollHeight);
-    }, 0);
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        if (isIOS) {
+        window.scrollTo(0, document.body.scrollHeight);
+      }
+      else {
+        messagesEndRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' });
+      }
+    }, 5);
   };
 
   useEffect(() => {

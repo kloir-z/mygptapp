@@ -46,7 +46,7 @@ export const StyledInput = styled.input`
   font-size: 0.8rem;
   color: #4c586a;
   background-color: #ebebeb;
-  border: solid 1px #ebebeb;
+  border: none;
   padding: 5px 4px;
   width: 200px;
   border-radius: 3px;

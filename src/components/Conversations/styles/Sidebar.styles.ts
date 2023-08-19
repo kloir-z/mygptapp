@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 
-
 export const ConversationItem = styled.div<{ active: boolean }>`
   font-size: 0.8rem;
   background-color: ${props => props.active ? '#70777e' : 'transparent'}; 
@@ -20,10 +19,12 @@ export const ConversationItem = styled.div<{ active: boolean }>`
     padding: 4px;
     margin-left: 30px;
   }
-  &:hover {
-    background-color: ${props => props.active ? '#80888f' : '#575d68'};
-    overflow: visible; // ホバー時にはオーバーフローを許可
-    white-space: normal; // 折り返しを許可
+  @media (hover: hover) {
+    &:hover {
+      background-color: ${props => props.active ? '#80888f' : '#575d68'};
+      overflow: visible;
+      white-space: normal;
+    }
   }
 `;
 

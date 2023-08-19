@@ -4,7 +4,7 @@ export const TopbarContainer = styled.div`
   display: flex;
   width: 100%;
   height: 33px;
-  background-color: #6c727e;
+  background-color: #ffffff0a;
   overflow: hidden;
 `;
 

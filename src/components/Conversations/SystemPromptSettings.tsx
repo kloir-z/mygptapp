@@ -71,7 +71,7 @@ const SystemPromptSettings: React.FC<SystemPromptSettingsProps> = ({ systempromp
 
   return (
     <SystemPromptSettingsContainer>
-      <label>System Prompt Settings:</label>
+      <label>System Prompt:</label>
         <StyledSelect value={selectedPromptIndex === null ? -1 : selectedPromptIndex} onChange={(e) => handleSelectionChange(Number(e.target.value))}>
           <StyledOption value={-1}>New</StyledOption>
           {systemprompts.map((prompt, index) => (

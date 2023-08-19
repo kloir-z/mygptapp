@@ -9,7 +9,8 @@ const useScroll = (messages?: ConversationData[], content?: string | null) => {
   const scrollToBottom = () => {
     setTimeout(() => {
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-        if (isIOS) {
+      if (isIOS) {
+        messagesEndRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' });
         window.scrollTo(0, document.body.scrollHeight);
       }
       else {

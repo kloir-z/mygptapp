@@ -8,7 +8,7 @@ import useScroll from 'src/hooks/useScroll'
 import SendButton from './SendButton';
 
 type MessageInputProps = {
-  awaitGetAIResponse: (message: string, role: string, apiKey: string) => void;
+  awaitGetAIResponse: (apiKey: string, message?: string, role?: string) => void;
   getAndSetTokenCount: (messages: ConversationData[], model: string, setTokenCount: React.Dispatch<React.SetStateAction<number>>) => void;
   messages: ConversationData[];
   apiKey: string;
@@ -25,10 +25,10 @@ const MessageInput: React.FC<MessageInputProps> = ({ awaitGetAIResponse, apiKey,
   const [totalTokenCount, setTotalTokenCount] = useState<number>(0);
   const [inputTokenLoading, setInputTokenLoading] = useState(false);
   const [totalTokenLoading, setTotalTokenLoading] = useState(false);
-  const [inputTokenUpdateRequired, setInputTokenUpdateRequired] = useState(false);
-  const [isAwaitingResponse, setIsAwaitingResponse] = useState(false); 
-  const { setDebugInfo } = useDebugInfo();
   const { messagesEndRef, scrollContainerRef } = useScroll(undefined, message);
+  const [inputTokenUpdateRequired, setInputTokenUpdateRequired] = useState(false);
+  const { setDebugInfo } = useDebugInfo();
+  const [isAwaitingResponse, setIsAwaitingResponse] = useState(false); 
   const handleStartResponse = () => setIsAwaitingResponse(true);
   const handleStopResponse = () => {
     setIsAwaitingResponse(false);
@@ -70,19 +70,21 @@ const MessageInput: React.FC<MessageInputProps> = ({ awaitGetAIResponse, apiKey,
     <>
       <MessageInputContainer>
       <InputCursorRef/>
-      <StyledTextarea 
-        value={message} 
+      <StyledTextarea
+        value={message}
         onChange={e => setMessage(e.target.value)}
         rows={message.split('\n').length || 1}
-        ref={textAreaRef} 
+        ref={textAreaRef}
       />
       <SendButton
+        setMessage={setMessage} 
         isAwaitingResponse={isAwaitingResponse}
-        awaitGetAIResponse={async (message, role, apiKey) => awaitGetAIResponse(message, role, apiKey)}
+        awaitGetAIResponse={async (apiKey, message, role) => awaitGetAIResponse(apiKey, message, role)}
         handleStartResponse={handleStartResponse}
         handleStopResponse={handleStopResponse}
-        message={message}
         apiKey={apiKey}
+        message={message}
+        disabled={message.trim() === ''}
       />
         {inputTokenLoading ? (
           <>

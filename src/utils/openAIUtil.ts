@@ -1,11 +1,23 @@
 import { ConversationData } from '../components/Conversations/types/Conversations.types';
 
-const sendToOpenAI = async (messageContent: string, role: string, apiKey: string, model: string, messages: ConversationData[]) => {
-  const messageData = messages.map((message) => ({
+type SendToOpenAIProps = {
+  apiKey: string,
+  model: string,
+  messages: ConversationData[],
+  messageContent?: string,
+  role?: string
+};
+
+const sendToOpenAI = async ({ apiKey, model, messages, messageContent, role }: SendToOpenAIProps) => {
+  let messageData = messages.map((message) => ({
     role: message.role,
     content: message.content,
   }));
-  messageData.push({ role, content: messageContent });
+
+  if (messageContent && role) {
+    messageData.push({ role: role, content: messageContent });
+  }
+
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -21,9 +33,29 @@ const sendToOpenAI = async (messageContent: string, role: string, apiKey: string
   return response;
 };
 
-export const getAIResponse = async (messageContent: string, role: string, apiKey: string, model: string, messages: ConversationData[], setMessages: React.Dispatch<React.SetStateAction<ConversationData[]>>, stopReceiving: React.MutableRefObject<boolean>) => {
-  setMessages(prev => [...prev, { role: 'user', content: messageContent }]);
-  const response = await sendToOpenAI(messageContent, role, apiKey, model, messages);
+type GetAIResponseProps = {
+  apiKey: string,
+  model: string,
+  messages: ConversationData[],
+  setMessages: React.Dispatch<React.SetStateAction<ConversationData[]>>,
+  stopReceiving: React.MutableRefObject<boolean>,
+  messageContent?: string,
+  role?: string
+};
+
+export const getAIResponse = async ({
+  apiKey,
+  model,
+  messages,
+  setMessages,
+  stopReceiving,
+  messageContent,
+  role
+}: GetAIResponseProps) => {
+  if (messageContent && role) {
+    setMessages(prev => [...prev, { role: 'user', content: messageContent }]);
+  }
+  const response = await sendToOpenAI({ apiKey, model, messages, messageContent, role });
   const reader = response.body?.getReader();
   if (!reader) {
     throw new Error('Response body stream not available');
@@ -85,7 +117,7 @@ export const getAIResponse = async (messageContent: string, role: string, apiKey
     console.log('streaming error');
     console.error(e);
   }
-  let finalMessages = [...messages, { role: 'user', content: messageContent }, { role: 'assistant', content: aiMessageContent }];
+  let finalMessages = [...messages, ...(messageContent ? [{ role: 'user', content: messageContent }] : []), { role: 'assistant', content: aiMessageContent }];
   return finalMessages;
 };
 

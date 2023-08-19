@@ -63,6 +63,11 @@ export const SendButton = styled.button`
   &:hover {
     background: rgba(65, 125, 189, 0.5);
   }
+  &:disabled {
+    color: rgba(255, 255, 255, 0.137);
+    background: rgba(70, 82, 92, 0.5);
+    cursor: not-allowed;
+  }
 `;
 
 export const InputTokenText = styled.div`

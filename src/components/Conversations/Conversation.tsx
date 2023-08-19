@@ -8,6 +8,7 @@ import useScroll from 'src/hooks/useScroll'
 import MessageInput from './MessageInput';
 import MessageList from './MessageList';
 import InitialMenu from './InitialMenu';
+import SendButton from './SendButton';
 
 type ConversationProps = {
   conversation: ConversationType;
@@ -28,6 +29,14 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
   const { editingMessageIndex, setEditingMessageIndex, tempMessageContent, onDoubleClickMessage, handleContentChange, handleConfirmEditing, handleCancelEditing, deleteMessage, editTextAreaRef } = useEditing({handleUpdateConversations, conversation, messages ,setMessages});
   const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(apiKey, model, conversation, handleUpdateConversations, messages, setMessages);
   const { scrollToBottom, messagesEndRef, scrollContainerRef } = useScroll(messages, tempMessageContent);
+  const [isAwaitingResponse, setIsAwaitingResponse] = useState(false); 
+  const handleStartResponse = () => setIsAwaitingResponse(true);
+  const handleStopResponse = () => {
+    setIsAwaitingResponse(false);
+    handleStopReceiving();
+  };
+
+  const showSendButton = messages[messages.length - 1]?.role === 'user' && editingMessageIndex === null;
 
   const showInitialMenu = () => {
     return !messages.some(message => message.role === 'assistant');
@@ -73,6 +82,17 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
           deleteMessage={deleteMessage}
           editTextAreaRef={editTextAreaRef}
         />
+        {showSendButton && (
+          <div style={{position: 'relative'}}>
+            <SendButton
+              isAwaitingResponse={isAwaitingResponse}
+              awaitGetAIResponse={awaitGetAIResponse} 
+              handleStartResponse={handleStartResponse}
+              handleStopResponse={handleStopResponse}
+              apiKey={apiKey}
+            />
+          </div>
+        )}
         <div className="convEndRef" ref={messagesEndRef} />
       </MessagesContainer>
       <InputContainer>

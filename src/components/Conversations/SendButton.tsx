@@ -5,28 +5,32 @@ import { SendButton as StyledSendButton } from './styles/MessageInput.styles'
 
 type SendButtonProps = {
   isAwaitingResponse: boolean;
-  awaitGetAIResponse: (message: string, role: string, apiKey: string) => Promise<void>;
+  awaitGetAIResponse: (apiKey: string, message?: string, role?: string) => Promise<void>;
   handleStartResponse: () => void;
   handleStopResponse: () => void;
-  message: string;
   apiKey: string;
+  message?: string;
+  setMessage?: React.Dispatch<React.SetStateAction<string>>;
+  disabled?: boolean; 
 };
 
-const SendButton: React.FC<SendButtonProps> = ({ isAwaitingResponse, awaitGetAIResponse, handleStartResponse, handleStopResponse, message, apiKey }) => {
+const SendButton: React.FC<SendButtonProps> = ({ isAwaitingResponse, awaitGetAIResponse, handleStartResponse, handleStopResponse, apiKey, message, setMessage, disabled }) => {
   const handleGetAIResponse = async () => {
-    if (message.trim() === '') {
-      return;
-    }
     handleStartResponse();
     try {
-      await awaitGetAIResponse(message, 'user', apiKey);
+      if (message && setMessage) {
+        setMessage(''); 
+        await awaitGetAIResponse(apiKey, message, 'user');
+      } else {
+        await awaitGetAIResponse(apiKey, undefined, undefined);
+      }
     } finally {
       handleStopResponse();
     }
   };
 
   return (
-    <StyledSendButton onClick={isAwaitingResponse ? handleStopResponse : handleGetAIResponse}>
+    <StyledSendButton onClick={isAwaitingResponse ? handleStopResponse : handleGetAIResponse} disabled={disabled}>
       <FontAwesomeIcon icon={isAwaitingResponse ? faStop : faPaperPlane} />
     </StyledSendButton>
   );

@@ -27,7 +27,7 @@ export const StyledTextarea = styled.textarea`
   box-sizing: border-box;
   font-family: MeiryoUI, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
   font-size: 0.8rem;
-  line-height: 0.8rem;
+  line-height: 1.2rem;
   color: #ebebeb;
   background-color: #4c586a;
 ;

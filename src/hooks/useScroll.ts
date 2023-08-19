@@ -8,7 +8,8 @@ const useScroll = (messages?: ConversationData[], content?: string | null) => {
 
   const scrollToBottom = () => {
     setTimeout(() => {
-      messagesEndRef.current?.scrollIntoView({ block: 'end', behavior: 'auto' });
+      messagesEndRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' });
+      window.scrollTo(0, document.body.scrollHeight);
     }, 0);
   };
 
@@ -21,8 +22,8 @@ const useScroll = (messages?: ConversationData[], content?: string | null) => {
   useEffect(() => {
     if (scrollContainerRef.current) {
       const { scrollHeight, scrollTop, clientHeight } = scrollContainerRef.current;
-      const isWithin50pxFromBottom = (scrollHeight - scrollTop - clientHeight) <= 80;
-      if (isWithin50pxFromBottom) {
+      const isWithinBottom = (scrollHeight - scrollTop - clientHeight) <= 80;
+      if (isWithinBottom) {
         scrollToBottom();
       }
     }

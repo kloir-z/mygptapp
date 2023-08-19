@@ -1,12 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { getAndSetTokenCount } from '../../utils/openAIUtil';
 import { ConversationData } from './types/Conversations.types';
-import { MessageInputContainer, MessageInputBottomContainer, StyledTextarea, CalcTokenButton, SendButton, InputTokenText, MessageTokenText, InputCursorRef } from './styles/MessageInput.styles'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPaperPlane, faStop } from '@fortawesome/free-solid-svg-icons'
+import { MessageInputContainer, MessageInputBottomContainer, StyledTextarea, CalcTokenButton, InputTokenText, MessageTokenText, InputCursorRef } from './styles/MessageInput.styles'
 import { Spinner } from './Spinner'
 import { useDebugInfo } from 'src/components/Debugger/DebugContext';
 import useScroll from 'src/hooks/useScroll'
+import SendButton from './SendButton';
 
 type MessageInputProps = {
   awaitGetAIResponse: (message: string, role: string, apiKey: string) => void;
@@ -30,6 +29,11 @@ const MessageInput: React.FC<MessageInputProps> = ({ awaitGetAIResponse, apiKey,
   const [isAwaitingResponse, setIsAwaitingResponse] = useState(false); 
   const { setDebugInfo } = useDebugInfo();
   const { messagesEndRef, scrollContainerRef } = useScroll(undefined, message);
+  const handleStartResponse = () => setIsAwaitingResponse(true);
+  const handleStopResponse = () => {
+    setIsAwaitingResponse(false);
+    handleStopReceiving();
+  };
 
   const checkTokenCount = async () => {
     if (inputTokenUpdateRequired) {
@@ -44,25 +48,6 @@ const MessageInput: React.FC<MessageInputProps> = ({ awaitGetAIResponse, apiKey,
       setTotalTokenLoading(false);
       setTotalTokenUpdateRequired(false);
     }
-  };
-
-  const handleGetAIResponse = async () => {
-    if (message.trim() === '') {
-      return;
-    }
-    setMessage('');
-    setIsAwaitingResponse(true);
-    try {
-      await awaitGetAIResponse(message, 'user', apiKey);
-    } finally {
-      setIsAwaitingResponse(false);
-    }
-    setTotalTokenUpdateRequired(true);
-  };
-
-  const handleStopResponse = () => {
-    setIsAwaitingResponse(false);
-    handleStopReceiving();
   };
 
   useEffect(() => {
@@ -91,9 +76,14 @@ const MessageInput: React.FC<MessageInputProps> = ({ awaitGetAIResponse, apiKey,
         rows={message.split('\n').length || 1}
         ref={textAreaRef} 
       />
-        <SendButton onClick={isAwaitingResponse ? handleStopResponse : handleGetAIResponse}>
-          <FontAwesomeIcon icon={isAwaitingResponse ? faStop : faPaperPlane} />
-        </SendButton>
+      <SendButton
+        isAwaitingResponse={isAwaitingResponse}
+        awaitGetAIResponse={async (message, role, apiKey) => awaitGetAIResponse(message, role, apiKey)}
+        handleStartResponse={handleStartResponse}
+        handleStopResponse={handleStopResponse}
+        message={message}
+        apiKey={apiKey}
+      />
         {inputTokenLoading ? (
           <>
             <InputTokenText><Spinner /></InputTokenText>

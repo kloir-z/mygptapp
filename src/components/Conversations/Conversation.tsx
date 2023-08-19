@@ -34,7 +34,13 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
   };
 
   useEffect(() => {
-    scrollToBottom();
+    const timer = setTimeout(() => {
+      scrollToBottom();
+    }, 210);
+  
+    return () => {
+      clearTimeout(timer);
+    };
   }, [showMenu]);
 
   useEffect(() => {

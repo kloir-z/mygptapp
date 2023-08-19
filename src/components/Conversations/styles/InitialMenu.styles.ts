@@ -1,10 +1,9 @@
 import styled from '@emotion/styled';
 
-export const TopbarContainer = styled.div`
+export const InitialMenuContainer = styled.div`
   display: flex;
   width: 100%;
   height: 33px;
-  background-color: #6c727e;
   overflow: hidden;
 `;
 
@@ -35,4 +34,13 @@ export const StyledButton = styled.button`
   &:hover {
     background: rgba(65, 125, 189, 0.85);
   }
+`;
+export const StyledInput = styled.input`
+  margin: 3px;  
+  font-size: 0.8rem;
+  color: #4c586a;
+  background-color: #ebebeb;
+  border: none;
+  padding: 5px 4px;
+  border-radius: 3px;
 `;

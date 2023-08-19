@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Spinner } from './Spinner'
 import { getYoutubeTranscript } from 'src/utils/openAIUtil';
 import { SystemPromptType, ConversationType, ConversationData } from './types/Conversations.types';
-import { StyledSelect, StyledOption, StyledInput, StyledButton } from './styles/Conversation.styles';
+import { InitialMenuContainer, StyledSelect, StyledOption, StyledInput, StyledButton } from './styles/InitialMenu.styles';
 
 type InitialMenuProps = {
   systemprompts: SystemPromptType[];
@@ -74,7 +74,7 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, conversation, 
   };
 
   return (
-    <>
+    <InitialMenuContainer>
       <StyledSelect onChange={e => handleSystemPromptSelection(e.target.value)}>
         <StyledOption value="none">None</StyledOption>
         {systemprompts.map(prompt => (
@@ -84,11 +84,11 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, conversation, 
       {showTranscriptPopup && (
         <>
           <StyledInput type="text" placeholder="YouTube URL" onChange={e => setYoutubeUrl(e.target.value)} />
-          <StyledButton onClick={handleGetYtbTranscript}>OK</StyledButton>
+          <StyledButton onClick={handleGetYtbTranscript}>GetTranscript</StyledButton>
         </>
       )}
       {loadingTranscript && <Spinner />}
-    </>
+    </InitialMenuContainer>
   );
 };
 

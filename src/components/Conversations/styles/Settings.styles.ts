@@ -14,6 +14,7 @@ export const StyledSelect = styled.select`
   background-color: #4c586a;
   padding: 5px 2px;
   border-radius: 3px;
+  border: none;
 `;
 
 export const StyledOption = styled.option`

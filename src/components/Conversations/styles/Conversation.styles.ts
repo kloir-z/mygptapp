@@ -82,6 +82,7 @@ export const StyledSelect = styled.select`
   background-color: #4c586a;
   padding: 5px 8px;
   border-radius: 3px;
+  border: none;
 `;
 
 export const StyledOption = styled.option`
@@ -90,12 +91,15 @@ export const StyledOption = styled.option`
 `;
 
 export const StyledInput = styled.input`
-  padding: 2px 6px;
-  margin: 5px;
   font-size: 0.8rem;
-  width: 100px;
+  color: #4c586a;
+  background-color: #ebebeb;
+  border: solid 1px #ebebeb;
+  padding: 5px 4px;
+  margin: 0px;
   border-radius: 3px;
 `;
+
 export const StyledButton = styled.button`
   margin: 3px;
   padding: 5px 10px;

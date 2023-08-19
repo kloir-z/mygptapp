@@ -10,7 +10,6 @@ const useScroll = (messages?: ConversationData[], content?: string | null) => {
     setTimeout(() => {
       messagesEndRef.current?.scrollIntoView({ block: 'end', behavior: 'auto' });
     }, 0);
-    console.log('scrollToBottom')
   };
 
   useEffect(() => {
@@ -27,7 +26,6 @@ const useScroll = (messages?: ConversationData[], content?: string | null) => {
         scrollToBottom();
       }
     }
-    console.log('containerHeight effect')
   }, [containerHeight]);
 
   return { scrollToBottom, messagesEndRef, scrollContainerRef };

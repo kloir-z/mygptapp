@@ -3,6 +3,7 @@ import { StyledInput, ConversationItem, TitleLeft, TitleRight } from './styles/S
 import { ConversationType } from './types/Conversations.types';
 import { FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
 import { MdOutlineChat } from 'react-icons/md';
+
 type SidebarProps = {
   conversations: ConversationType[];
   activeConversation: ConversationType | null;
@@ -73,7 +74,7 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, se
                 onChange={(e) => setEditingTitle(e.target.value)}
               />
               <TitleRight>
-                <FaCheck className="Icon" style={{color:'green'}} onClick={confirmEdit} />
+                <FaCheck className="Icon" style={{color:'rgb(0, 203, 105)'}} onClick={confirmEdit} />
                 <FaTimes className="Icon" style={{color:'red'}} onClick={cancelEdit} />
                 <FaTrash className="Icon" style={{color:'#404040'}} onClick={() => handleDeleteConversation(conversation.id)} />
               </TitleRight>

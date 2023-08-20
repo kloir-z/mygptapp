@@ -7,6 +7,7 @@ import Topbar from '../Conversations/Topbar'
 import Sidebar from '../Conversations/Sidebar'
 import Conversation from '../Conversations/Conversation'
 import SidebarResizer from '../Conversations/SidebarResizer';
+import { Spinner } from "../Conversations/Spinner";
 
 const App: React.FC = () => {
   const { user } = useContext(AuthContext);
@@ -55,7 +56,7 @@ const App: React.FC = () => {
   };
 
   if (!user) {
-    return <>loading...</>;
+    return <div style={{padding: '20px'}}>loading...<Spinner/></div>;
   }
 
   return (

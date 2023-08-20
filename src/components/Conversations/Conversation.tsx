@@ -22,7 +22,7 @@ type ConversationProps = {
   scrollWrapperRef: React.RefObject<HTMLDivElement>
 };
 
-const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey, handleUpdateConversations, systemprompts, showMenu, scrollWrapperRef }) => {
+const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey, handleUpdateConversations, systemprompts, receivingId, setReceivingId, showMenu, scrollWrapperRef }) => {
   const [totalTokenUpdateRequired, setTotalTokenUpdateRequired] = useState(false);
   const [messages, setMessages] = useState<ConversationData[]>(conversation.revisions[0].conversation);
   const [receivingMessage, setReceivingMessage] = useState<string>('');

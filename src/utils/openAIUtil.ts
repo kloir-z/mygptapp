@@ -65,7 +65,6 @@ export const getAIResponse = async ({
 
   const decoder = new TextDecoder('utf-8');
   let aiMessageContent = '';
-  let receivingContent = '';
 
   try {
     let retries = 3;
@@ -94,8 +93,7 @@ export const getAIResponse = async ({
             const aiMessageChunk = json.choices[0]?.delta.content;
             if (typeof aiMessageChunk === 'string') {
               aiMessageContent += aiMessageChunk;
-                receivingContent += aiMessageChunk;
-                setReceivingMessage(receivingContent);
+              setReceivingMessage(aiMessageContent);
             }
           }
         }
@@ -120,8 +118,8 @@ export const getAIResponse = async ({
     console.log('streaming error');
     console.error(e);
   }
-  setReceivingMessage('')
   setMessages(prev => [...prev, { role: 'assistant', content: aiMessageContent }]);
+  setReceivingMessage('')
   let finalMessages = [...messages, ...(messageContent ? [{ role: 'user', content: messageContent }] : []), { role: 'assistant', content: aiMessageContent }];
   return finalMessages;
 };

@@ -94,7 +94,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
               apiKey={apiKey}
             />
           </div>
-          )}
+        )}
         <div className="convEndRef" ref={messagesEndRef} />
       </MessagesContainer>
       <InputContainer>

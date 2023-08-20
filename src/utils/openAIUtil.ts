@@ -92,7 +92,9 @@ export const getAIResponse = async ({
             const aiMessageChunk = json.choices[0]?.delta.content;
             if (typeof aiMessageChunk === 'string') {
               aiMessageContent += aiMessageChunk;
-              setMessages(prev => prev.map((message, index) => index === prev.length - 1 ? { role: 'assistant', content: aiMessageContent } : message));
+              setTimeout(() => {
+                setMessages(prev => prev.map((message, index) => index === prev.length - 1 ? { role: 'assistant', content: tempMessageContent } : message));
+              }, 100);
             }
           }
         }

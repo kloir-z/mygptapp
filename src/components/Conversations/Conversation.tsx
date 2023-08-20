@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ConversationType, ConversationData, SystemPromptType } from './types/Conversations.types';
 import { getAndSetTokenCount } from '../../utils/openAIUtil';
-import { ConversationContainer, MessagesContainer, InputContainer } from './styles/Conversation.styles'
+import { ConversationContainer, MessagesContainer, InputContainer, MessageDiv } from './styles/Conversation.styles'
 import { useEditing } from 'src/hooks/useEditing';
 import { useAIResponse } from 'src/hooks/useAIResponse'
 import useScroll from 'src/hooks/useScroll'
@@ -25,11 +25,12 @@ type ConversationProps = {
 const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey, handleUpdateConversations, systemprompts, showMenu, scrollWrapperRef }) => {
   const [totalTokenUpdateRequired, setTotalTokenUpdateRequired] = useState(false);
   const [messages, setMessages] = useState<ConversationData[]>(conversation.revisions[0].conversation);
+  const [receivingMessage, setReceivingMessage] = useState<string>('');
 
   const { editingMessageIndex, setEditingMessageIndex, tempMessageContent, onDoubleClickMessage, handleContentChange, handleConfirmEditing, handleCancelEditing, deleteMessage, editTextAreaRef } = useEditing({handleUpdateConversations, conversation, messages ,setMessages});
-  const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(apiKey, model, conversation, handleUpdateConversations, messages, setMessages);
-  const { scrollToBottom, messagesEndRef, scrollContainerRef } = useScroll(messages, tempMessageContent);
+  const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(model, conversation, handleUpdateConversations, messages, setMessages, setReceivingMessage);
   const [isAwaitingResponse, setIsAwaitingResponse] = useState(false); 
+  const { scrollToBottom, messagesEndRef, scrollContainerRef } = useScroll(messages, tempMessageContent, receivingMessage);
   const handleStartResponse = () => setIsAwaitingResponse(true);
   const handleStopResponse = () => {
     setIsAwaitingResponse(false);
@@ -82,6 +83,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
           deleteMessage={deleteMessage}
           editTextAreaRef={editTextAreaRef}
         />
+        {receivingMessage && <MessageDiv role='assistant'>{receivingMessage}</MessageDiv>}
         {showSendButton && (
           <div style={{position: 'relative'}}>
             <SendButton
@@ -92,7 +94,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
               apiKey={apiKey}
             />
           </div>
-        )}
+          )}
         <div className="convEndRef" ref={messagesEndRef} />
       </MessagesContainer>
       <InputContainer>
@@ -106,6 +108,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
           setTotalTokenUpdateRequired={setTotalTokenUpdateRequired}
           handleStopReceiving={handleStopReceiving}
           scrollWrapperRef={scrollWrapperRef}
+          setReceivingMessage={setReceivingMessage}
         />
       </InputContainer>
     </ConversationContainer>

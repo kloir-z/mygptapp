@@ -43,37 +43,36 @@ const commonStylePrewrap: CSSProperties = {
   fontFamily: "MeiryoUI,-apple-system,BlinkMacSystemFont,'Roboto',sans-serif"
 };
 
+const components: Components = {
+  a: ({ node, ...props }) => <a style={commonStyle} {...props} />,
+  p: ({ node, ...props }) => <p style={commonStylePrewrap} {...props} />,
+  h1: ({ node, ...props }) => <h1 style={customH1} {...props} />,
+  h2: ({ node, ...props }) => <h2 style={customH2} {...props} />,
+  h3: ({ node, ...props }) => <h3 style={customH3} {...props} />,
+  h4: ({ node, ...props }) => <h4 style={customH3} {...props} />,
+  h5: ({ node, ...props }) => <h5 style={customH3} {...props} />,
+  h6: ({ node, ...props }) => <h6 style={customH3} {...props} />,
+  img: ({ node, ...props }) => <img style={commonStyle} {...props} />,
+  em: ({ node, ...props }) => <em style={commonStyle} {...props} />,
+  strong: ({ node, ...props }) => <strong style={commonStyle} {...props} />,
+  pre: ({ node, ...props }) => <pre style={commonStylePrewrap} {...props} />,
+  code: ({ node, ...props }) => <code style={commonStylePrewrap} {...props} />,
+  ol: ({ node, ...props }) => <ol style={customulol} {...props} />,
+  ul: ({ node, ...props }) => <ul style={customulol} {...props} />,
+  li: ({ node, ...props }) => <li style={commonStyle} {...props} />,
+  blockquote: ({ node, ...props }) => <blockquote style={commonStyle} {...props} />,
+  table: ({ node, ...props }) => <table style={commonStyle} {...props} />,
+  thead: ({ node, ...props }) => <thead style={commonStyle} {...props} />,
+  tbody: ({ node, ...props }) => <tbody style={commonStyle} {...props} />,
+  tr: ({ node, ...props }) => <tr style={commonStyle} {...props} />,
+  th: ({ node, ...props }) => <th style={commonStyle} {...props} />,
+  td: ({ node, ...props }) => <td style={commonStyle} {...props} />
+};
 
+const codeRegex = /```(\w+)?\n([\s\S]+?)```/g;
 
 export const SyntaxHighlight = (content: string) => {
-  const components: Components = {
-    a: ({ node, ...props }) => <a style={commonStyle} {...props} />,
-    p: ({ node, ...props }) => <p style={commonStylePrewrap} {...props} />,
-    h1: ({ node, ...props }) => <h1 style={customH1} {...props} />,
-    h2: ({ node, ...props }) => <h2 style={customH2} {...props} />,
-    h3: ({ node, ...props }) => <h3 style={customH3} {...props} />,
-    h4: ({ node, ...props }) => <h4 style={customH3} {...props} />,
-    h5: ({ node, ...props }) => <h5 style={customH3} {...props} />,
-    h6: ({ node, ...props }) => <h6 style={customH3} {...props} />,
-    img: ({ node, ...props }) => <img style={commonStyle} {...props} />,
-    em: ({ node, ...props }) => <em style={commonStyle} {...props} />,
-    strong: ({ node, ...props }) => <strong style={commonStyle} {...props} />,
-    pre: ({ node, ...props }) => <pre style={commonStylePrewrap} {...props} />,
-    code: ({ node, ...props }) => <code style={commonStylePrewrap} {...props} />,
-    ol: ({ node, ...props }) => <ol style={customulol} {...props} />,
-    ul: ({ node, ...props }) => <ul style={customulol} {...props} />,
-    li: ({ node, ...props }) => <li style={commonStyle} {...props} />,
-    blockquote: ({ node, ...props }) => <blockquote style={commonStyle} {...props} />,
-    table: ({ node, ...props }) => <table style={commonStyle} {...props} />,
-    thead: ({ node, ...props }) => <thead style={commonStyle} {...props} />,
-    tbody: ({ node, ...props }) => <tbody style={commonStyle} {...props} />,
-    tr: ({ node, ...props }) => <tr style={commonStyle} {...props} />,
-    th: ({ node, ...props }) => <th style={commonStyle} {...props} />,
-    td: ({ node, ...props }) => <td style={commonStyle} {...props} />
-  };
 
-  const codeRegex = /```(\w+)?\n([\s\S]+?)```/g;
-  
   const parts = [];
   let lastIndex = 0;
 

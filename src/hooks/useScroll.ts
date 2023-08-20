@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { ConversationData } from 'src/components/Conversations/types/Conversations.types';
 
-const useScroll = (messages?: ConversationData[], content?: string | null) => {
+const useScroll = (messages?: ConversationData[], content?: string | null, receivingMessage?: string) => {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const [containerHeight, setContainerHeight] = useState<number>(0);
@@ -10,20 +10,20 @@ const useScroll = (messages?: ConversationData[], content?: string | null) => {
     setTimeout(() => {
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
       if (isIOS) {
-        messagesEndRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' });
+        messagesEndRef.current?.scrollIntoView({ block: 'end', behavior: 'auto' });
         window.scrollTo(0, document.body.scrollHeight);
       }
       else {
-        messagesEndRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' });
+        messagesEndRef.current?.scrollIntoView({ block: 'end', behavior: 'auto' });
       }
     }, 5);
   };
 
   useEffect(() => {
-    if (scrollContainerRef.current) {
+    if (scrollContainerRef.current && containerHeight != scrollContainerRef.current.scrollHeight) {
       setContainerHeight(scrollContainerRef.current.scrollHeight);
     }
-  }, [messages, content]);
+  }, [messages, content, receivingMessage]);
 
   useEffect(() => {
     if (scrollContainerRef.current) {

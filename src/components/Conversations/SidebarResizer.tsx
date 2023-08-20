@@ -9,36 +9,36 @@ interface SidebarResizerProps {
 
 const SidebarResizer: React.FC<SidebarResizerProps> = ({ onResize, sidebarWidth, minSidebarWidth=0, maxSidebarWidth }) => {
   const handleMouseDown = (e: React.MouseEvent) => {
+    const handleMouseMove = (e: MouseEvent) => { 
+      const newWidth = Math.min(Math.max(e.clientX, minSidebarWidth), maxSidebarWidth ?? Infinity);
+      onResize(newWidth);
+    };
+
+    const handleMouseUp = () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.userSelect = '';
+    };
+
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
     document.body.style.userSelect = 'none'; 
   };
 
-  const handleMouseMove = (e: MouseEvent) => { 
-    const newWidth = Math.min(Math.max(e.clientX, minSidebarWidth), maxSidebarWidth ?? Infinity);
-    onResize(newWidth);
-  };
-
-  const handleMouseUp = () => {
-    document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('mouseup', handleMouseUp);
-    document.body.style.userSelect = '';
-  };
-
   const handleTouchStart = (e: React.TouchEvent) => {
+    const handleTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
+      const newWidth = Math.min(Math.max(e.touches[0].clientX, minSidebarWidth), maxSidebarWidth ?? Infinity);
+      onResize(newWidth);
+    };
+    
+    const handleTouchEnd = () => {
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+    };
+
     document.addEventListener('touchmove', handleTouchMove);
     document.addEventListener('touchend', handleTouchEnd);
-  };
-
-  const handleTouchMove = (e: TouchEvent) => {
-    e.preventDefault();
-    const newWidth = Math.min(Math.max(e.touches[0].clientX, minSidebarWidth), maxSidebarWidth ?? Infinity);
-    onResize(newWidth);
-  };
-  
-  const handleTouchEnd = () => {
-    document.removeEventListener('touchmove', handleTouchMove);
-    document.removeEventListener('touchend', handleTouchEnd);
   };
 
   return (

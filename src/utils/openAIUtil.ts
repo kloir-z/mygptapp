@@ -39,6 +39,7 @@ type GetAIResponseProps = {
   messages: ConversationData[],
   setMessages: React.Dispatch<React.SetStateAction<ConversationData[]>>,
   stopReceiving: React.MutableRefObject<boolean>,
+  setReceivingMessage: React.Dispatch<React.SetStateAction<string>>,
   messageContent?: string,
   role?: string
 };
@@ -49,6 +50,7 @@ export const getAIResponse = async ({
   messages,
   setMessages,
   stopReceiving,
+  setReceivingMessage,
   messageContent,
   role
 }: GetAIResponseProps) => {
@@ -63,7 +65,7 @@ export const getAIResponse = async ({
 
   const decoder = new TextDecoder('utf-8');
   let aiMessageContent = '';
-  setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
+  let receivingContent = '';
 
   try {
     let retries = 3;
@@ -92,9 +94,8 @@ export const getAIResponse = async ({
             const aiMessageChunk = json.choices[0]?.delta.content;
             if (typeof aiMessageChunk === 'string') {
               aiMessageContent += aiMessageChunk;
-              setTimeout(() => {
-                setMessages(prev => prev.map((message, index) => index === prev.length - 1 ? { role: 'assistant', content: aiMessageContent } : message));
-              }, 100);
+                receivingContent += aiMessageChunk;
+                setReceivingMessage(receivingContent);
             }
           }
         }
@@ -119,6 +120,8 @@ export const getAIResponse = async ({
     console.log('streaming error');
     console.error(e);
   }
+  setReceivingMessage('')
+  setMessages(prev => [...prev, { role: 'assistant', content: aiMessageContent }]);
   let finalMessages = [...messages, ...(messageContent ? [{ role: 'user', content: messageContent }] : []), { role: 'assistant', content: aiMessageContent }];
   return finalMessages;
 };

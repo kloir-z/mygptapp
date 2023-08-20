@@ -1,8 +1,8 @@
-import React from 'react';
 import { ConversationData } from './types/Conversations.types';
 import { SyntaxHighlight } from './SyntaxHighlight';
 import { FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
-import { Message, EditTextarea, EditingText } from './styles/Conversation.styles';
+import { MessageDiv, EditTextarea, EditingText } from './styles/Conversation.styles';
+import React, { useMemo } from 'react';
 
 type MessageListProps = {
   messages: ConversationData[];
@@ -27,35 +27,37 @@ const MessageList: React.FC<MessageListProps> = ({
   deleteMessage,
   editTextAreaRef
 }) => {
-  return (
-    <>
-      {messages.map((message: ConversationData, index: number) => {
-        return (
-          <Message key={index} role={message.role} onDoubleClick={() => onDoubleClickMessage(messages, index)}>
-            {editingMessageIndex === index ? (
+  const renderedMessages = useMemo(() => {
+    return messages.map((message: ConversationData, index: number) => (
+      <MessageDiv
+        key={index}
+        role={message.role}
+        onDoubleClick={() => onDoubleClickMessage(messages, index)}
+      >
+        {editingMessageIndex === index ? (
               <>
-                <EditTextarea
-                  value={tempMessageContent || ''}
-                  onChange={e => handleContentChange(e.target.value)}
-                  rows={tempMessageContent?.split('\n').length || 1}
-                  ref={editTextAreaRef} 
-                />
-                <>
-                  <EditingText>Editing...
-                    <FaCheck className="Icon" style={{color:'green'}} onClick={() => handleConfirmEditing(index)}/>
-                    <FaTimes className="Icon" style={{color:'red'}} onClick={handleCancelEditing}/>
-                    <FaTrash className="Icon" style={{color:'#404040'}} onClick={() => deleteMessage(index)}/>
-                  </EditingText>
-                </>
+              <EditTextarea
+                value={tempMessageContent || ''}
+                onChange={e => handleContentChange(e.target.value)}
+                rows={tempMessageContent?.split('\n').length || 1}
+                ref={editTextAreaRef} 
+              />
+              <>
+                <EditingText>Editing...
+                  <FaCheck className="Icon" style={{color:'green'}} onClick={() => handleConfirmEditing(index)}/>
+                  <FaTimes className="Icon" style={{color:'red'}} onClick={handleCancelEditing}/>
+                  <FaTrash className="Icon" style={{color:'#404040'}} onClick={() => deleteMessage(index)}/>
+                </EditingText>
               </>
-            ) : (
-              SyntaxHighlight(message.content)
-            )}
-          </Message>
-        );
-      })}
-    </>
-  );
+            </>
+          ) : (
+        SyntaxHighlight(message.content)
+        )}
+      </MessageDiv>
+    ));
+  }, [messages, editingMessageIndex, tempMessageContent]);
+
+  return <>{renderedMessages}</>;
 };
 
 export default MessageList;

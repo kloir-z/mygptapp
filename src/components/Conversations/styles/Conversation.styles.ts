@@ -22,7 +22,7 @@ export const InputContainer = styled.div`
   flex-shrink: 0;
 `;
 
-export const Message = styled.div<{role: string}>`
+export const MessageDiv = styled.div<{role: string}>`
   background-color: ${props => getColor(props.role)};
   padding: 10px;
   margin: 2px;

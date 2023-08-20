@@ -17,9 +17,10 @@ type MessageInputProps = {
   setTotalTokenUpdateRequired: React.Dispatch<React.SetStateAction<boolean>>;
   handleStopReceiving: () => void;
   scrollWrapperRef: React.RefObject<HTMLDivElement>
+  setReceivingMessage: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const MessageInput: React.FC<MessageInputProps> = ({ awaitGetAIResponse, apiKey, messages, model, totalTokenUpdateRequired, setTotalTokenUpdateRequired, handleStopReceiving, scrollWrapperRef }) => {
+const MessageInput: React.FC<MessageInputProps> = ({ awaitGetAIResponse, apiKey, messages, model, totalTokenUpdateRequired, setTotalTokenUpdateRequired, handleStopReceiving, scrollWrapperRef, setReceivingMessage }) => {
   const [message, setMessage] = useState('');
   const [inputTokenCount, setInputTokenCount] = useState<number>(0);
   const [totalTokenCount, setTotalTokenCount] = useState<number>(0);

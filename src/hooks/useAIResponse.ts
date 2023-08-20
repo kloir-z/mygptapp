@@ -3,12 +3,12 @@ import { ConversationData } from 'src/components/Conversations/types/Conversatio
 import { getAIResponse } from 'src/utils/openAIUtil';
 
 export const useAIResponse = (
-  apiKey: string,
   model: string,
   conversation: any,
   sendMessage: (updatedConversation: any) => Promise<void>,
   messages: ConversationData[],
-  setMessages: React.Dispatch<React.SetStateAction<ConversationData[]>>
+  setMessages: React.Dispatch<React.SetStateAction<ConversationData[]>>,
+  setReceivingMessage: React.Dispatch<React.SetStateAction<string>>
 ) => {
   const stopReceiving = useRef(false);
   const [receivingId, setReceivingId] = useState<string>('');
@@ -21,7 +21,8 @@ export const useAIResponse = (
       model, 
       messages, 
       setMessages, 
-      stopReceiving,
+      stopReceiving, 
+      setReceivingMessage,
       messageContent, 
       role
     });

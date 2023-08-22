@@ -1,4 +1,6 @@
 import { ConversationData } from '../components/Conversations/types/Conversations.types';
+import { Tiktoken } from "@dqbd/tiktoken/lite";
+import cl100k_base from "@dqbd/tiktoken/encoders/cl100k_base.json";
 
 type SendToOpenAIProps = {
   apiKey: string,
@@ -124,25 +126,26 @@ export const getAIResponse = async ({
   return finalMessages;
 };
 
-const countTokens = async (messages: ConversationData[], model: string): Promise<number> => {
-  const url = 'https://us-central1-my-pj-20230703.cloudfunctions.net/count_tokens';
-  const data = {
-    messages,
-    model
-  };
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
+const countTokens = (messages: ConversationData[]): number => {
+  const encoding = new Tiktoken(
+    cl100k_base.bpe_ranks,
+    cl100k_base.special_tokens,
+    cl100k_base.pat_str
+  );
+
+  let totalTokens = 0;
+  messages.forEach((message) => {
+    const contentTokens = encoding.encode(message.content);
+    const roleTokens = encoding.encode(message.role);
+    totalTokens += contentTokens.length + roleTokens.length;
   });
-  const json = await response.json();
-  return json['num_tokens'];
+
+  encoding.free();
+  return totalTokens;
 };
 
 export const getAndSetTokenCount = async (messages: ConversationData[], model: string, setTokenCount: React.Dispatch<React.SetStateAction<number>>) => {
-  const tokenCount = await countTokens(messages, model);
+  const tokenCount = await countTokens(messages);
   setTokenCount(tokenCount);
 };
 

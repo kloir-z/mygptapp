@@ -6,7 +6,7 @@ import { useEditing } from 'src/hooks/useEditing';
 import { useAIResponse } from 'src/hooks/useAIResponse'
 import useScroll from 'src/hooks/useScroll'
 import MessageInput from './MessageInput';
-import MessageList from './MessageList';
+import MessageItem from './MessageItem';
 import InitialMenu from './InitialMenu';
 import SendButton from './SendButton';
 
@@ -37,7 +37,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
     handleStopReceiving();
   };
 
-  const showSendButton = messages[messages.length - 1]?.role === 'user' && editingMessageIndex === null;
+  const showSendButton = messages[messages.length - 1]?.role === 'user' && editingMessageIndex === null && !isAwaitingResponse;
 
   const showInitialMenu = () => {
     return !messages.some(message => message.role === 'assistant');
@@ -72,17 +72,21 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
             setMessages={setMessages}
           />
         )}
-        <MessageList
-          messages={messages}
-          editingMessageIndex={editingMessageIndex}
-          tempMessageContent={tempMessageContent}
-          onDoubleClickMessage={onDoubleClickMessage}
-          handleContentChange={handleContentChange}
-          handleConfirmEditing={handleConfirmEditing}
-          handleCancelEditing={handleCancelEditing}
-          deleteMessage={deleteMessage}
-          editTextAreaRef={editTextAreaRef}
-        />
+        {messages.map((message: ConversationData, index: number) => (
+          <MessageItem
+            key={index}
+            message={message}
+            editing={editingMessageIndex === index}
+            index={index}
+            onDoubleClick={() => onDoubleClickMessage(messages, index)}
+            handleConfirmEditing={handleConfirmEditing}
+            handleCancelEditing={handleCancelEditing}
+            deleteMessage={deleteMessage}
+            tempMessageContent={tempMessageContent}
+            handleContentChange={handleContentChange}
+            editTextAreaRef={editTextAreaRef}
+          />
+        ))}
         {receivingMessage && <MessageDiv role='assistant'>{receivingMessage}</MessageDiv>}
         {showSendButton && (
           <div style={{position: 'relative'}}>

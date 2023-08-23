@@ -1,8 +1,5 @@
 import { ConversationData } from './types/Conversations.types';
-import { SyntaxHighlight } from './SyntaxHighlight';
-import { FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
-import { MessageDiv, EditTextarea, EditingText } from './styles/Conversation.styles';
-import React, { useMemo } from 'react';
+import MessageItem from './MessageItem';
 
 type MessageListProps = {
   messages: ConversationData[];
@@ -25,39 +22,27 @@ const MessageList: React.FC<MessageListProps> = ({
   handleConfirmEditing,
   handleCancelEditing,
   deleteMessage,
-  editTextAreaRef
+  editTextAreaRef,
 }) => {
-  const renderedMessages = useMemo(() => {
-    return messages.map((message: ConversationData, index: number) => (
-      <MessageDiv
-        key={index}
-        role={message.role}
-        onDoubleClick={() => onDoubleClickMessage(messages, index)}
-      >
-        {editingMessageIndex === index ? (
-              <>
-              <EditTextarea
-                value={tempMessageContent || ''}
-                onChange={e => handleContentChange(e.target.value)}
-                rows={tempMessageContent?.split('\n').length || 1}
-                ref={editTextAreaRef} 
-              />
-              <>
-                <EditingText>Editing...
-                  <FaCheck className="Icon" style={{color:'green'}} onClick={() => handleConfirmEditing(index)}/>
-                  <FaTimes className="Icon" style={{color:'red'}} onClick={handleCancelEditing}/>
-                  <FaTrash className="Icon" style={{color:'#404040'}} onClick={() => deleteMessage(index)}/>
-                </EditingText>
-              </>
-            </>
-          ) : (
-        SyntaxHighlight(message.content)
-        )}
-      </MessageDiv>
-    ));
-  }, [messages, editingMessageIndex, tempMessageContent]);
-
-  return <>{renderedMessages}</>;
+  return (
+    <>
+      {messages.map((message: ConversationData, index: number) => (
+        <MessageItem
+          key={index}
+          message={message}
+          editing={editingMessageIndex === index}
+          index={index}
+          onDoubleClick={() => onDoubleClickMessage(messages, index)}
+          handleConfirmEditing={handleConfirmEditing}
+          handleCancelEditing={handleCancelEditing}
+          deleteMessage={deleteMessage}
+          tempMessageContent={tempMessageContent}
+          handleContentChange={handleContentChange}
+          editTextAreaRef={editTextAreaRef}
+        />
+      ))}
+    </>
+  );
 };
 
 export default MessageList;

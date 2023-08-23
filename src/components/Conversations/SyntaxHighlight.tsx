@@ -23,11 +23,11 @@ const commonStyle: CSSProperties = {
 };
 const customH1: CSSProperties = {
   whiteSpace: 'normal',
-  margin: '0px 0px -4px 0px'
+  margin: '0px 0px 0px 0px'
 };
 const customH2: CSSProperties = {
   whiteSpace: 'normal',
-  margin: '-8px 0px -4px 10px'
+  margin: '-4px 0px -4px 10px'
 };
 const customH3: CSSProperties = {
   whiteSpace: 'normal',

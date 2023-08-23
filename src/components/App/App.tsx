@@ -57,7 +57,7 @@ const App: React.FC = () => {
   };
 
   if (!user) {
-    return <div style={{padding: '20px'}}>loading...<Spinner/></div>;
+    return <div style={{padding: '30px'}}><Spinner/></div>;
   }
 
   return (

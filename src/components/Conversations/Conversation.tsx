@@ -26,12 +26,16 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
   const [totalTokenUpdateRequired, setTotalTokenUpdateRequired] = useState(false);
   const [messages, setMessages] = useState<ConversationData[]>(conversation.revisions[0].conversation);
   const [receivingMessage, setReceivingMessage] = useState<string>('');
+  const [isReceivingConversationId, setIsReceivingConversationId ] = useState(false);
 
   const { editingMessageIndex, setEditingMessageIndex, tempMessageContent, onDoubleClickMessage, handleContentChange, handleConfirmEditing, handleCancelEditing, deleteMessage, editTextAreaRef } = useEditing({handleUpdateConversations, conversation, messages ,setMessages});
   const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(model, conversation, handleUpdateConversations, messages, setMessages, setReceivingMessage);
   const [isAwaitingResponse, setIsAwaitingResponse] = useState(false); 
   const { scrollToBottom, messagesEndRef, scrollContainerRef } = useScroll(messages, tempMessageContent, receivingMessage);
-  const handleStartResponse = () => setIsAwaitingResponse(true);
+  const handleStartResponse = () => {
+    setIsAwaitingResponse(true);
+    setReceivingId(conversation.id);
+  }
   const handleStopResponse = () => {
     setIsAwaitingResponse(false);
     handleStopReceiving();
@@ -43,6 +47,10 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
     return !messages.some(message => message.role === 'assistant');
   };
 
+  useEffect(() => {
+    setReceivingId(conversation.id);
+  }, [isAwaitingResponse]);
+  
   useEffect(() => {
     setMessages(conversation.revisions[0].conversation);
     setEditingMessageIndex(null);
@@ -77,7 +85,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
             editTextAreaRef={editTextAreaRef}
           />
         ))}
-        {receivingMessage && <MessageDiv role='assistant'>{receivingMessage}</MessageDiv>}
+        {receivingMessage && receivingId === conversation.id &&<MessageDiv role='assistant'>{receivingMessage}</MessageDiv>}
         {showSendButton && (
           <div style={{position: 'relative'}}>
             <SendButton

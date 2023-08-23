@@ -1,8 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { StyledInput, ConversationItem, TitleLeft, TitleRight } from './styles/Sidebar.styles';
 import { ConversationType } from './types/Conversations.types';
 import { FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
 import { MdOutlineChat } from 'react-icons/md';
+import useSidebar from 'src/hooks/useSidebar';
 
 type SidebarProps = {
   conversations: ConversationType[];
@@ -15,46 +16,23 @@ type SidebarProps = {
 
 const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, setConversations, setActiveConversation, handleUpdateConversations, deleteConversation }) => {
   const inputRef = useRef<HTMLInputElement>(null);  
-  const [editingTitle, setEditingTitle] = useState<string>("");
-  const [editingId, setEditingId] = useState<string | null>(null);
-  
-  const toggleEditingTitle = (id: string, title: string) => {
-    if (id === editingId) {
-      cancelEdit();
-    } else {
-      setEditingId(id);
-      setEditingTitle(title);
-    }
-  };
+  const {
+    editingTitle,
+    setEditingTitle,
+    editingId,
+    toggleEditingTitle,
+    confirmEdit,
+    cancelEdit,
+    handleDeleteConversation,
+  } = useSidebar(conversations, setConversations, handleUpdateConversations, deleteConversation);
 
-  const confirmEdit = () => {
-    const updatedConversation = conversations.find((conv: ConversationType) => conv.id === editingId);
-    if (updatedConversation) {
-      updatedConversation.title = editingTitle;
-      setConversations((prev: ConversationType[]) => prev.map((conv: ConversationType) =>
-        conv.id === editingId ? updatedConversation : conv
-      ));
-      handleUpdateConversations(updatedConversation);
-      cancelEdit();
-    }
-  };
-
-  const cancelEdit = () => {
-    setEditingId(null);
-    setEditingTitle("");
-  };
-
-  const handleDeleteConversation = (id: string) => {
-    if (window.confirm('Are You Sure to Delete?')) {
-      deleteConversation(id).then(() => {
-        setConversations((prev: ConversationType[]) => prev.filter((conv: ConversationType) => conv.id !== id));
-      });
-    }
-  };
+  const reversedConversations = useMemo(() => {
+    return [...conversations].reverse();
+  }, [conversations]);
 
   return (
     <>
-      {[...conversations].reverse().map((conversation, index) => (
+      {reversedConversations.map((conversation, index) => (
         <ConversationItem 
           key={index}
           onClick={() => {

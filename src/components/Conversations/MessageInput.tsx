@@ -1,11 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { getAndSetTokenCount } from '../../utils/openAIUtil';
 import { ConversationData } from './types/Conversations.types';
-import { MessageInputContainer, MessageInputBottomContainer, StyledTextarea, CalcTokenButton, InputTokenText, MessageTokenText, InputCursorRef } from './styles/MessageInput.styles'
-import { Spinner } from './Spinner'
+import { MessageInputContainer, StyledTextarea, InputCursorRef } from './styles/MessageInput.styles'
 import { useDebugInfo } from 'src/components/Debugger/DebugContext';
 import useScroll from 'src/hooks/useScroll'
 import SendButton from './SendButton';
+import TokenCounter from './TokenCounter';
 
 type MessageInputProps = {
   awaitGetAIResponse: (apiKey: string, message?: string, role?: string) => void;
@@ -20,12 +19,8 @@ type MessageInputProps = {
   setReceivingMessage: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const MessageInput: React.FC<MessageInputProps> = ({ awaitGetAIResponse, apiKey, messages, model, totalTokenUpdateRequired, setTotalTokenUpdateRequired, handleStopReceiving, scrollWrapperRef, setReceivingMessage }) => {
+const MessageInput: React.FC<MessageInputProps> = ({ awaitGetAIResponse, apiKey, messages, model, totalTokenUpdateRequired, setTotalTokenUpdateRequired, handleStopReceiving, scrollWrapperRef }) => {
   const [message, setMessage] = useState('');
-  const [inputTokenCount, setInputTokenCount] = useState<number>(0);
-  const [totalTokenCount, setTotalTokenCount] = useState<number>(0);
-  const [inputTokenLoading, setInputTokenLoading] = useState(false);
-  const [totalTokenLoading, setTotalTokenLoading] = useState(false);
   const { messagesEndRef, scrollContainerRef } = useScroll(undefined, message);
   const [inputTokenUpdateRequired, setInputTokenUpdateRequired] = useState(false);
   const { setDebugInfo } = useDebugInfo();
@@ -34,21 +29,6 @@ const MessageInput: React.FC<MessageInputProps> = ({ awaitGetAIResponse, apiKey,
   const handleStopResponse = () => {
     setIsAwaitingResponse(false);
     handleStopReceiving();
-  };
-
-  const checkTokenCount = async () => {
-    if (inputTokenUpdateRequired) {
-      setInputTokenLoading(true);
-      await getAndSetTokenCount([{role: 'user', content: message}], model, setInputTokenCount);
-      setInputTokenLoading(false);
-      setInputTokenUpdateRequired(false);
-    }
-    if (totalTokenUpdateRequired) {
-      setTotalTokenLoading(true);
-      await getAndSetTokenCount([...messages], model, setTotalTokenCount);
-      setTotalTokenLoading(false);
-      setTotalTokenUpdateRequired(false);
-    }
   };
 
   useEffect(() => {
@@ -61,9 +41,6 @@ const MessageInput: React.FC<MessageInputProps> = ({ awaitGetAIResponse, apiKey,
     if(textAreaRef.current){
       textAreaRef.current.style.height = 'auto';
       textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`;
-    }
-    if(!inputTokenUpdateRequired){
-      setInputTokenUpdateRequired(true);
     }
   }, [message]);
 
@@ -87,29 +64,16 @@ const MessageInput: React.FC<MessageInputProps> = ({ awaitGetAIResponse, apiKey,
         message={message}
         disabled={message.trim() === ''}
       />
-        {inputTokenLoading ? (
-          <>
-            <InputTokenText><Spinner /></InputTokenText>
-          </>
-        ) : (
-          <>
-            <InputTokenText>{inputTokenUpdateRequired ? ' ' : inputTokenCount}</InputTokenText>
-          </>
-        )}
-        
-        {totalTokenLoading ? (
-          <>
-            <MessageTokenText><Spinner /></MessageTokenText>
-          </>
-        ) : (
-          <>
-            <MessageTokenText>{totalTokenUpdateRequired ? ' ' : totalTokenCount}</MessageTokenText>
-          </>
-        )}
+      <TokenCounter
+        messages={messages}
+        model={model}
+        totalTokenUpdateRequired={totalTokenUpdateRequired}
+        setTotalTokenUpdateRequired={setTotalTokenUpdateRequired}
+        inputTokenUpdateRequired={inputTokenUpdateRequired}
+        setInputTokenUpdateRequired={setInputTokenUpdateRequired}
+        message={message}
+      />
       </MessageInputContainer>
-      <MessageInputBottomContainer>
-        <CalcTokenButton type="button" onClick={checkTokenCount}>CalcToken</CalcTokenButton>
-      </MessageInputBottomContainer>
       <div ref={messagesEndRef}></div>
     </>
   );

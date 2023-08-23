@@ -13,7 +13,7 @@ export const MainContainer = styled.div`
   overflow: hidden;
 `;
 
-export const SidebarContainer = styled.div<{ showMenu: boolean; sidebarWidth: number }>`
+export const SidebarContainer = styled.div<{ showMenu: boolean; sidebarWidth: number; sidebarTransition: boolean }>`
   display: flex;
   flex-direction: column;
   flex-grow: 0;
@@ -26,7 +26,7 @@ export const SidebarContainer = styled.div<{ showMenu: boolean; sidebarWidth: nu
   min-width: ${props => (props.showMenu ? '10px' : '0px')};
   outline: none;
   position: relative;
-  transition: all 0.2s ease;
+  transition: ${props => (props.sidebarTransition ? 'all 0.2s ease' : 'none')};
 `;
 
 export const Placeholder = styled.div`

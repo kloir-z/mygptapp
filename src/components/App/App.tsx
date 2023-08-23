@@ -19,6 +19,7 @@ const App: React.FC = () => {
   const [apiKey, setApiKey] = useState('');
   const [receivingId, setReceivingId] = useState('');
   const [sidebarWidth, setSidebarWidth] = useState(200);
+  const [sidebarTransition, setSidebarTransition] = useState(false)
   const minSidebarWidth = 15;
   const maxSidebarWidth = 600;
   const scrollWrapperRef = useRef(null);
@@ -73,9 +74,10 @@ const App: React.FC = () => {
         setShowMenu={setShowMenu}
         systemprompts={systemprompts}
         setSystemPrompts={setSystemPrompts}
+        setSidebarTransition={setSidebarTransition}
       />
       <MainContainer>
-        <SidebarContainer showMenu={showMenu} sidebarWidth={sidebarWidth} tabIndex={0}>
+        <SidebarContainer showMenu={showMenu} sidebarWidth={sidebarWidth} sidebarTransition={sidebarTransition} tabIndex={0}>
           <Sidebar
             conversations={conversations}
             activeConversation={activeConversation}

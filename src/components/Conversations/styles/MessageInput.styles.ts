@@ -77,6 +77,7 @@ export const InputTokenText = styled.div`
   margin: 0px;
   font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.5); 
+  cursor: pointer;
 `;
 
 export const MessageTokenText = styled.div`
@@ -86,4 +87,5 @@ export const MessageTokenText = styled.div`
   margin: 0px;
   font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.5); 
+  cursor: pointer;
 `;

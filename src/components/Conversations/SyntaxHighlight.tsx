@@ -19,23 +19,23 @@ SyntaxHighlighter.registerLanguage('css', css);
 
 const commonStyle: CSSProperties = {
   whiteSpace: 'normal',
-  margin: '0px'
+  margin: '2px 0px 2px 0px'
 };
 const customH1: CSSProperties = {
   whiteSpace: 'normal',
-  margin: '0px 0px -8px 0px'
+  margin: '0px 0px -4px 0px'
 };
 const customH2: CSSProperties = {
   whiteSpace: 'normal',
-  margin: '-8px 0px -8px 10px'
+  margin: '-8px 0px -4px 10px'
 };
 const customH3: CSSProperties = {
   whiteSpace: 'normal',
-  margin: '-8px 0px -12px 20px'
+  margin: '-4px 0px -4px 20px'
 };
 const customulol: CSSProperties = {
   whiteSpace: 'normal',
-  margin: '0px 0px 16px 0px'
+  margin: '0px 0px 0px 0px'
 };
 const commonStylePrewrap: CSSProperties = {
   whiteSpace: 'pre-wrap',

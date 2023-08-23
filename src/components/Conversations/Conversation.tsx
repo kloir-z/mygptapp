@@ -44,16 +44,6 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      scrollToBottom();
-    }, 210);
-  
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [showMenu]);
-
-  useEffect(() => {
     setMessages(conversation.revisions[0].conversation);
     setEditingMessageIndex(null);
     setTotalTokenUpdateRequired(true);

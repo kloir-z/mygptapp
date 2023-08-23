@@ -16,6 +16,7 @@ type TopbarProps = {
     setShowMenu: React.Dispatch<React.SetStateAction<boolean>>;
     systemprompts: SystemPromptType[];
     setSystemPrompts: React.Dispatch<React.SetStateAction<SystemPromptType[]>>;
+    setSidebarTransition: React.Dispatch<React.SetStateAction<boolean>>;
   };
 
 const createNewConversation = (): ConversationType => {
@@ -31,7 +32,7 @@ const createNewConversation = (): ConversationType => {
     };
   };
   
-const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, model, setModel, setConversations, setActiveConversation, setShowMenu, systemprompts, setSystemPrompts }) => {
+const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, model, setModel, setConversations, setActiveConversation, setShowMenu, systemprompts, setSystemPrompts, setSidebarTransition }) => {
   const [showApiKeyInput, setShowApiKeyInput] = useState(false);
   const [tempApiKey, setTempApiKey] = useState(apiKey);
   const apiKeyInputRef = useRef<HTMLDivElement | null>(null);
@@ -54,6 +55,10 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, model, setModel, set
 
     const toggleMenu = () => {
         setShowMenu((prevState: Boolean) => !prevState);
+        setSidebarTransition(true);
+        setTimeout(() => {
+          setSidebarTransition(false);
+        }, 210);
     };
 
     return(

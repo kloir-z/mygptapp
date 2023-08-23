@@ -25,7 +25,7 @@ const MessageItem: React.FC<{
   deleteMessage,
   tempMessageContent,
   handleContentChange,
-  editTextAreaRef,
+  editTextAreaRef
 }) => {
   const highlightedContent = useMemo(() => SyntaxHighlight(message.content), [message.content]);
 

@@ -28,7 +28,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
   const [isAwaitingResponse, setIsAwaitingResponse] = useState(false); 
 
   const { editingMessageIndex, setEditingMessageIndex, tempMessageContent, onDoubleClickMessage, handleContentChange, handleConfirmEditing, handleCancelEditing, deleteMessage, editTextAreaRef } = useEditing({handleUpdateConversations, conversation, messages ,setMessages});
-  const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(model, conversation, handleUpdateConversations, messages, setMessages, setReceivingMessage, receivingId);
+  const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(model, conversation, handleUpdateConversations, messages, setMessages, setReceivingMessage);
   const { scrollToBottom, messagesEndRef, scrollContainerRef } = useScroll(messages, tempMessageContent, receivingMessage);
   const { setDebugInfo } = useDebugInfo();
   const handleStartResponse = () => {
@@ -107,18 +107,17 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
       </MessagesContainer>
       <InputContainer>
         <MessageInput 
+          isAwaitingResponse={isAwaitingResponse}
           awaitGetAIResponse={awaitGetAIResponse} 
+          handleStartResponse={handleStartResponse}
+          handleStopResponse={handleStopResponse}
           apiKey={apiKey} 
           messages={messages} 
           model={model}
           totalTokenUpdateRequired={totalTokenUpdateRequired}
           setTotalTokenUpdateRequired={setTotalTokenUpdateRequired}
-          handleStopReceiving={handleStopReceiving}
           scrollWrapperRef={scrollWrapperRef}
           setReceivingMessage={setReceivingMessage}
-          handleStartResponse={handleStartResponse}
-          handleStopResponse={handleStopResponse}
-          isAwaitingResponse={isAwaitingResponse}
         />
       </InputContainer>
     </ConversationContainer>

@@ -8,8 +8,7 @@ export const useAIResponse = (
   handleUpdateConversations: (handleUpdateConversations: ConversationType) => Promise<void>,
   messages: ConversationData[],
   setMessages: React.Dispatch<React.SetStateAction<ConversationData[]>>,
-  setReceivingMessage: React.Dispatch<React.SetStateAction<string>>,
-  receivingId: string,
+  setReceivingMessage: React.Dispatch<React.SetStateAction<string>>
 ) => {
   const stopReceiving = useRef(false);
 
@@ -24,8 +23,6 @@ export const useAIResponse = (
       setReceivingMessage,
       messageContent, 
       role,
-      conversationId: conversation.id,
-      receivingId
     });
     stopReceiving.current = false;
     const updatedConversation = { ...conversation, revisions: [{ revision: '0', conversation: finalMessages }]};

@@ -41,7 +41,9 @@ type GetAIResponseProps = {
   stopReceiving: React.MutableRefObject<boolean>,
   setReceivingMessage: React.Dispatch<React.SetStateAction<string>>,
   messageContent?: string,
-  role?: string
+  role?: string,
+  conversationId: string,
+  receivingId: string
 };
 
 export const getAIResponse = async ({
@@ -52,7 +54,9 @@ export const getAIResponse = async ({
   stopReceiving,
   setReceivingMessage,
   messageContent,
-  role
+  role,
+  conversationId,
+  receivingId
 }: GetAIResponseProps) => {
   if (messageContent && role) {
     setMessages(prev => [...prev, { role: 'user', content: messageContent }]);
@@ -118,7 +122,9 @@ export const getAIResponse = async ({
     console.log('streaming error');
     console.error(e);
   }
-  setMessages(prev => [...prev, { role: 'assistant', content: aiMessageContent }]);
+  if (receivingId === conversationId) {
+    setMessages(prev => [...prev, { role: 'assistant', content: aiMessageContent }]);
+  }
   setReceivingMessage('')
   let finalMessages = [...messages, ...(messageContent ? [{ role: 'user', content: messageContent }] : []), { role: 'assistant', content: aiMessageContent }];
   return finalMessages;

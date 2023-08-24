@@ -14,7 +14,7 @@ type SendButtonProps = {
   disabled?: boolean; 
 };
 
-const SendButton: React.FC<SendButtonProps> = ({ isAwaitingResponse, awaitGetAIResponse, handleStartResponse, handleStopResponse,  apiKey, message, setMessage, disabled }) => {
+const SendButton: React.FC<SendButtonProps> = ({ isAwaitingResponse, awaitGetAIResponse, handleStartResponse, handleStopResponse, apiKey, message, setMessage, disabled }) => {
   const handleGetAIResponse = async () => {
     handleStartResponse();
     try {

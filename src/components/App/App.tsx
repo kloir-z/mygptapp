@@ -92,7 +92,6 @@ const App: React.FC = () => {
         )}
         {activeConversation ? (
           <Conversation
-            showMenu={showMenu}
             conversation={activeConversation}
             model={model}
             apiKey={apiKey}

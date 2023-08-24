@@ -7,8 +7,10 @@ import SendButton from './SendButton';
 import TokenCounter from './TokenCounter';
 
 type MessageInputProps = {
-  awaitGetAIResponse: (apiKey: string, message?: string, role?: string) => void;
-  getAndSetTokenCount: (messages: ConversationData[], model: string, setTokenCount: React.Dispatch<React.SetStateAction<number>>) => void;
+  isAwaitingResponse: boolean;
+  awaitGetAIResponse: (apiKey: string, message?: string, role?: string) => Promise<void>;
+  handleStartResponse: () => void;
+  handleStopResponse: () => void;
   messages: ConversationData[];
   apiKey: string;
   model: string;
@@ -19,17 +21,11 @@ type MessageInputProps = {
   setReceivingMessage: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const MessageInput: React.FC<MessageInputProps> = ({ awaitGetAIResponse, apiKey, messages, model, totalTokenUpdateRequired, setTotalTokenUpdateRequired, handleStopReceiving, scrollWrapperRef }) => {
+const MessageInput: React.FC<MessageInputProps> = ({ isAwaitingResponse, awaitGetAIResponse, handleStartResponse, handleStopResponse, apiKey, messages, model, totalTokenUpdateRequired, setTotalTokenUpdateRequired, handleStopReceiving, scrollWrapperRef }) => {
   const [message, setMessage] = useState('');
   const { messagesEndRef, scrollContainerRef } = useScroll(undefined, message);
   const [inputTokenUpdateRequired, setInputTokenUpdateRequired] = useState(false);
   const { setDebugInfo } = useDebugInfo();
-  const [isAwaitingResponse, setIsAwaitingResponse] = useState(false); 
-  const handleStartResponse = () => setIsAwaitingResponse(true);
-  const handleStopResponse = () => {
-    setIsAwaitingResponse(false);
-    handleStopReceiving();
-  };
 
   useEffect(() => {
     scrollContainerRef.current = scrollWrapperRef.current;

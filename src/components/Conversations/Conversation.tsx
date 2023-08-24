@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { ConversationType, ConversationData, SystemPromptType } from './types/Conversations.types';
-import { getAndSetTokenCount } from '../../utils/openAIUtil';
 import { ConversationContainer, MessagesContainer, InputContainer, MessageDiv } from './styles/Conversation.styles'
 import { useEditing } from 'src/hooks/useEditing';
 import { useAIResponse } from 'src/hooks/useAIResponse'
@@ -9,6 +8,7 @@ import MessageInput from './MessageInput';
 import MessageItem from './MessageItem';
 import InitialMenu from './InitialMenu';
 import SendButton from './SendButton';
+import { useDebugInfo } from 'src/components/Debugger/DebugContext';
 
 type ConversationProps = {
   conversation: ConversationType;
@@ -18,24 +18,24 @@ type ConversationProps = {
   systemprompts: SystemPromptType[];
   receivingId: string;
   setReceivingId: React.Dispatch<React.SetStateAction<string>>;
-  showMenu: boolean;
   scrollWrapperRef: React.RefObject<HTMLDivElement>
 };
 
-const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey, handleUpdateConversations, systemprompts, receivingId, setReceivingId, showMenu, scrollWrapperRef }) => {
+const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey, handleUpdateConversations, systemprompts, receivingId, setReceivingId, scrollWrapperRef }) => {
   const [totalTokenUpdateRequired, setTotalTokenUpdateRequired] = useState(false);
   const [messages, setMessages] = useState<ConversationData[]>(conversation.revisions[0].conversation);
   const [receivingMessage, setReceivingMessage] = useState<string>('');
-  const [isReceivingConversationId, setIsReceivingConversationId ] = useState(false);
+  const [isAwaitingResponse, setIsAwaitingResponse] = useState(false); 
 
   const { editingMessageIndex, setEditingMessageIndex, tempMessageContent, onDoubleClickMessage, handleContentChange, handleConfirmEditing, handleCancelEditing, deleteMessage, editTextAreaRef } = useEditing({handleUpdateConversations, conversation, messages ,setMessages});
-  const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(model, conversation, handleUpdateConversations, messages, setMessages, setReceivingMessage);
-  const [isAwaitingResponse, setIsAwaitingResponse] = useState(false); 
+  const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(model, conversation, handleUpdateConversations, messages, setMessages, setReceivingMessage, receivingId);
   const { scrollToBottom, messagesEndRef, scrollContainerRef } = useScroll(messages, tempMessageContent, receivingMessage);
+  const { setDebugInfo } = useDebugInfo();
   const handleStartResponse = () => {
     setIsAwaitingResponse(true);
     setReceivingId(conversation.id);
-  }
+  };
+
   const handleStopResponse = () => {
     setIsAwaitingResponse(false);
     handleStopReceiving();
@@ -48,15 +48,21 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
   };
 
   useEffect(() => {
-    setReceivingId(conversation.id);
-  }, [isAwaitingResponse]);
-  
+    setDebugInfo(`id: ${conversation.id} , rcvid: ${receivingId}, isAwaitingResponse: ${isAwaitingResponse}`);
+  }, [conversation.id, receivingId, isAwaitingResponse]);
+
   useEffect(() => {
     setMessages(conversation.revisions[0].conversation);
     setEditingMessageIndex(null);
     setTotalTokenUpdateRequired(true);
     scrollToBottom();
-  }, [conversation]);
+  }, [conversation.id]);
+
+  useEffect(() => {
+    if (!isAwaitingResponse) {
+      setReceivingId('')
+    }
+  },[isAwaitingResponse])
 
   return (
     <ConversationContainer>
@@ -103,7 +109,6 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
         <MessageInput 
           awaitGetAIResponse={awaitGetAIResponse} 
           apiKey={apiKey} 
-          getAndSetTokenCount={getAndSetTokenCount} 
           messages={messages} 
           model={model}
           totalTokenUpdateRequired={totalTokenUpdateRequired}
@@ -111,6 +116,9 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
           handleStopReceiving={handleStopReceiving}
           scrollWrapperRef={scrollWrapperRef}
           setReceivingMessage={setReceivingMessage}
+          handleStartResponse={handleStartResponse}
+          handleStopResponse={handleStopResponse}
+          isAwaitingResponse={isAwaitingResponse}
         />
       </InputContainer>
     </ConversationContainer>

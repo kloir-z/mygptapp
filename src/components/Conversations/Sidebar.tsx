@@ -1,3 +1,4 @@
+//Sidebar.tsx
 import React, { useMemo, useRef } from 'react';
 import { StyledInput, ConversationItem, TitleLeft, TitleRight } from './styles/Sidebar.styles';
 import { ConversationType } from './types/Conversations.types';
@@ -7,14 +8,15 @@ import useSidebar from 'src/hooks/useSidebar';
 
 type SidebarProps = {
   conversations: ConversationType[];
+  setConversations: React.Dispatch<React.SetStateAction<ConversationType[]>>;
   activeConversation: ConversationType | null;
-  setConversations: Function;
-  setActiveConversation: Function;
+  setActiveConversation: React.Dispatch<React.SetStateAction<ConversationType | null>>;
   handleUpdateConversations: (updatedConversation: ConversationType) => Promise<void>;
-  deleteConversation: (id: string) => Promise<void>;
+  handleDeleteConversation: (id: string) => Promise<void>;
+  receivingId: string;
 };
 
-const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, setConversations, setActiveConversation, handleUpdateConversations, deleteConversation }) => {
+const Sidebar: React.FC<SidebarProps> = ({ conversations, setConversations, activeConversation, setActiveConversation, handleUpdateConversations, handleDeleteConversation, receivingId }) => {
   const inputRef = useRef<HTMLInputElement>(null);  
   const {
     editingTitle,
@@ -23,8 +25,7 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, activeConversation, se
     toggleEditingTitle,
     confirmEdit,
     cancelEdit,
-    handleDeleteConversation,
-  } = useSidebar(conversations, setConversations, handleUpdateConversations, deleteConversation);
+  } = useSidebar(conversations, setConversations, handleUpdateConversations);
 
   const reversedConversations = useMemo(() => {
     return [...conversations].reverse();

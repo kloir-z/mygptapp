@@ -20,7 +20,7 @@ export type SystemPromptType = {
   content: string;
 };
 
-export type ConversationsResult = {
-  messages: ConversationType[];
+export type FetchedUserData = {
+  conversations: ConversationType[];
   systemPrompts: SystemPromptType[];
 };

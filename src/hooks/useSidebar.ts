@@ -1,3 +1,4 @@
+//useSidebar.ts
 import { useState } from 'react';
 import { ConversationType } from 'src/components/Conversations/types/Conversations.types';
 
@@ -5,7 +6,6 @@ const useSidebar = (
   conversations: ConversationType[],
   setConversations: Function,
   handleUpdateConversations: (updatedConversation: ConversationType) => Promise<void>,
-  deleteConversation: (id: string) => Promise<void>
 ) => {
   const [editingTitle, setEditingTitle] = useState<string>("");
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -36,22 +36,13 @@ const useSidebar = (
     setEditingTitle("");
   };
 
-  const handleDeleteConversation = (id: string) => {
-    if (window.confirm('Are You Sure to Delete?')) {
-      deleteConversation(id).then(() => {
-        setConversations((prev: ConversationType[]) => prev.filter((conv: ConversationType) => conv.id !== id));
-      });
-    }
-  };
-
   return {
     editingTitle,
     setEditingTitle,
     editingId,
     toggleEditingTitle,
     confirmEdit,
-    cancelEdit,
-    handleDeleteConversation,
+    cancelEdit
   };
 };
 

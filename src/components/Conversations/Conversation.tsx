@@ -11,29 +11,29 @@ import SendButton from './SendButton';
 import { useDebugInfo } from 'src/components/Debugger/DebugContext';
 
 type ConversationProps = {
-  conversation: ConversationType;
+  activeConversation: ConversationType;
   model: string;
   apiKey: string;
-  handleUpdateConversations: (updatedConversation: ConversationType) => Promise<void>;
+  handleUpdateConversations: (updatedConversation: ConversationType, shouldUpdateFirestore: boolean) => Promise<void>;
   systemprompts: SystemPromptType[];
   receivingId: string;
   setReceivingId: React.Dispatch<React.SetStateAction<string>>;
   scrollWrapperRef: React.RefObject<HTMLDivElement>
 };
 
-const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey, handleUpdateConversations, systemprompts, receivingId, setReceivingId, scrollWrapperRef }) => {
+const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, apiKey, handleUpdateConversations, systemprompts, receivingId, setReceivingId, scrollWrapperRef }) => {
   const [totalTokenUpdateRequired, setTotalTokenUpdateRequired] = useState(false);
-  const [messages, setMessages] = useState<ConversationData[]>(conversation.revisions[0].conversation);
+  const [displayMessages, setDisplayMessages] = useState<ConversationData[]>(activeConversation.revisions[0].conversation);
   const [receivingMessage, setReceivingMessage] = useState<string>('');
   const [isAwaitingResponse, setIsAwaitingResponse] = useState(false); 
 
-  const { editingMessageIndex, setEditingMessageIndex, tempMessageContent, onDoubleClickMessage, handleContentChange, handleConfirmEditing, handleCancelEditing, deleteMessage, editTextAreaRef } = useEditing({handleUpdateConversations, conversation, messages ,setMessages});
-  const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(model, conversation, handleUpdateConversations, messages, setMessages, setReceivingMessage);
-  const { scrollToBottom, messagesEndRef, scrollContainerRef } = useScroll(messages, tempMessageContent, receivingMessage);
+  const { editingMessageIndex, setEditingMessageIndex, tempMessageContent, onDoubleClickMessage, handleContentChange, handleConfirmEditing, handleCancelEditing, deleteMessage, editTextAreaRef } = useEditing({handleUpdateConversations, activeConversation, displayMessages ,setDisplayMessages});
+  const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(model, activeConversation, handleUpdateConversations, displayMessages, setReceivingMessage, setReceivingId);
+  const { scrollToBottom, messagesEndRef, scrollContainerRef } = useScroll(displayMessages, tempMessageContent, receivingMessage);
   const { setDebugInfo } = useDebugInfo();
   const handleStartResponse = () => {
     setIsAwaitingResponse(true);
-    setReceivingId(conversation.id);
+    setReceivingId(activeConversation.id);
   };
 
   const handleStopResponse = () => {
@@ -41,28 +41,22 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
     handleStopReceiving();
   };
 
-  const showSendButton = messages[messages.length - 1]?.role === 'user' && editingMessageIndex === null && !isAwaitingResponse;
+  const showSendButton = displayMessages[displayMessages.length - 1]?.role === 'user' && editingMessageIndex === null && !isAwaitingResponse;
 
   const showInitialMenu = () => {
-    return !messages.some(message => message.role === 'assistant');
+    return !displayMessages.some(message => message.role === 'assistant');
   };
 
   useEffect(() => {
-    setDebugInfo(`id: ${conversation.id} , rcvid: ${receivingId}, isAwaitingResponse: ${isAwaitingResponse}`);
-  }, [conversation.id, receivingId, isAwaitingResponse]);
+    setDebugInfo(`id: ${activeConversation.id} , rcvid: ${receivingId}, isAwaitingResponse: ${isAwaitingResponse}`);
+  }, [activeConversation.id, receivingId, isAwaitingResponse]);
 
   useEffect(() => {
-    setMessages(conversation.revisions[0].conversation);
+    setDisplayMessages(activeConversation.revisions[0].conversation);
     setEditingMessageIndex(null);
     setTotalTokenUpdateRequired(true);
     scrollToBottom();
-  }, [conversation.id]);
-
-  useEffect(() => {
-    if (!isAwaitingResponse) {
-      setReceivingId('')
-    }
-  },[isAwaitingResponse])
+  }, [activeConversation]);
 
   return (
     <ConversationContainer>
@@ -70,19 +64,19 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
         {showInitialMenu() && (
           <InitialMenu
             systemprompts={systemprompts}
-            conversation={conversation}
+            conversation={activeConversation}
             handleUpdateConversations={handleUpdateConversations}
-            messages={messages}
-            setMessages={setMessages}
+            displayMessages={displayMessages}
+            setDisplayMessages={setDisplayMessages}
           />
         )}
-        {messages.map((message: ConversationData, index: number) => (
+        {displayMessages.map((message: ConversationData, index: number) => (
           <MessageItem
             key={index}
             message={message}
             editing={editingMessageIndex === index}
             index={index}
-            onDoubleClick={() => onDoubleClickMessage(messages, index)}
+            onDoubleClick={() => onDoubleClickMessage(displayMessages, index)}
             handleConfirmEditing={handleConfirmEditing}
             handleCancelEditing={handleCancelEditing}
             deleteMessage={deleteMessage}
@@ -91,7 +85,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
             editTextAreaRef={editTextAreaRef}
           />
         ))}
-        {receivingMessage && receivingId === conversation.id &&<MessageDiv role='assistant'>{receivingMessage}</MessageDiv>}
+        {receivingMessage && receivingId === activeConversation.id &&<MessageDiv role='assistant'>{receivingMessage}</MessageDiv>}
         {showSendButton && (
           <div style={{position: 'relative'}}>
             <SendButton
@@ -112,7 +106,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation, model, apiKey
           handleStartResponse={handleStartResponse}
           handleStopResponse={handleStopResponse}
           apiKey={apiKey} 
-          messages={messages} 
+          displayMessages={displayMessages} 
           model={model}
           totalTokenUpdateRequired={totalTokenUpdateRequired}
           setTotalTokenUpdateRequired={setTotalTokenUpdateRequired}

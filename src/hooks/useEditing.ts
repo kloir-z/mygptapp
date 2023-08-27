@@ -15,13 +15,13 @@ type UseEditingReturnType = {
 };
 
 type UseEditingProps = {
-    handleUpdateConversations: (updatedConversation: ConversationType) => Promise<void>;
-    conversation: ConversationType;
-    messages: ConversationData[],
-    setMessages: React.Dispatch<React.SetStateAction<ConversationData[]>>
+    handleUpdateConversations: (updatedConversation: ConversationType, shouldUpdateFirestore: boolean) => Promise<void>;
+    activeConversation: ConversationType;
+    displayMessages: ConversationData[],
+    setDisplayMessages: React.Dispatch<React.SetStateAction<ConversationData[]>>
 }
 
-export const useEditing = ({handleUpdateConversations, conversation, messages, setMessages}:UseEditingProps ): UseEditingReturnType => {
+export const useEditing = ({handleUpdateConversations, activeConversation, displayMessages, setDisplayMessages}:UseEditingProps ): UseEditingReturnType => {
   const [editingMessageIndex, setEditingMessageIndex] = useState<number | null>(null);
   const [tempMessageContent, setTempMessageContent] = useState<string | null>(null);
 
@@ -36,7 +36,7 @@ export const useEditing = ({handleUpdateConversations, conversation, messages, s
 
   const handleConfirmEditing = (index: number) => {
     if (tempMessageContent !== null) {
-      setMessages(prevMessages => {
+      setDisplayMessages(prevMessages => {
         const updatedMessages = [...prevMessages];
         if (typeof updatedMessages[index].content === 'string') {
           updatedMessages[index].content = tempMessageContent;
@@ -54,14 +54,14 @@ export const useEditing = ({handleUpdateConversations, conversation, messages, s
   };
   
   const deleteMessage = (index: number) => {
-    setMessages(prevMessages => {
+    setDisplayMessages(prevMessages => {
       const updatedMessages = [...prevMessages];
       updatedMessages.splice(index, 1);
       return updatedMessages;
     });
   
-    const updatedConversation = { ...conversation, revisions: [{ revision: '0', conversation: messages.filter((_, idx) => idx !== index)}]};
-    handleUpdateConversations(updatedConversation);
+    const updatedConversation = { ...activeConversation, revisions: [{ revision: '0', conversation: displayMessages.filter((_, idx) => idx !== index)}]};
+    handleUpdateConversations(updatedConversation, true);
     setEditingMessageIndex(null);
   };
 

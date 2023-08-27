@@ -11,7 +11,7 @@ type MessageInputProps = {
   awaitGetAIResponse: (apiKey: string, message?: string, role?: string) => Promise<void>;
   handleStartResponse: () => void;
   handleStopResponse: () => void;
-  messages: ConversationData[];
+  displayMessages: ConversationData[];
   apiKey: string;
   model: string;
   totalTokenUpdateRequired: boolean;
@@ -20,7 +20,7 @@ type MessageInputProps = {
   setReceivingMessage: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const MessageInput: React.FC<MessageInputProps> = ({ isAwaitingResponse, awaitGetAIResponse, handleStartResponse, handleStopResponse, apiKey, messages, model, totalTokenUpdateRequired, setTotalTokenUpdateRequired, scrollWrapperRef }) => {
+const MessageInput: React.FC<MessageInputProps> = ({ isAwaitingResponse, awaitGetAIResponse, handleStartResponse, handleStopResponse, apiKey, displayMessages, model, totalTokenUpdateRequired, setTotalTokenUpdateRequired, scrollWrapperRef }) => {
   const [message, setMessage] = useState('');
   const { messagesEndRef, scrollContainerRef } = useScroll(undefined, message);
   const [inputTokenUpdateRequired, setInputTokenUpdateRequired] = useState(false);
@@ -60,7 +60,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ isAwaitingResponse, awaitGe
         disabled={message.trim() === ''}
       />
       <TokenCounter
-        messages={messages}
+        displayMessages={displayMessages}
         model={model}
         totalTokenUpdateRequired={totalTokenUpdateRequired}
         setTotalTokenUpdateRequired={setTotalTokenUpdateRequired}

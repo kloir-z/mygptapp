@@ -37,7 +37,6 @@ type GetAIResponseProps = {
   apiKey: string,
   model: string,
   messages: ConversationData[],
-  setMessages: React.Dispatch<React.SetStateAction<ConversationData[]>>,
   stopReceiving: React.MutableRefObject<boolean>,
   setReceivingMessage: React.Dispatch<React.SetStateAction<string>>,
   messageContent?: string,
@@ -48,15 +47,11 @@ export const getAIResponse = async ({
   apiKey,
   model,
   messages,
-  setMessages,
   stopReceiving,
   setReceivingMessage,
   messageContent,
   role
-}: GetAIResponseProps) => {
-  if (messageContent && role) {
-    setMessages(prev => [...prev, { role: 'user', content: messageContent }]);
-  }
+}: GetAIResponseProps): Promise<string> => {
   const response = await sendToOpenAI({ apiKey, model, messages, messageContent, role });
   const reader = response.body?.getReader();
   if (!reader) {
@@ -117,11 +112,9 @@ export const getAIResponse = async ({
   } catch (e) {
     console.log('streaming error');
     console.error(e);
+    return aiMessageContent;
   }
-  setMessages(prev => [...prev, { role: 'assistant', content: aiMessageContent }]);
-  setReceivingMessage('')
-  let finalMessages = [...messages, ...(messageContent ? [{ role: 'user', content: messageContent }] : []), { role: 'assistant', content: aiMessageContent }];
-  return finalMessages;
+  return aiMessageContent;
 };
 
 const countTokens = async (messages: ConversationData[], model: string): Promise<number> => {

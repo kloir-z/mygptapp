@@ -5,7 +5,7 @@ import { InputTokenText, MessageTokenText } from './styles/MessageInput.styles'
 import { Spinner } from './Spinner'
 
 type TokenCounterProps = {
-  messages: ConversationData[];
+  displayMessages: ConversationData[];
   model: string;
   totalTokenUpdateRequired: boolean;
   setTotalTokenUpdateRequired: React.Dispatch<React.SetStateAction<boolean>>;
@@ -14,7 +14,7 @@ type TokenCounterProps = {
   message: string;
 };
 
-const TokenCounter: React.FC<TokenCounterProps> = ({ messages, model, totalTokenUpdateRequired, setTotalTokenUpdateRequired, inputTokenUpdateRequired, setInputTokenUpdateRequired, message }) => {
+const TokenCounter: React.FC<TokenCounterProps> = ({ displayMessages, model, totalTokenUpdateRequired, setTotalTokenUpdateRequired, inputTokenUpdateRequired, setInputTokenUpdateRequired, message }) => {
   const [inputTokenCount, setInputTokenCount] = useState<number>(0);
   const [totalTokenCount, setTotalTokenCount] = useState<number>(0);
   const [inputTokenLoading, setInputTokenLoading] = useState(false);
@@ -32,7 +32,7 @@ const TokenCounter: React.FC<TokenCounterProps> = ({ messages, model, totalToken
   const checkMessageTokenCount = async () => {
     if (totalTokenUpdateRequired) {
       setTotalTokenLoading(true);
-      await getAndSetTokenCount([...messages], model, setTotalTokenCount);
+      await getAndSetTokenCount([...displayMessages], model, setTotalTokenCount);
       setTotalTokenLoading(false);
       setTotalTokenUpdateRequired(false);
     }
@@ -48,7 +48,7 @@ const TokenCounter: React.FC<TokenCounterProps> = ({ messages, model, totalToken
     if(!totalTokenUpdateRequired){
       setTotalTokenUpdateRequired(true);
     }
-  },[messages]);
+  },[displayMessages]);
 
   return (
     <>

@@ -54,7 +54,7 @@ ReactDOM.render(
           }
         `}
       />
-      <DebugDisplay />
+  <DebugDisplay />
       <App />
   </DebugProvider>
     </AuthProvider>

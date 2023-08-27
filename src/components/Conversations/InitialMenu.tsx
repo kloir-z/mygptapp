@@ -7,10 +7,9 @@ import { InitialMenuContainer, StyledSelect, StyledOption, StyledInput, StyledBu
 type InitialMenuProps = {
   systemprompts: SystemPromptType[];
   conversation: ConversationType;
-  handleUpdateConversations: (updatedConversation: any) => Promise<void>;
-  messages: ConversationData[];
-  setMessages: React.Dispatch<React.SetStateAction<ConversationData[]>>;
-
+  handleUpdateConversations: (updatedConversation: ConversationType, shouldUpdateFirestore: boolean) => Promise<void>;
+  displayMessages: ConversationData[];
+  setDisplayMessages: React.Dispatch<React.SetStateAction<ConversationData[]>>;
 };
 
 type SystemPromptActionsType = {
@@ -19,21 +18,21 @@ type SystemPromptActionsType = {
     '英語要約': () => void;
   };
 
-const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, conversation, handleUpdateConversations, messages, setMessages }) => {
+const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, conversation, handleUpdateConversations, displayMessages, setDisplayMessages }) => {
   const [showTranscriptPopup, setShowTranscriptPopup] = useState(false);
   const [youtubeUrl, setYoutubeUrl] = useState<string | null>(null);
   const [loadingTranscript, setLoadingTranscript] = useState(false);
 
   const systemPromptActions: SystemPromptActionsType = {
-    '日本語要約': () => { if (!messages.some(message => message.role === 'user')) setShowTranscriptPopup(true); },
-    '英語要約': () => { if (!messages.some(message => message.role === 'user')) setShowTranscriptPopup(true); }
+    '日本語要約': () => { if (!displayMessages.some(message => message.role === 'user')) setShowTranscriptPopup(true); },
+    '英語要約': () => { if (!displayMessages.some(message => message.role === 'user')) setShowTranscriptPopup(true); }
     // 他のプロンプトと機能を追加
   };
 
   const handleSystemPromptSelection = (selectedPromptId: string) => {
     if (selectedPromptId === 'none') {
-      if (messages[0]?.role === 'system') {
-        setMessages(prevMessages => prevMessages.slice(1));
+      if (displayMessages[0]?.role === 'system') {
+        setDisplayMessages(prevMessages => prevMessages.slice(1));
       }
       setShowTranscriptPopup(false);
       return;
@@ -48,7 +47,7 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, conversation, 
         setShowTranscriptPopup(false);
       }
 
-      setMessages(prevMessages => {
+      setDisplayMessages(prevMessages => {
         const updatedMessages = [...prevMessages];
         if (updatedMessages[0]?.role === 'system') {
           updatedMessages[0] = { content: selectedPrompt.content, role: 'system' };
@@ -65,10 +64,10 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, conversation, 
       setLoadingTranscript(true);
       const transcript = await getYoutubeTranscript(youtubeUrl);
       if (transcript) {
-        setMessages(prevMessages => [...prevMessages, { content: transcript, role: 'user' }]);
-        const updatedConversation = { ...conversation, revisions: [{ revision: '0', conversation: messages.concat({ content: transcript, role: 'user' }) }]};
+        setDisplayMessages(prevMessages => [...prevMessages, { content: transcript, role: 'user' }]);
+        const updatedConversation = { ...conversation, revisions: [{ revision: '0', conversation: displayMessages.concat({ content: transcript, role: 'user' }) }]};
         setLoadingTranscript(false);
-        handleUpdateConversations(updatedConversation);
+        handleUpdateConversations(updatedConversation, false);
       }
     }
   };

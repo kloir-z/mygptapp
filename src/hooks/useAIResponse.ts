@@ -1,33 +1,36 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { ConversationType, ConversationData } from 'src/components/Conversations/types/Conversations.types';
 import { getAIResponse } from 'src/utils/openAIUtil';
 
 export const useAIResponse = (
   model: string,
-  conversation: ConversationType,
-  handleUpdateConversations: (handleUpdateConversations: ConversationType) => Promise<void>,
+  activeConversation: ConversationType,
+  handleUpdateConversations: (handleUpdateConversations: ConversationType, shouldUpdateFirestore: boolean) => Promise<void>,
   messages: ConversationData[],
-  setMessages: React.Dispatch<React.SetStateAction<ConversationData[]>>,
-  setReceivingMessage: React.Dispatch<React.SetStateAction<string>>
+  setReceivingMessage: React.Dispatch<React.SetStateAction<string>>,
+  setReceivingId: React.Dispatch<React.SetStateAction<string>>
 ) => {
   const stopReceiving = useRef(false);
 
   const awaitGetAIResponse = async (apiKey: string, messageContent?: string, role?: string): Promise<void> => {
     stopReceiving.current = false;
-    const finalMessages = await getAIResponse({
-      apiKey, 
-      model, 
-      messages, 
-      setMessages, 
-      stopReceiving, 
-      setReceivingMessage,
-      messageContent, 
-      role,
-    });
+    setReceivingMessage('')
+    let updatedMessages = [...messages];
+
+    if (messageContent) {
+      updatedMessages.push({ role: 'user', content: messageContent });
+      handleUpdateConversations({ ...activeConversation, revisions: [{ revision: '0', conversation: updatedMessages }] }, false);
+    }
+
+    const aiResponse = await getAIResponse({ apiKey, model, messages: updatedMessages, stopReceiving, setReceivingMessage, messageContent, role });
+
+    updatedMessages.push({ role: 'assistant', content: aiResponse });
+    handleUpdateConversations({ ...activeConversation, revisions: [{ revision: '0', conversation: updatedMessages }] }, true);
+
+    setReceivingMessage('')
+    setReceivingId('')
     stopReceiving.current = false;
-    const updatedConversation = { ...conversation, revisions: [{ revision: '0', conversation: finalMessages }]};
-    handleUpdateConversations(updatedConversation);
-  };  
+  };
 
   const handleStopReceiving = () => {
     stopReceiving.current = true;

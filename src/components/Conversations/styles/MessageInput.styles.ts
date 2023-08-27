@@ -60,9 +60,10 @@ export const SendButton = styled.button`
   cursor: pointer;
   color: rgba(255, 255, 255, 0.5); 
   background: rgba(51, 99, 150, 0.5);
+  @media (hover: hover) and (pointer: fine) {
   &:hover {
     background: rgba(65, 125, 189, 0.5);
-  }
+  }}
   &:disabled {
     color: rgba(255, 255, 255, 0.137);
     background: rgba(70, 82, 92, 0.5);

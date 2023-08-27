@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane, faStop } from '@fortawesome/free-solid-svg-icons'
 import { SendButton as StyledSendButton } from './styles/MessageInput.styles'
+import { Spinner } from "../Conversations/Spinner";
 
 type SendButtonProps = {
   isAwaitingResponse: boolean;
@@ -15,6 +16,8 @@ type SendButtonProps = {
 };
 
 const SendButton: React.FC<SendButtonProps> = ({ isAwaitingResponse, awaitGetAIResponse, handleStartResponse, handleStopResponse, apiKey, message, setMessage, disabled }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
   const handleGetAIResponse = async () => {
     handleStartResponse();
     try {
@@ -29,9 +32,30 @@ const SendButton: React.FC<SendButtonProps> = ({ isAwaitingResponse, awaitGetAIR
     }
   };
 
+  const onMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const onMouseLeave = () => {
+    setIsHovered(false);
+  };
+
   return (
-    <StyledSendButton onClick={isAwaitingResponse ? handleStopResponse : handleGetAIResponse} disabled={disabled}>
-      <FontAwesomeIcon icon={isAwaitingResponse ? faStop : faPaperPlane} />
+    <StyledSendButton
+      onClick={isAwaitingResponse ? handleStopResponse : handleGetAIResponse}
+      disabled={disabled}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
+      {isAwaitingResponse ? (
+        isHovered ? (
+          <FontAwesomeIcon icon={faStop} />
+        ) : (
+          <Spinner />
+        )
+      ) : (
+        <FontAwesomeIcon icon={faPaperPlane} />
+      )}
     </StyledSendButton>
   );
 };

@@ -31,9 +31,10 @@ export const StyledButton = styled.button`
   cursor: pointer;
   color: #ffffffe3; 
   background: rgba(51, 99, 150, 0.85);
+  @media (hover: hover) and (pointer: fine) {
   &:hover {
     background: rgba(65, 125, 189, 0.85);
-  }
+  }}
 `;
 export const StyledInput = styled.input`
   margin: 3px;  

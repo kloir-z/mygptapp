@@ -31,9 +31,10 @@ export const StyledButton = styled.button`
   cursor: pointer;
   color: #ffffffe3;
   background: rgba(51, 99, 150, 0.85);
+  @media (hover: hover) and (pointer: fine) {
   &:hover {
     background: rgba(65, 125, 189, 0.85);
-  }
+  }}
   &:disabled {
     background: rgba(190, 190, 190, 0.85);
     color: rgba(128, 128, 128, 0.85);

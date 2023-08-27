@@ -57,7 +57,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ isAwaitingResponse, awaitGe
         apiKey={apiKey}
         message={message}
         setMessage={setMessage} 
-        disabled={message.trim() === ''}
+        disabled={message.trim() === '' && !isAwaitingResponse}
       />
       <TokenCounter
         displayMessages={displayMessages}

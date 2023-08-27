@@ -22,7 +22,7 @@ const App: React.FC = () => {
   const [apiKey, setApiKey] = useState('');
   const [sidebarWidth, setSidebarWidth] = useState(200);
   const [sidebarTransition, setSidebarTransition] = useState(false)
-  const [updateMessagesState, setUpdateMessagesState] = useState<ConversationData | null>(null);
+  const [queuedMessageForReceivingId, setqueuedMessageForReceivingId] = useState<ConversationData | null>(null);
   const minSidebarWidth = 15;
   const maxSidebarWidth = 600;
   const scrollWrapperRef = useRef(null);
@@ -40,18 +40,18 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
-    if (updateMessagesState !== null) {
+    if (queuedMessageForReceivingId !== null) {
       const targetConversation = conversations.find(conv => conv.id === receivingId);
       if (targetConversation) {
         const targetRevision = targetConversation.revisions.find(rev => rev.revision === '0');
         if (targetRevision) {
-          targetRevision.conversation.push(updateMessagesState);
-          handleUpdateConversations(targetConversation, updateMessagesState.role !== 'user');
+          targetRevision.conversation.push(queuedMessageForReceivingId);
+          handleUpdateConversations(targetConversation, queuedMessageForReceivingId.role !== 'user');
         }
       }
-      setUpdateMessagesState(null);
+      setqueuedMessageForReceivingId(null);
     }
-  }, [updateMessagesState]);
+  }, [queuedMessageForReceivingId]);
 
   const replacer = (key: string, value: any) => {
     if (key === 'content' && typeof value === 'string' && value.length > 20) {
@@ -142,7 +142,7 @@ const App: React.FC = () => {
             receivingMessage={receivingMessage}
             setReceivingMessage={setReceivingMessage}
             scrollWrapperRef={scrollWrapperRef}
-            setUpdateMessagesState={setUpdateMessagesState}
+            setqueuedMessageForReceivingId={setqueuedMessageForReceivingId}
           />
         ) : (
           <Placeholder>Please select a conversation</Placeholder>

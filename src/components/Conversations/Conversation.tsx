@@ -22,16 +22,16 @@ type ConversationProps = {
   receivingMessage: string;
   setReceivingMessage: React.Dispatch<React.SetStateAction<string>>;
   scrollWrapperRef: React.RefObject<HTMLDivElement>;
-  setUpdateMessagesState: React.Dispatch<React.SetStateAction<ConversationData | null>>
+  setqueuedMessageForReceivingId: React.Dispatch<React.SetStateAction<ConversationData | null>>
 };
 
-const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, apiKey, handleUpdateConversations, systemprompts, receivingId, setReceivingId, receivingMessage, setReceivingMessage, scrollWrapperRef, setUpdateMessagesState }) => {
+const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, apiKey, handleUpdateConversations, systemprompts, receivingId, setReceivingId, receivingMessage, setReceivingMessage, scrollWrapperRef, setqueuedMessageForReceivingId }) => {
   const [totalTokenUpdateRequired, setTotalTokenUpdateRequired] = useState(false);
   const [displayMessages, setDisplayMessages] = useState<ConversationData[]>(activeConversation.revisions[0].conversation);
   const [isAwaitingResponse, setIsAwaitingResponse] = useState(false); 
 
   const { editingMessageIndex, setEditingMessageIndex, tempMessageContent, onDoubleClickMessage, handleContentChange, handleConfirmEditing, handleCancelEditing, deleteMessage, editTextAreaRef } = useEditing({handleUpdateConversations, activeConversation, displayMessages ,setDisplayMessages});
-  const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(model, activeConversation, handleUpdateConversations, displayMessages, setReceivingMessage, setReceivingId, setUpdateMessagesState);
+  const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(model, activeConversation, handleUpdateConversations, displayMessages, setReceivingMessage, setReceivingId, setqueuedMessageForReceivingId);
   const { scrollToBottom, messagesEndRef, scrollContainerRef } = useScroll(displayMessages, tempMessageContent, receivingMessage);
   const { setDebugInfo } = useDebugInfo();
   const handleStartResponse = () => {

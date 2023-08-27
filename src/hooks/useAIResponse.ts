@@ -10,7 +10,7 @@ export const useAIResponse = (
   messages: ConversationData[],
   setReceivingMessage: React.Dispatch<React.SetStateAction<string>>,
   setReceivingId: React.Dispatch<React.SetStateAction<string>>,
-  setUpdateMessagesState: React.Dispatch<React.SetStateAction<ConversationData | null>>,
+  setQueuedMessageForReceivingId: React.Dispatch<React.SetStateAction<ConversationData | null>>,
 ) => {
   const stopReceiving = useRef(false);
 
@@ -21,15 +21,11 @@ export const useAIResponse = (
 
     if (messageContent) {
       updatedMessages.push({ role: 'user', content: messageContent });
-      setUpdateMessagesState({ role: 'user', content: messageContent })
-      // handleUpdateConversations({ ...activeConversation, revisions: [{ revision: '0', conversation: updatedMessages }] }, false);
+      setQueuedMessageForReceivingId({ role: 'user', content: messageContent })
     }
 
     const aiResponse = await getAIResponse({ apiKey, model, messages: updatedMessages, stopReceiving, setReceivingMessage, messageContent, role });
-
-    updatedMessages.push({ role: 'assistant', content: aiResponse });
-    setUpdateMessagesState({ role: 'assistant', content: aiResponse })
-    // handleUpdateConversations({ ...activeConversation, revisions: [{ revision: '0', conversation: updatedMessages }] }, true);
+    setQueuedMessageForReceivingId({ role: 'assistant', content: aiResponse })
 
     setReceivingMessage('')
     setReceivingId('')

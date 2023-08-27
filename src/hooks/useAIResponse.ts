@@ -1,4 +1,5 @@
-import { useRef, useEffect } from 'react';
+//useAIResponse.ts
+import { useRef } from 'react';
 import { ConversationType, ConversationData } from 'src/components/Conversations/types/Conversations.types';
 import { getAIResponse } from 'src/utils/openAIUtil';
 
@@ -8,7 +9,8 @@ export const useAIResponse = (
   handleUpdateConversations: (handleUpdateConversations: ConversationType, shouldUpdateFirestore: boolean) => Promise<void>,
   messages: ConversationData[],
   setReceivingMessage: React.Dispatch<React.SetStateAction<string>>,
-  setReceivingId: React.Dispatch<React.SetStateAction<string>>
+  setReceivingId: React.Dispatch<React.SetStateAction<string>>,
+  setUpdateMessagesState: React.Dispatch<React.SetStateAction<ConversationData | null>>,
 ) => {
   const stopReceiving = useRef(false);
 
@@ -19,13 +21,15 @@ export const useAIResponse = (
 
     if (messageContent) {
       updatedMessages.push({ role: 'user', content: messageContent });
-      handleUpdateConversations({ ...activeConversation, revisions: [{ revision: '0', conversation: updatedMessages }] }, false);
+      setUpdateMessagesState({ role: 'user', content: messageContent })
+      // handleUpdateConversations({ ...activeConversation, revisions: [{ revision: '0', conversation: updatedMessages }] }, false);
     }
 
     const aiResponse = await getAIResponse({ apiKey, model, messages: updatedMessages, stopReceiving, setReceivingMessage, messageContent, role });
 
     updatedMessages.push({ role: 'assistant', content: aiResponse });
-    handleUpdateConversations({ ...activeConversation, revisions: [{ revision: '0', conversation: updatedMessages }] }, true);
+    setUpdateMessagesState({ role: 'assistant', content: aiResponse })
+    // handleUpdateConversations({ ...activeConversation, revisions: [{ revision: '0', conversation: updatedMessages }] }, true);
 
     setReceivingMessage('')
     setReceivingId('')

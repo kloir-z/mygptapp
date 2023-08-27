@@ -1,3 +1,4 @@
+//Conversations.types.ts
 export type ConversationData = {
   role: string;
   content: string;

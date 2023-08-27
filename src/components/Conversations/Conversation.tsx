@@ -1,3 +1,4 @@
+//Conversation.tsx
 import React, { useEffect, useState } from 'react';
 import { ConversationType, ConversationData, SystemPromptType } from './types/Conversations.types';
 import { ConversationContainer, MessagesContainer, InputContainer, MessageDiv } from './styles/Conversation.styles'
@@ -18,17 +19,19 @@ type ConversationProps = {
   systemprompts: SystemPromptType[];
   receivingId: string;
   setReceivingId: React.Dispatch<React.SetStateAction<string>>;
-  scrollWrapperRef: React.RefObject<HTMLDivElement>
+  receivingMessage: string;
+  setReceivingMessage: React.Dispatch<React.SetStateAction<string>>;
+  scrollWrapperRef: React.RefObject<HTMLDivElement>;
+  setUpdateMessagesState: React.Dispatch<React.SetStateAction<ConversationData | null>>
 };
 
-const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, apiKey, handleUpdateConversations, systemprompts, receivingId, setReceivingId, scrollWrapperRef }) => {
+const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, apiKey, handleUpdateConversations, systemprompts, receivingId, setReceivingId, receivingMessage, setReceivingMessage, scrollWrapperRef, setUpdateMessagesState }) => {
   const [totalTokenUpdateRequired, setTotalTokenUpdateRequired] = useState(false);
   const [displayMessages, setDisplayMessages] = useState<ConversationData[]>(activeConversation.revisions[0].conversation);
-  const [receivingMessage, setReceivingMessage] = useState<string>('');
   const [isAwaitingResponse, setIsAwaitingResponse] = useState(false); 
 
   const { editingMessageIndex, setEditingMessageIndex, tempMessageContent, onDoubleClickMessage, handleContentChange, handleConfirmEditing, handleCancelEditing, deleteMessage, editTextAreaRef } = useEditing({handleUpdateConversations, activeConversation, displayMessages ,setDisplayMessages});
-  const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(model, activeConversation, handleUpdateConversations, displayMessages, setReceivingMessage, setReceivingId);
+  const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(model, activeConversation, handleUpdateConversations, displayMessages, setReceivingMessage, setReceivingId, setUpdateMessagesState);
   const { scrollToBottom, messagesEndRef, scrollContainerRef } = useScroll(displayMessages, tempMessageContent, receivingMessage);
   const { setDebugInfo } = useDebugInfo();
   const handleStartResponse = () => {

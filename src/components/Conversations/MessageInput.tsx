@@ -1,29 +1,23 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { ConversationData } from './types/Conversations.types';
-import { MessageInputContainer, StyledTextarea, InputCursorRef } from './styles/MessageInput.styles'
+//MessageInput.tsx
+import React, { useRef, useEffect } from 'react';
+import { MessageInputContainer, StyledTextarea } from './styles/MessageInput.styles'
 import { useDebugInfo } from 'src/components/Debugger/DebugContext';
 import useScroll from 'src/hooks/useScroll'
 import SendButton from './SendButton';
-import TokenCounter from './TokenCounter';
 
 type MessageInputProps = {
   receivingId: string;
   awaitGetAIResponse: (apiKey: string, message?: string, role?: string) => Promise<void>;
   handleStartResponse: () => void;
   handleStopResponse: () => void;
-  displayMessages: ConversationData[];
   apiKey: string;
-  model: string;
-  totalTokenUpdateRequired: boolean;
-  setTotalTokenUpdateRequired: React.Dispatch<React.SetStateAction<boolean>>;
-  scrollWrapperRef: React.RefObject<HTMLDivElement>
-  setReceivingMessage: React.Dispatch<React.SetStateAction<string>>;
+  scrollWrapperRef: React.RefObject<HTMLDivElement>;
+  inputMessage: string;
+  setInputMessage: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const MessageInput: React.FC<MessageInputProps> = ({ receivingId, awaitGetAIResponse, handleStartResponse, handleStopResponse, apiKey, displayMessages, model, totalTokenUpdateRequired, setTotalTokenUpdateRequired, scrollWrapperRef }) => {
-  const [message, setMessage] = useState('');
-  const { messagesEndRef, scrollContainerRef } = useScroll(undefined, message);
-  const [inputTokenUpdateRequired, setInputTokenUpdateRequired] = useState(false);
+const MessageInput: React.FC<MessageInputProps> = ({ receivingId, awaitGetAIResponse, handleStartResponse, handleStopResponse, apiKey, scrollWrapperRef, inputMessage, setInputMessage }) => {
+  const { messagesEndRef, scrollContainerRef } = useScroll(undefined, inputMessage);
   const { setDebugInfo } = useDebugInfo();
 
   useEffect(() => {
@@ -37,16 +31,15 @@ const MessageInput: React.FC<MessageInputProps> = ({ receivingId, awaitGetAIResp
       textAreaRef.current.style.height = 'auto';
       textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`;
     }
-  }, [message]);
+  }, [inputMessage]);
 
   return (
     <>
       <MessageInputContainer>
-      <InputCursorRef/>
       <StyledTextarea
-        value={message}
-        onChange={e => setMessage(e.target.value)}
-        rows={message.split('\n').length || 1}
+        value={inputMessage}
+        onChange={e => setInputMessage(e.target.value)}
+        rows={inputMessage.split('\n').length || 1}
         ref={textAreaRef}
       />
       <SendButton
@@ -55,18 +48,9 @@ const MessageInput: React.FC<MessageInputProps> = ({ receivingId, awaitGetAIResp
         handleStartResponse={handleStartResponse}
         handleStopResponse={handleStopResponse}
         apiKey={apiKey}
-        message={message}
-        setMessage={setMessage} 
-        disabled={message.trim() === '' && !receivingId}
-      />
-      <TokenCounter
-        displayMessages={displayMessages}
-        model={model}
-        totalTokenUpdateRequired={totalTokenUpdateRequired}
-        setTotalTokenUpdateRequired={setTotalTokenUpdateRequired}
-        inputTokenUpdateRequired={inputTokenUpdateRequired}
-        setInputTokenUpdateRequired={setInputTokenUpdateRequired}
-        message={message}
+        message={inputMessage}
+        setMessage={setInputMessage} 
+        disabled={inputMessage.trim() === '' && !receivingId}
       />
       </MessageInputContainer>
       <div ref={messagesEndRef}></div>

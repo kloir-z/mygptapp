@@ -4,10 +4,6 @@ export const MessageInputContainer = styled.div`
   position: relative;
 `;
 
-export const InputCursorRef = styled.div`
-  position: absolute;
-`;
-
 export const MessageInputBottomContainer = styled.div`
   display: flex;
   flex-direction: row-reverse;
@@ -72,21 +68,33 @@ export const SendButton = styled.button`
 `;
 
 export const InputTokenText = styled.div`
-  position: absolute;
-  right: 47px;
-  bottom: 6px;
+  position: fixed;
+  left: 340px;
+  top: 7px;
   margin: 0px;
   font-size: 0.8rem;
+  width: 37px;
+  padding: 1px;
   color: rgba(255, 255, 255, 0.5); 
+  background-color: rgba(255, 255, 255, 0.063); 
   cursor: pointer;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
 `;
 
 export const MessageTokenText = styled.div`
-  position: absolute;
-  right: 15px;
-  top: -21px;
+  position: fixed;
+  left: 295px;
+  top: 7px;
   margin: 0px;
   font-size: 0.8rem;
+  width: 37px;
+  padding: 1px;
   color: rgba(255, 255, 255, 0.5); 
+  background-color: rgba(255, 255, 255, 0.063); 
   cursor: pointer;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
 `;

@@ -10,6 +10,7 @@ import MessageItem from './MessageItem';
 import InitialMenu from './InitialMenu';
 import SendButton from './SendButton';
 import { useDebugInfo } from 'src/components/Debugger/DebugContext';
+import TokenCounter from './TokenCounter';
 
 type ConversationProps = {
   activeConversation: ConversationType;
@@ -27,6 +28,9 @@ type ConversationProps = {
 
 const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, apiKey, handleUpdateConversations, systemprompts, receivingId, setReceivingId, receivingMessage, setReceivingMessage, scrollWrapperRef, setqueuedMessageForReceivingId }) => {
   const [totalTokenUpdateRequired, setTotalTokenUpdateRequired] = useState(false);
+  const [inputTokenUpdateRequired, setInputTokenUpdateRequired] = useState(false);
+  const [inputMessage, setInputMessage] = useState('');
+
   const [displayMessages, setDisplayMessages] = useState<ConversationData[]>(activeConversation.revisions[0].conversation);
 
   const { editingMessageIndex, setEditingMessageIndex, tempMessageContent, onDoubleClickMessage, handleContentChange, handleConfirmEditing, handleCancelEditing, deleteMessage, editTextAreaRef } = useEditing({handleUpdateConversations, activeConversation, displayMessages ,setDisplayMessages});
@@ -60,6 +64,15 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
 
   return (
     <ConversationContainer>
+      <TokenCounter
+        displayMessages={displayMessages}
+        model={model}
+        totalTokenUpdateRequired={totalTokenUpdateRequired}
+        setTotalTokenUpdateRequired={setTotalTokenUpdateRequired}
+        inputTokenUpdateRequired={inputTokenUpdateRequired}
+        setInputTokenUpdateRequired={setInputTokenUpdateRequired}
+        inputMessage={inputMessage}
+      />
       <MessagesContainer className="convScrollRef" ref={scrollContainerRef}>
         {showInitialMenu() && (
           <InitialMenu
@@ -104,12 +117,9 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
           handleStartResponse={handleStartResponse}
           handleStopResponse={handleStopResponse}
           apiKey={apiKey} 
-          displayMessages={displayMessages} 
-          model={model}
-          totalTokenUpdateRequired={totalTokenUpdateRequired}
-          setTotalTokenUpdateRequired={setTotalTokenUpdateRequired}
           scrollWrapperRef={scrollWrapperRef}
-          setReceivingMessage={setReceivingMessage}
+          inputMessage={inputMessage}
+          setInputMessage={setInputMessage}
         />
       </InputContainer>
     </ConversationContainer>

@@ -1,3 +1,4 @@
+//TokenCounter.tsx
 import React, { useState, useEffect } from 'react';
 import { getAndSetTokenCount } from '../../utils/openAIUtil';
 import { ConversationData } from './types/Conversations.types';
@@ -11,10 +12,10 @@ type TokenCounterProps = {
   setTotalTokenUpdateRequired: React.Dispatch<React.SetStateAction<boolean>>;
   inputTokenUpdateRequired: boolean;
   setInputTokenUpdateRequired: React.Dispatch<React.SetStateAction<boolean>>;
-  message: string;
+  inputMessage: string;
 };
 
-const TokenCounter: React.FC<TokenCounterProps> = ({ displayMessages, model, totalTokenUpdateRequired, setTotalTokenUpdateRequired, inputTokenUpdateRequired, setInputTokenUpdateRequired, message }) => {
+const TokenCounter: React.FC<TokenCounterProps> = ({ displayMessages, model, totalTokenUpdateRequired, setTotalTokenUpdateRequired, inputTokenUpdateRequired, setInputTokenUpdateRequired, inputMessage }) => {
   const [inputTokenCount, setInputTokenCount] = useState<number>(0);
   const [totalTokenCount, setTotalTokenCount] = useState<number>(0);
   const [inputTokenLoading, setInputTokenLoading] = useState(false);
@@ -23,7 +24,7 @@ const TokenCounter: React.FC<TokenCounterProps> = ({ displayMessages, model, tot
   const checkInputTokenCount = async () => {
     if (inputTokenUpdateRequired) {
       setInputTokenLoading(true);
-      await getAndSetTokenCount([{ role: 'user', content: message }], model, setInputTokenCount);
+      await getAndSetTokenCount([{ role: 'user', content: inputMessage }], model, setInputTokenCount);
       setInputTokenLoading(false);
       setInputTokenUpdateRequired(false);
     }
@@ -39,15 +40,11 @@ const TokenCounter: React.FC<TokenCounterProps> = ({ displayMessages, model, tot
   };
 
   useEffect(() => {
-    if(!inputTokenUpdateRequired){
-      setInputTokenUpdateRequired(true);
-    }
-  },[message]);
+    setInputTokenUpdateRequired(true);
+  },[inputMessage]);
 
   useEffect(() => {
-    if(!totalTokenUpdateRequired){
-      setTotalTokenUpdateRequired(true);
-    }
+    setTotalTokenUpdateRequired(true);
   },[displayMessages]);
 
   return (

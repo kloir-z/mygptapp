@@ -7,7 +7,7 @@ import SendButton from './SendButton';
 import TokenCounter from './TokenCounter';
 
 type MessageInputProps = {
-  isAwaitingResponse: boolean;
+  receivingId: string;
   awaitGetAIResponse: (apiKey: string, message?: string, role?: string) => Promise<void>;
   handleStartResponse: () => void;
   handleStopResponse: () => void;
@@ -20,7 +20,7 @@ type MessageInputProps = {
   setReceivingMessage: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const MessageInput: React.FC<MessageInputProps> = ({ isAwaitingResponse, awaitGetAIResponse, handleStartResponse, handleStopResponse, apiKey, displayMessages, model, totalTokenUpdateRequired, setTotalTokenUpdateRequired, scrollWrapperRef }) => {
+const MessageInput: React.FC<MessageInputProps> = ({ receivingId, awaitGetAIResponse, handleStartResponse, handleStopResponse, apiKey, displayMessages, model, totalTokenUpdateRequired, setTotalTokenUpdateRequired, scrollWrapperRef }) => {
   const [message, setMessage] = useState('');
   const { messagesEndRef, scrollContainerRef } = useScroll(undefined, message);
   const [inputTokenUpdateRequired, setInputTokenUpdateRequired] = useState(false);
@@ -50,14 +50,14 @@ const MessageInput: React.FC<MessageInputProps> = ({ isAwaitingResponse, awaitGe
         ref={textAreaRef}
       />
       <SendButton
-        isAwaitingResponse={isAwaitingResponse}
+        receivingId={receivingId}
         awaitGetAIResponse={async (apiKey, message, role) => awaitGetAIResponse(apiKey, message, role)}
         handleStartResponse={handleStartResponse}
         handleStopResponse={handleStopResponse}
         apiKey={apiKey}
         message={message}
         setMessage={setMessage} 
-        disabled={message.trim() === '' && !isAwaitingResponse}
+        disabled={message.trim() === '' && !receivingId}
       />
       <TokenCounter
         displayMessages={displayMessages}

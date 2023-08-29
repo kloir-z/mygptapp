@@ -8,8 +8,6 @@ type InitialMenuProps = {
   systemprompts: SystemPromptType[];
   conversation: ConversationType;
   handleUpdateConversations: (updatedConversation: ConversationType, shouldUpdateFirestore: boolean) => Promise<void>;
-  displayMessages: ConversationData[];
-  setDisplayMessages: React.Dispatch<React.SetStateAction<ConversationData[]>>;
 };
 
 type SystemPromptActionsType = {
@@ -18,25 +16,31 @@ type SystemPromptActionsType = {
     '英語要約': () => void;
   };
 
-const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, conversation, handleUpdateConversations, displayMessages, setDisplayMessages }) => {
+const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, conversation, handleUpdateConversations }) => {
   const [showTranscriptPopup, setShowTranscriptPopup] = useState(false);
   const [youtubeUrl, setYoutubeUrl] = useState<string | null>(null);
   const [loadingTranscript, setLoadingTranscript] = useState(false);
 
   const systemPromptActions: SystemPromptActionsType = {
-    '日本語要約': () => { if (!displayMessages.some(message => message.role === 'user')) setShowTranscriptPopup(true); },
-    '英語要約': () => { if (!displayMessages.some(message => message.role === 'user')) setShowTranscriptPopup(true); }
+    '日本語要約': async () => {if (!conversation.revisions[0].conversation.some(message => message.role === 'user')) { setShowTranscriptPopup(true); }},
+    '英語要約': async () => {if (!conversation.revisions[0].conversation.some(message => message.role === 'user')) { setShowTranscriptPopup(true); }}
     // 他のプロンプトと機能を追加
   };
 
-  const handleSystemPromptSelection = (selectedPromptId: string) => {
+  const handleSystemPromptSelection = async (selectedPromptId: string) => {
     if (selectedPromptId === 'none') {
-      if (displayMessages[0]?.role === 'system') {
-        setDisplayMessages(prevMessages => prevMessages.slice(1));
+      if (conversation.revisions[0].conversation[0]?.role === 'system') {
+        const updatedConversation = {
+          ...conversation,
+          revisions: [
+            { revision: '0', conversation: conversation.revisions[0].conversation.slice(1) },
+          ],
+        };
+        await handleUpdateConversations(updatedConversation, false);
       }
       setShowTranscriptPopup(false);
       return;
-    }
+    }  
 
     const selectedPrompt = systemprompts.find(prompt => prompt.id === selectedPromptId);
     if (selectedPrompt) {
@@ -47,15 +51,20 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, conversation, 
         setShowTranscriptPopup(false);
       }
 
-      setDisplayMessages(prevMessages => {
-        const updatedMessages = [...prevMessages];
-        if (updatedMessages[0]?.role === 'system') {
-          updatedMessages[0] = { content: selectedPrompt.content, role: 'system' };
-        } else {
-          updatedMessages.unshift({ content: selectedPrompt.content, role: 'system' });
-        }
-        return updatedMessages;
-      });
+      const updatedMessages = [...conversation.revisions[0].conversation];
+      if (updatedMessages[0]?.role === 'system') {
+        updatedMessages[0] = { content: selectedPrompt.content, role: 'system' };
+      } else {
+        updatedMessages.unshift({ content: selectedPrompt.content, role: 'system' });
+      }
+  
+      const updatedConversation = {
+        ...conversation,
+        revisions: [
+          { revision: '0', conversation: updatedMessages },
+        ],
+      };
+      await handleUpdateConversations(updatedConversation, false);
     }
   };
 
@@ -64,10 +73,15 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, conversation, 
       setLoadingTranscript(true);
       const transcript = await getYoutubeTranscript(youtubeUrl);
       if (transcript) {
-        setDisplayMessages(prevMessages => [...prevMessages, { content: transcript, role: 'user' }]);
-        const updatedConversation = { ...conversation, revisions: [{ revision: '0', conversation: displayMessages.concat({ content: transcript, role: 'user' }) }]};
+        const updatedMessages = [...conversation.revisions[0].conversation, { content: transcript, role: 'user' }];
+        const updatedConversation = {
+          ...conversation,
+          revisions: [
+            { revision: '0', conversation: updatedMessages },
+          ],
+        };
         setLoadingTranscript(false);
-        handleUpdateConversations(updatedConversation, false);
+        await handleUpdateConversations(updatedConversation, false);
       }
     }
   };

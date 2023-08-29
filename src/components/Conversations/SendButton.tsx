@@ -5,7 +5,7 @@ import { SendButton as StyledSendButton } from './styles/MessageInput.styles'
 import { Spinner } from "../Conversations/Spinner";
 
 type SendButtonProps = {
-  isAwaitingResponse: boolean;
+  receivingId: string;
   awaitGetAIResponse: (apiKey: string, message?: string, role?: string) => Promise<void>;
   handleStartResponse: () => void;
   handleStopResponse: () => void;
@@ -15,7 +15,7 @@ type SendButtonProps = {
   disabled?: boolean; 
 };
 
-const SendButton: React.FC<SendButtonProps> = ({ isAwaitingResponse, awaitGetAIResponse, handleStartResponse, handleStopResponse, apiKey, message, setMessage, disabled }) => {
+const SendButton: React.FC<SendButtonProps> = ({ receivingId, awaitGetAIResponse, handleStartResponse, handleStopResponse, apiKey, message, setMessage, disabled }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const handleGetAIResponse = async () => {
@@ -42,12 +42,12 @@ const SendButton: React.FC<SendButtonProps> = ({ isAwaitingResponse, awaitGetAIR
 
   return (
     <StyledSendButton
-      onClick={isAwaitingResponse ? handleStopResponse : handleGetAIResponse}
+      onClick={receivingId ? handleStopResponse : handleGetAIResponse}
       disabled={disabled}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      {isAwaitingResponse ? (
+      {receivingId ? (
         isHovered ? (
           <FontAwesomeIcon icon={faStop} />
         ) : (

@@ -28,31 +28,28 @@ type ConversationProps = {
 const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, apiKey, handleUpdateConversations, systemprompts, receivingId, setReceivingId, receivingMessage, setReceivingMessage, scrollWrapperRef, setqueuedMessageForReceivingId }) => {
   const [totalTokenUpdateRequired, setTotalTokenUpdateRequired] = useState(false);
   const [displayMessages, setDisplayMessages] = useState<ConversationData[]>(activeConversation.revisions[0].conversation);
-  const [isAwaitingResponse, setIsAwaitingResponse] = useState(false); 
 
   const { editingMessageIndex, setEditingMessageIndex, tempMessageContent, onDoubleClickMessage, handleContentChange, handleConfirmEditing, handleCancelEditing, deleteMessage, editTextAreaRef } = useEditing({handleUpdateConversations, activeConversation, displayMessages ,setDisplayMessages});
-  const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(model, activeConversation, handleUpdateConversations, displayMessages, setReceivingMessage, setReceivingId, setqueuedMessageForReceivingId);
+  const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(model, displayMessages, setReceivingMessage, setReceivingId, setqueuedMessageForReceivingId);
   const { scrollToBottom, messagesEndRef, scrollContainerRef } = useScroll(displayMessages, tempMessageContent, receivingMessage);
   const { setDebugInfo } = useDebugInfo();
   const handleStartResponse = () => {
-    setIsAwaitingResponse(true);
     setReceivingId(activeConversation.id);
   };
 
   const handleStopResponse = () => {
-    setIsAwaitingResponse(false);
     handleStopReceiving();
   };
 
-  const showSendButton = displayMessages[displayMessages.length - 1]?.role === 'user' && editingMessageIndex === null && !isAwaitingResponse;
+  const showSendButton = displayMessages[displayMessages.length - 1]?.role === 'user' && editingMessageIndex === null && !receivingId;
 
   const showInitialMenu = () => {
     return !displayMessages.some(message => message.role === 'assistant');
   };
 
   useEffect(() => {
-    setDebugInfo(`id: ${activeConversation.id} , rcvid: ${receivingId}, isAwaitingResponse: ${isAwaitingResponse}`);
-  }, [activeConversation.id, receivingId, isAwaitingResponse]);
+    setDebugInfo(`id: ${activeConversation.id} , rcvid: ${receivingId}`);
+  }, [activeConversation.id, receivingId]);
 
   useEffect(() => {
     setDisplayMessages(activeConversation.revisions[0].conversation);
@@ -69,8 +66,6 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
             systemprompts={systemprompts}
             conversation={activeConversation}
             handleUpdateConversations={handleUpdateConversations}
-            displayMessages={displayMessages}
-            setDisplayMessages={setDisplayMessages}
           />
         )}
         {displayMessages.map((message: ConversationData, index: number) => (
@@ -92,7 +87,7 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
         {showSendButton && (
           <div style={{position: 'relative'}}>
             <SendButton
-              isAwaitingResponse={isAwaitingResponse}
+              receivingId={receivingId}
               awaitGetAIResponse={awaitGetAIResponse} 
               handleStartResponse={handleStartResponse}
               handleStopResponse={handleStopResponse}
@@ -104,7 +99,7 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
       </MessagesContainer>
       <InputContainer>
         <MessageInput 
-          isAwaitingResponse={isAwaitingResponse}
+          receivingId={receivingId}
           awaitGetAIResponse={awaitGetAIResponse} 
           handleStartResponse={handleStartResponse}
           handleStopResponse={handleStopResponse}

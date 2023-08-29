@@ -1,12 +1,10 @@
 //useAIResponse.ts
 import { useRef } from 'react';
-import { ConversationType, ConversationData } from 'src/components/Conversations/types/Conversations.types';
+import { ConversationData } from 'src/components/Conversations/types/Conversations.types';
 import { getAIResponse } from 'src/utils/openAIUtil';
 
 export const useAIResponse = (
   model: string,
-  activeConversation: ConversationType,
-  handleUpdateConversations: (handleUpdateConversations: ConversationType, shouldUpdateFirestore: boolean) => Promise<void>,
   messages: ConversationData[],
   setReceivingMessage: React.Dispatch<React.SetStateAction<string>>,
   setReceivingId: React.Dispatch<React.SetStateAction<string>>,

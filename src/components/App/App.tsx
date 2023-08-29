@@ -31,7 +31,6 @@ const App: React.FC = () => {
     const updatedConversations = conversations.map(Conversation => 
       Conversation.id === updatedConversation.id ? updatedConversation : Conversation
     );
-    console.log('updated')
     setConversations(updatedConversations);
     
     if (shouldUpdateFirestore) {
@@ -53,17 +52,9 @@ const App: React.FC = () => {
     }
   }, [queuedMessageForReceivingId]);
 
-  const replacer = (key: string, value: any) => {
-    if (key === 'content' && typeof value === 'string' && value.length > 20) {
-      return `${value.substring(0, 20)}...`;
-    }
-    return value;
-  };
-
   useEffect(() => {
     const updatedActiveConversation = conversations.find(conv => conv.id === activeConversation?.id);
     
-    console.log(JSON.stringify(conversations, replacer, 2));
     if (updatedActiveConversation) { 
       setActiveConversation(updatedActiveConversation);
     } else if (!conversations.some(conv => conv.id === activeConversation?.id)) {
@@ -75,8 +66,6 @@ const App: React.FC = () => {
     if (window.confirm('Are You Sure to Delete?')) {
       await deleteConversation(user?.uid, id);
       setConversations(conversations.filter(conv => conv.id !== id));
-      console.log('deleted')
-      console.log(JSON.stringify(conversations, replacer, 2));
     }
   };
 

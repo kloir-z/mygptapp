@@ -69,14 +69,14 @@ export const SendButton = styled.button`
 
 export const InputTokenText = styled.div`
   position: fixed;
-  left: 340px;
-  top: 7px;
+  left: 266px;
+  top: 6px;
   margin: 0px;
   font-size: 0.8rem;
   width: 37px;
-  padding: 1px;
-  color: rgba(255, 255, 255, 0.5); 
-  background-color: rgba(255, 255, 255, 0.063); 
+  padding: 2px;
+  color: rgba(255, 255, 255, 0.6); 
+  background-color: rgba(255, 255, 255, 0); 
   cursor: pointer;
   z-index: 100;
   display: flex;
@@ -85,14 +85,14 @@ export const InputTokenText = styled.div`
 
 export const MessageTokenText = styled.div`
   position: fixed;
-  left: 295px;
-  top: 7px;
+  left: 216px;
+  top: 6px;
   margin: 0px;
   font-size: 0.8rem;
   width: 37px;
-  padding: 1px;
-  color: rgba(255, 255, 255, 0.5); 
-  background-color: rgba(255, 255, 255, 0.063); 
+  padding: 2px;
+  color: rgba(255, 255, 255, 0.6); 
+  background-color: rgba(255, 255, 255, 0); 
   cursor: pointer;
   z-index: 100;
   display: flex;

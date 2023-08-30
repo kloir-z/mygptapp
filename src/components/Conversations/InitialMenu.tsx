@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Spinner } from './Spinner'
 import { getYoutubeTranscript } from 'src/utils/openAIUtil';
 import { SystemPromptType, ConversationType, ConversationData } from './types/Conversations.types';
@@ -20,6 +20,7 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
   const [showTranscriptPopup, setShowTranscriptPopup] = useState(false);
   const [youtubeUrl, setYoutubeUrl] = useState<string | null>(null);
   const [loadingTranscript, setLoadingTranscript] = useState(false);
+  const [selectedPromptId, setSelectedPromptId] = useState<string>("none");
 
   const systemPromptActions: SystemPromptActionsType = {
     '日本語要約': async () => {if (!activeConversation.revisions[0].conversation.some(message => message.role === 'user')) { setShowTranscriptPopup(true); }},
@@ -27,7 +28,19 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
     // 他のプロンプトと機能を追加
   };
 
+  useEffect(() => {
+    if (activeConversation.revisions[0].conversation[0]?.role === 'system') {
+      const systemContent = activeConversation.revisions[0].conversation[0].content;
+      const matchingPrompt = systemprompts.find(prompt => prompt.content === systemContent);
+      
+      if (matchingPrompt) {
+        setSelectedPromptId(matchingPrompt.id);
+      }
+    }
+  }, [activeConversation, systemprompts]);
+
   const handleSystemPromptSelection = async (selectedPromptId: string) => {
+    setSelectedPromptId(selectedPromptId);
     if (selectedPromptId === 'none') {
       if (activeConversation.revisions[0].conversation[0]?.role === 'system') {
         const updatedConversation = {
@@ -88,7 +101,7 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
 
   return (
     <InitialMenuContainer>
-      <StyledSelect onChange={e => handleSystemPromptSelection(e.target.value)}>
+      <StyledSelect value={selectedPromptId} onChange={e => handleSystemPromptSelection(e.target.value)}>
         <StyledOption value="none">None</StyledOption>
         {systemprompts.map(prompt => (
           <StyledOption key={prompt.id} value={prompt.id}>{prompt.title}</StyledOption>

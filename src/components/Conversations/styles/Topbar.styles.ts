@@ -16,6 +16,9 @@ export const StyledSelect = styled.select`
   padding: 2px 4px;
   border-radius: 3px;
   border: none;
+  &:hover {
+    background: #6a798e;
+  }
 `;
 
 export const StyledOption = styled.option`
@@ -31,13 +34,13 @@ export const StyledButton = styled.button`
   border: none;
   cursor: pointer;
   color: #ffffffe3; 
-  background: rgba(51, 99, 150, 0.85);
+  background-color: #4c586a;
   position: relative;
   display: flex;
   align-items: center;
   @media (hover: hover) and (pointer: fine) {
   &:hover {
-    background: rgba(65, 125, 189, 0.85);
+    background: #6a798e;
   }}
 `;
 

@@ -1,8 +1,9 @@
 //TokenCounter.tsx
 import React, { useState, useEffect } from 'react';
-import { getAndSetTokenCount } from '../../utils/openAIUtil';
+import { getAndSetTokenCount } from '../../utils/tokenCounter';
 import { ConversationData } from './types/Conversations.types';
 import { InputTokenText, MessageTokenText } from './styles/MessageInput.styles'
+import { FaCalculator } from 'react-icons/fa';
 import { Spinner } from './Spinner'
 
 type TokenCounterProps = {
@@ -24,7 +25,7 @@ const TokenCounter: React.FC<TokenCounterProps> = ({ displayMessages, model, tot
   const checkInputTokenCount = async () => {
     if (inputTokenUpdateRequired) {
       setInputTokenLoading(true);
-      await getAndSetTokenCount([{ role: 'user', content: inputMessage }], model, setInputTokenCount);
+      await getAndSetTokenCount([{ role: 'user', content: inputMessage }], setInputTokenCount);
       setInputTokenLoading(false);
       setInputTokenUpdateRequired(false);
     }
@@ -33,7 +34,7 @@ const TokenCounter: React.FC<TokenCounterProps> = ({ displayMessages, model, tot
   const checkMessageTokenCount = async () => {
     if (totalTokenUpdateRequired) {
       setTotalTokenLoading(true);
-      await getAndSetTokenCount([...displayMessages], model, setTotalTokenCount);
+      await getAndSetTokenCount([...displayMessages], setTotalTokenCount);
       setTotalTokenLoading(false);
       setTotalTokenUpdateRequired(false);
     }
@@ -52,12 +53,12 @@ const TokenCounter: React.FC<TokenCounterProps> = ({ displayMessages, model, tot
       {inputTokenLoading ? (
         <InputTokenText><Spinner /></InputTokenText>
       ) : (
-        <InputTokenText onClick={checkInputTokenCount}>{inputTokenUpdateRequired ? '?' : inputTokenCount}</InputTokenText>
+        <InputTokenText onClick={checkInputTokenCount}>{inputTokenUpdateRequired ? <FaCalculator style={{padding: '3px'}} /> : inputTokenCount}</InputTokenText>
       )}
       {totalTokenLoading ? (
         <MessageTokenText><Spinner /></MessageTokenText>
       ) : (
-        <MessageTokenText onClick={checkMessageTokenCount}>{totalTokenUpdateRequired ? '?' : totalTokenCount}</MessageTokenText>
+        <MessageTokenText onClick={checkMessageTokenCount}>{totalTokenUpdateRequired ? <FaCalculator style={{padding: '3px'}} /> : totalTokenCount}</MessageTokenText>
       )}
     </>
   );

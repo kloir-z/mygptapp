@@ -32,8 +32,18 @@ export const StyledButton = styled.button`
   cursor: pointer;
   color: #ffffffe3; 
   background: rgba(51, 99, 150, 0.85);
+  position: relative;
+  display: flex;
+  align-items: center;
   @media (hover: hover) and (pointer: fine) {
   &:hover {
     background: rgba(65, 125, 189, 0.85);
   }}
+`;
+
+export const NotificationDot = styled.label`
+  color: #ff0000c6; 
+  position: absolute;
+  top: -1px;
+  right: 4px;
 `;

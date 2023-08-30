@@ -4,7 +4,6 @@ import styled from "@emotion/styled";
 export const ScrollWrapper = styled.div`
   overflow-y: scroll;
   height: 100vh;
-  height: 100svh;
   height: 100dvh;
 `;
 

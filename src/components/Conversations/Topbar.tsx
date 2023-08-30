@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
-import { TopbarContainer, StyledButton, StyledSelect, StyledOption } from './styles/Topbar.styles';
+import { TopbarContainer, StyledButton, StyledSelect, StyledOption, NotificationDot } from './styles/Topbar.styles';
 import { ConversationType, SystemPromptType } from './types/Conversations.types';
 import { v4 as uuidv4 } from 'uuid'; 
+import { FaBars, FaPlus, FaCog } from 'react-icons/fa';
 import SettingsModal from './SettingsModal'; 
 
 type TopbarProps = {
@@ -63,18 +64,24 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, model, setModel, set
 
     return(
         <TopbarContainer>
-            <StyledButton onClick={toggleMenu}>Menu</StyledButton>
+            <StyledButton onClick={toggleMenu}>
+              <FaBars />
+            </StyledButton>
             <StyledButton onClick={() => {
-            const newConv = createNewConversation();
-            setConversations((prev: ConversationType[]) => [...prev, newConv]);
-            setActiveConversation(newConv);
-            }}>New</StyledButton>
-            <StyledButton onClick={() => setShowSettings(true)}><label style={{ color: apiKey ? 'green' : 'red' }}>●</label>Settings</StyledButton>
+              const newConv = createNewConversation();
+              setConversations((prev: ConversationType[]) => [...prev, newConv]);
+              setActiveConversation(newConv);
+            }}>
+              <FaPlus />
+            </StyledButton>
+            <StyledButton onClick={() => setShowSettings(true)}>
+              <FaCog />{apiKey ? null : <NotificationDot>●</NotificationDot>}
+            </StyledButton>
             <SettingsModal show={showSettings} onClose={() => setShowSettings(false)} apiKey={apiKey} setApiKey={setApiKey} systemprompts={systemprompts} setSystemPrompts={setSystemPrompts} />
             <StyledSelect value={model} onChange={e => setModel(e.target.value)}>  
-                <StyledOption value="gpt-3.5-turbo-16k-0613">gpt3.5(16k)</StyledOption>
-                <StyledOption value="gpt-3.5-turbo-0613">gpt3.5(4k)</StyledOption>
-                <StyledOption value="gpt-4-0613">gpt4(8k)</StyledOption>
+              <StyledOption value="gpt-3.5-turbo-16k-0613">gpt3.5(16k)</StyledOption>
+              <StyledOption value="gpt-3.5-turbo-0613">gpt3.5(4k)</StyledOption>
+              <StyledOption value="gpt-4-0613">gpt4(8k)</StyledOption>
             </StyledSelect>
         </TopbarContainer>
     );

@@ -77,7 +77,7 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
         {showInitialMenu() && (
           <InitialMenu
             systemprompts={systemprompts}
-            conversation={activeConversation}
+            activeConversation={activeConversation}
             handleUpdateConversations={handleUpdateConversations}
           />
         )}

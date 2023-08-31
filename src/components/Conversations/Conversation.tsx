@@ -10,7 +10,6 @@ import MessageItem from './MessageItem';
 import InitialMenu from './InitialMenu';
 import SendButton from './SendButton';
 import { useDebugInfo } from 'src/components/Debugger/DebugContext';
-import TokenCounter from './TokenCounter';
 
 type ConversationProps = {
   activeConversation: ConversationType;
@@ -23,17 +22,16 @@ type ConversationProps = {
   receivingMessage: string;
   setReceivingMessage: React.Dispatch<React.SetStateAction<string>>;
   scrollWrapperRef: React.RefObject<HTMLDivElement>;
-  setqueuedMessageForReceivingId: React.Dispatch<React.SetStateAction<ConversationData | null>>
+  setqueuedMessageForReceivingId: React.Dispatch<React.SetStateAction<ConversationData | null>>;
+  inputMessage: string;
+  setInputMessage: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, apiKey, handleUpdateConversations, systemprompts, receivingId, setReceivingId, receivingMessage, setReceivingMessage, scrollWrapperRef, setqueuedMessageForReceivingId }) => {
-  const [totalTokenUpdateRequired, setTotalTokenUpdateRequired] = useState(false);
-  const [inputTokenUpdateRequired, setInputTokenUpdateRequired] = useState(false);
-  const [inputMessage, setInputMessage] = useState('');
+const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, apiKey, handleUpdateConversations, systemprompts, receivingId, setReceivingId, receivingMessage, setReceivingMessage, scrollWrapperRef, setqueuedMessageForReceivingId, inputMessage, setInputMessage }) => {
 
   const [displayMessages, setDisplayMessages] = useState<ConversationData[]>(activeConversation.revisions[0].conversation);
 
-  const { editingMessageIndex, setEditingMessageIndex, tempMessageContent, onDoubleClickMessage, handleContentChange, handleConfirmEditing, handleCancelEditing, deleteMessage, editTextAreaRef } = useEditing({handleUpdateConversations, activeConversation, displayMessages ,setDisplayMessages});
+  const { editingMessageIndex, setEditingMessageIndex, tempMessageContent, onDoubleClickMessage, handleContentChange, handleConfirmEditing, handleCancelEditing, deleteMessage, editTextAreaRef } = useEditing({handleUpdateConversations, activeConversation});
   const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(model, displayMessages, setReceivingMessage, setReceivingId, setqueuedMessageForReceivingId);
   const { scrollToBottom, messagesEndRef, scrollContainerRef } = useScroll(displayMessages, tempMessageContent, receivingMessage);
   const { setDebugInfo } = useDebugInfo();
@@ -58,21 +56,11 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
   useEffect(() => {
     setDisplayMessages(activeConversation.revisions[0].conversation);
     setEditingMessageIndex(null);
-    setTotalTokenUpdateRequired(true);
     scrollToBottom();
   }, [activeConversation]);
 
   return (
     <ConversationContainer>
-      <TokenCounter
-        displayMessages={displayMessages}
-        model={model}
-        totalTokenUpdateRequired={totalTokenUpdateRequired}
-        setTotalTokenUpdateRequired={setTotalTokenUpdateRequired}
-        inputTokenUpdateRequired={inputTokenUpdateRequired}
-        setInputTokenUpdateRequired={setInputTokenUpdateRequired}
-        inputMessage={inputMessage}
-      />
       <MessagesContainer className="convScrollRef" ref={scrollContainerRef}>
         {showInitialMenu() && (
           <InitialMenu

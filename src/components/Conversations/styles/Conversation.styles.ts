@@ -28,7 +28,7 @@ export const MessageDiv = styled.div<{role: string}>`
   margin: 2px;
   text-align: left;
   font-family: MeiryoUI, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
-  font-size: 0.8rem;
+  font-size: 1rem;
   white-space: pre-wrap;
   word-break: break-word;
 `;
@@ -38,7 +38,7 @@ export const EditingText = styled.div`
   right: 10px;
   top: 2px;
   margin: 0px;
-  font-size: 0.8rem;
+  font-size: 1rem;
   color: rgb(12 12 12);
   background-color: white;
   opacity: 0.7;
@@ -47,7 +47,7 @@ export const EditingText = styled.div`
   display: flex;
   align-items: center;
   .Icon {
-    font-size: 0.8rem;
+    font-size: 1rem;
     transition: opacity 0.2s ease-in-out;
     background-color: #b3b3b3;
     border-radius: 3px;
@@ -69,7 +69,7 @@ export const EditTextarea = styled.textarea`
   border: 1px solid #576374;
   box-sizing: border-box;
   font-family: MeiryoUI, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
-  font-size: 0.8rem;
+  font-size: 1rem;
   color: #ffffffe3; 
   background-color: #4c586a;
 ;
@@ -77,7 +77,7 @@ export const EditTextarea = styled.textarea`
 
 export const StyledSelect = styled.select`
   margin: 5px;
-  font-size: 0.8rem;
+  font-size: 1rem;
   color: #ffffffe3;
   background-color: #4c586a;
   padding: 5px 8px;
@@ -87,11 +87,11 @@ export const StyledSelect = styled.select`
 
 export const StyledOption = styled.option`
   margin: 5px;
-  font-size: 0.8rem;
+  font-size: 1rem;
 `;
 
 export const StyledInput = styled.input`
-  font-size: 0.8rem;
+  font-size: 1rem;
   color: #4c586a;
   background-color: #ebebeb;
   border: none;
@@ -103,7 +103,7 @@ export const StyledInput = styled.input`
 export const StyledButton = styled.button`
   margin: 3px;
   padding: 5px 10px;
-  font-size: 0.8rem;
+  font-size: 1rem;
   border-radius: 3px;
   border: none;
   cursor: pointer;

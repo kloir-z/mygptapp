@@ -1,13 +1,13 @@
 //TokenCounter.tsx
 import React, { useState, useEffect } from 'react';
 import { getAndSetTokenCount } from '../../utils/tokenCounter';
-import { ConversationData } from './types/Conversations.types';
-import { InputTokenText, MessageTokenText } from './styles/MessageInput.styles'
+import { ConversationType } from './types/Conversations.types';
+import { TokenText } from './styles/Topbar.styles'
 import { FaCalculator } from 'react-icons/fa';
 import { Spinner } from './Spinner'
 
 type TokenCounterProps = {
-  displayMessages: ConversationData[];
+  activeConversation: ConversationType | null;
   model: string;
   totalTokenUpdateRequired: boolean;
   setTotalTokenUpdateRequired: React.Dispatch<React.SetStateAction<boolean>>;
@@ -16,7 +16,7 @@ type TokenCounterProps = {
   inputMessage: string;
 };
 
-const TokenCounter: React.FC<TokenCounterProps> = ({ displayMessages, model, totalTokenUpdateRequired, setTotalTokenUpdateRequired, inputTokenUpdateRequired, setInputTokenUpdateRequired, inputMessage }) => {
+const TokenCounter: React.FC<TokenCounterProps> = ({ activeConversation, model, totalTokenUpdateRequired, setTotalTokenUpdateRequired, inputTokenUpdateRequired, setInputTokenUpdateRequired, inputMessage }) => {
   const [inputTokenCount, setInputTokenCount] = useState<number>(0);
   const [totalTokenCount, setTotalTokenCount] = useState<number>(0);
   const [inputTokenLoading, setInputTokenLoading] = useState(false);
@@ -32,9 +32,9 @@ const TokenCounter: React.FC<TokenCounterProps> = ({ displayMessages, model, tot
   };
 
   const checkMessageTokenCount = async () => {
-    if (totalTokenUpdateRequired) {
+    if (totalTokenUpdateRequired && activeConversation) {
       setTotalTokenLoading(true);
-      await getAndSetTokenCount([...displayMessages], setTotalTokenCount);
+      await getAndSetTokenCount([...activeConversation.revisions[0].conversation], setTotalTokenCount);
       setTotalTokenLoading(false);
       setTotalTokenUpdateRequired(false);
     }
@@ -46,19 +46,19 @@ const TokenCounter: React.FC<TokenCounterProps> = ({ displayMessages, model, tot
 
   useEffect(() => {
     setTotalTokenUpdateRequired(true);
-  },[displayMessages]);
+  },[activeConversation]);
 
   return (
     <>
-      {inputTokenLoading ? (
-        <InputTokenText><Spinner /></InputTokenText>
-      ) : (
-        <InputTokenText onClick={checkInputTokenCount}>{inputTokenUpdateRequired ? <FaCalculator style={{padding: '3px'}} /> : inputTokenCount}</InputTokenText>
-      )}
       {totalTokenLoading ? (
-        <MessageTokenText><Spinner /></MessageTokenText>
+        <TokenText><Spinner /></TokenText>
       ) : (
-        <MessageTokenText onClick={checkMessageTokenCount}>{totalTokenUpdateRequired ? <FaCalculator style={{padding: '3px'}} /> : totalTokenCount}</MessageTokenText>
+        <TokenText onClick={checkMessageTokenCount}>{totalTokenUpdateRequired ? <FaCalculator style={{padding: '3px'}} /> : totalTokenCount}</TokenText>
+      )}
+      {inputTokenLoading ? (
+        <TokenText><Spinner /></TokenText>
+      ) : (
+        <TokenText onClick={checkInputTokenCount}>{inputTokenUpdateRequired ? <FaCalculator style={{padding: '3px'}} /> : inputTokenCount}</TokenText>
       )}
     </>
   );

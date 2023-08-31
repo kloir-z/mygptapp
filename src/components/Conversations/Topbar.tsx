@@ -4,6 +4,7 @@ import { ConversationType, SystemPromptType } from './types/Conversations.types'
 import { v4 as uuidv4 } from 'uuid'; 
 import { FaBars, FaPlus, FaCog } from 'react-icons/fa';
 import SettingsModal from './SettingsModal'; 
+import TokenCounter from './TokenCounter';
 
 type TopbarProps = {
     conversations: ConversationType[];
@@ -18,6 +19,7 @@ type TopbarProps = {
     systemprompts: SystemPromptType[];
     setSystemPrompts: React.Dispatch<React.SetStateAction<SystemPromptType[]>>;
     setSidebarTransition: React.Dispatch<React.SetStateAction<boolean>>;
+    inputMessage: string;
   };
 
 const createNewConversation = (): ConversationType => {
@@ -33,7 +35,10 @@ const createNewConversation = (): ConversationType => {
     };
   };
   
-const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, model, setModel, setConversations, setActiveConversation, setShowMenu, systemprompts, setSystemPrompts, setSidebarTransition }) => {
+const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, model, setModel, setConversations, activeConversation, setActiveConversation, setShowMenu, systemprompts, setSystemPrompts, setSidebarTransition, inputMessage }) => {
+  const [totalTokenUpdateRequired, setTotalTokenUpdateRequired] = useState(false);
+  const [inputTokenUpdateRequired, setInputTokenUpdateRequired] = useState(false);
+
   const [showApiKeyInput, setShowApiKeyInput] = useState(false);
   const [tempApiKey, setTempApiKey] = useState(apiKey);
   const apiKeyInputRef = useRef<HTMLDivElement | null>(null);
@@ -83,6 +88,15 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, model, setModel, set
               <StyledOption value="gpt-3.5-turbo-0613">gpt3.5(4k)</StyledOption>
               <StyledOption value="gpt-4-0613">gpt4(8k)</StyledOption>
             </StyledSelect>
+            <TokenCounter
+              activeConversation={activeConversation}
+              model={model}
+              totalTokenUpdateRequired={totalTokenUpdateRequired}
+              setTotalTokenUpdateRequired={setTotalTokenUpdateRequired}
+              inputTokenUpdateRequired={inputTokenUpdateRequired}
+              setInputTokenUpdateRequired={setInputTokenUpdateRequired}
+              inputMessage={inputMessage}
+            />
         </TopbarContainer>
     );
 };

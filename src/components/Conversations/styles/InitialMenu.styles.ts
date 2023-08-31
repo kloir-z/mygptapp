@@ -9,7 +9,7 @@ export const InitialMenuContainer = styled.div`
 
 export const StyledSelect = styled.select`
   margin: 3px;
-  font-size: 0.8rem;
+  font-size: 1rem;
   color: #ffffffe3;
   background-color: #4c586a;
   padding: 2px 4px;
@@ -19,13 +19,13 @@ export const StyledSelect = styled.select`
 
 export const StyledOption = styled.option`
   margin: 5px;
-  font-size: 0.8rem;
+  font-size: 1rem;
 `;
 
 export const StyledButton = styled.button`
   margin: 3px;
   padding: 5px 10px;
-  font-size: 0.8rem;
+  font-size: 1rem;
   border-radius: 3px;
   border: none;
   cursor: pointer;
@@ -38,7 +38,7 @@ export const StyledButton = styled.button`
 `;
 export const StyledInput = styled.input`
   margin: 3px;  
-  font-size: 0.8rem;
+  font-size: 1rem;
   color: #4c586a;
   background-color: #ebebeb;
   border: none;

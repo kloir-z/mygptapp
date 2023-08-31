@@ -9,7 +9,7 @@ export const SystemPromptSettingsContainer = styled.div`
 
 export const StyledSelect = styled.select`
   margin: 5px;
-  font-size: 0.8rem;
+  font-size: 1rem;
   color: #ebebeb;
   background-color: #4c586a;
   padding: 5px 2px;
@@ -19,13 +19,13 @@ export const StyledSelect = styled.select`
 
 export const StyledOption = styled.option`
   margin: 5px;
-  font-size: 0.8rem;
+  font-size: 1rem;
 `;
 
 export const StyledButton = styled.button`
   margin: 3px;
   padding: 5px 10px;
-  font-size: 0.8rem;
+  font-size: 1rem;
   border-radius: 3px;
   border: none;
   cursor: pointer;
@@ -44,7 +44,7 @@ export const StyledButton = styled.button`
 
 export const StyledInput = styled.input`
   margin: 5px;
-  font-size: 0.8rem;
+  font-size: 1rem;
   color: #4c586a;
   background-color: #ebebeb;
   border: none;
@@ -70,7 +70,7 @@ export const SystemPromptTextarea = styled.textarea`
   border: 1px solid #576374;
   box-sizing: border-box;
   font-family: MeiryoUI, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
-  font-size: 0.8rem;
+  font-size: 1rem;
   color: #ebebeb;
   background-color: #4c586a;
 ;

@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
 export const ConversationItem = styled.div<{ active: boolean }>`
-  font-size: 0.8rem;
+  font-size: 1rem;
   background-color: ${props => props.active ? '#70777e' : 'transparent'}; 
   padding: 5px; 
   cursor: default;
@@ -12,7 +12,7 @@ export const ConversationItem = styled.div<{ active: boolean }>`
   flex-shrink: 0;
   border-radius: 4px;
   .Icon {
-    font-size: 0.8rem;
+    font-size: 1rem;
     transition: opacity 0.2s ease-in-out;
     background-color: #b3b3b3;
     border-radius: 3px;
@@ -29,7 +29,7 @@ export const ConversationItem = styled.div<{ active: boolean }>`
 `;
 
 export const StyledInput = styled.input`
-  font-size: 0.8rem;
+  font-size: 1rem;
   color: #4c586a;
   background-color: #ebebeb;
   border: none;

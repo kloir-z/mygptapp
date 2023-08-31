@@ -1,3 +1,4 @@
+//useEditing.ts
 import { useState, useRef, useEffect } from 'react';
 import { ConversationType, ConversationData } from 'src/components/Conversations/types/Conversations.types';
 
@@ -17,11 +18,9 @@ type UseEditingReturnType = {
 type UseEditingProps = {
     handleUpdateConversations: (updatedConversation: ConversationType, shouldUpdateFirestore: boolean) => Promise<void>;
     activeConversation: ConversationType;
-    displayMessages: ConversationData[],
-    setDisplayMessages: React.Dispatch<React.SetStateAction<ConversationData[]>>
 }
 
-export const useEditing = ({handleUpdateConversations, activeConversation, displayMessages, setDisplayMessages}:UseEditingProps ): UseEditingReturnType => {
+export const useEditing = ({handleUpdateConversations, activeConversation}:UseEditingProps ): UseEditingReturnType => {
   const [editingMessageIndex, setEditingMessageIndex] = useState<number | null>(null);
   const [tempMessageContent, setTempMessageContent] = useState<string | null>(null);
 
@@ -34,15 +33,16 @@ export const useEditing = ({handleUpdateConversations, activeConversation, displ
     setTempMessageContent(newContent);
   };
 
-  const handleConfirmEditing = (index: number) => {
+  const handleConfirmEditing = async (index: number) => {
     if (tempMessageContent !== null) {
-      setDisplayMessages(prevMessages => {
-        const updatedMessages = [...prevMessages];
-        if (typeof updatedMessages[index].content === 'string') {
-          updatedMessages[index].content = tempMessageContent;
+      const updatedConversation = { ...activeConversation };
+      updatedConversation.revisions[0].conversation = updatedConversation.revisions[0].conversation.map((message, i) => {
+        if (i === index && typeof message.content === 'string') {
+          return { ...message, content: tempMessageContent };
         }
-        return updatedMessages;
+        return message;
       });
+      await handleUpdateConversations(updatedConversation, true);
     }
     setEditingMessageIndex(null);
     setTempMessageContent(null);
@@ -52,16 +52,11 @@ export const useEditing = ({handleUpdateConversations, activeConversation, displ
     setEditingMessageIndex(null);
     setTempMessageContent(null);
   };
-  
-  const deleteMessage = (index: number) => {
-    setDisplayMessages(prevMessages => {
-      const updatedMessages = [...prevMessages];
-      updatedMessages.splice(index, 1);
-      return updatedMessages;
-    });
-  
-    const updatedConversation = { ...activeConversation, revisions: [{ revision: '0', conversation: displayMessages.filter((_, idx) => idx !== index)}]};
-    handleUpdateConversations(updatedConversation, true);
+
+  const deleteMessage = async (index: number) => {
+    const updatedConversation = { ...activeConversation };
+    updatedConversation.revisions[0].conversation = updatedConversation.revisions[0].conversation.filter((_, idx) => idx !== index);
+    await handleUpdateConversations(updatedConversation, true);
     setEditingMessageIndex(null);
   };
 

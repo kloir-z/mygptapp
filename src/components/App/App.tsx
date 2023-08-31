@@ -23,6 +23,8 @@ const App: React.FC = () => {
   const [sidebarWidth, setSidebarWidth] = useState(200);
   const [sidebarTransition, setSidebarTransition] = useState(false)
   const [queuedMessageForReceivingId, setqueuedMessageForReceivingId] = useState<ConversationData | null>(null);
+  const [inputMessage, setInputMessage] = useState('');
+
   const minSidebarWidth = 15;
   const maxSidebarWidth = 600;
   const scrollWrapperRef = useRef(null);
@@ -102,7 +104,7 @@ const App: React.FC = () => {
         systemprompts={systemprompts}
         setSystemPrompts={setSystemPrompts}
         setSidebarTransition={setSidebarTransition}
-        
+        inputMessage={inputMessage}
       />
       <MainContainer>
         <SidebarContainer showMenu={showMenu} sidebarWidth={sidebarWidth} sidebarTransition={sidebarTransition} tabIndex={0}>
@@ -132,6 +134,8 @@ const App: React.FC = () => {
             setReceivingMessage={setReceivingMessage}
             scrollWrapperRef={scrollWrapperRef}
             setqueuedMessageForReceivingId={setqueuedMessageForReceivingId}
+            inputMessage={inputMessage}
+            setInputMessage={setInputMessage}
           />
         ) : (
           <Placeholder>Please select a conversation</Placeholder>

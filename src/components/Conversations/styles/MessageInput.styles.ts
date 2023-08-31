@@ -22,7 +22,7 @@ export const StyledTextarea = styled.textarea`
   border: 1px solid #576374;
   box-sizing: border-box;
   font-family: MeiryoUI, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
-  font-size: 0.8rem;
+  font-size: 1rem;
   line-height: 1.2rem;
   color: #ebebeb;
   background-color: #4c586a;
@@ -33,7 +33,7 @@ export const CalcTokenButton = styled.button`
   margin: 4px;
   margin-top: 0px;
   padding: 5px 10px;
-  font-size: 0.8rem;
+  font-size: 1rem;
   border-radius: 3px;
   border: none;
   cursor: pointer;
@@ -50,7 +50,7 @@ export const SendButton = styled.button`
   bottom: 8px;
   margin: 0px;
   padding: 5px 10px;
-  font-size: 0.8rem;
+  font-size: 1rem;
   border-radius: 3px;
   border: none;
   cursor: pointer;
@@ -65,36 +65,4 @@ export const SendButton = styled.button`
     background: rgba(70, 82, 92, 0.5);
     cursor: not-allowed;
   }
-`;
-
-export const InputTokenText = styled.div`
-  position: fixed;
-  left: 266px;
-  top: 6px;
-  margin: 0px;
-  font-size: 0.8rem;
-  width: 37px;
-  padding: 2px;
-  color: rgba(255, 255, 255, 0.6); 
-  background-color: rgba(255, 255, 255, 0); 
-  cursor: pointer;
-  z-index: 100;
-  display: flex;
-  justify-content: center;
-`;
-
-export const MessageTokenText = styled.div`
-  position: fixed;
-  left: 216px;
-  top: 6px;
-  margin: 0px;
-  font-size: 0.8rem;
-  width: 37px;
-  padding: 2px;
-  color: rgba(255, 255, 255, 0.6); 
-  background-color: rgba(255, 255, 255, 0); 
-  cursor: pointer;
-  z-index: 100;
-  display: flex;
-  justify-content: center;
 `;

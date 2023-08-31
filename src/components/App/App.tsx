@@ -9,9 +9,11 @@ import Sidebar from '../Conversations/Sidebar'
 import Conversation from '../Conversations/Conversation'
 import SidebarResizer from '../Conversations/SidebarResizer';
 import { Spinner } from "../Conversations/Spinner";
+import firebase from "firebase/compat/app";
 
 const App: React.FC = () => {
-  const { user } = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(false); 
   const [conversations, setConversations] = useState<ConversationType[]>([]);
   const [systemprompts, setSystemPrompts] = useState<SystemPromptType[]>([]);
   const [activeConversation, setActiveConversation] = useState<ConversationType | null>(null);
@@ -85,8 +87,34 @@ const App: React.FC = () => {
     getUserData();
   }, [user?.uid]);
 
+  useEffect(() => {
+    setIsLoading(true);
+    const unsubscribe = firebase.auth().onAuthStateChanged((authUser) => {
+      if (authUser) {
+        setUser(authUser);
+      } else {
+        setUser(null);
+      }
+      setIsLoading(false);
+    });
+  
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  const handleLogin = () => {
+    const auth = firebase.auth();
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithRedirect(provider);
+  };
+  
   if (!user) {
-    return <div style={{padding: '30px'}}><Spinner/></div>;
+    return isLoading ? <Spinner /> : (
+      <div style={{padding: '30px'}}>
+        <button onClick={handleLogin}>Login with Google</button>
+      </div>
+    );
   }
 
   return (

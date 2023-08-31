@@ -1,4 +1,5 @@
-import React, { useState, useEffect, createContext, ReactNode } from "react";
+//AuthProvider.tsx
+import React, { useState, useEffect, ReactNode } from "react";
 import firebase from './firebase';
 import { AuthContext } from './AuthContext';
 
@@ -13,24 +14,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     const auth = firebase.auth();
-    const provider = new firebase.auth.GoogleAuthProvider();
-  
+
     const unsubscribe = auth.onAuthStateChanged((currentUser) => {
       if (currentUser) {
         setUser(currentUser);
       } else {
-        auth.signInWithRedirect(provider);
+        setUser(null);
       }
     });
-  
-      auth.getRedirectResult().then((result) => {
-        if (result.user) {
-          setUser(result.user);
-        }
-      }).catch((error) => {
-        console.error(error);
-      });
-    return unsubscribe;  
+
+    return unsubscribe;
   }, []);
   
   return (

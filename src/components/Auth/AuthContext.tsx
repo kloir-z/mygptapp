@@ -1,3 +1,4 @@
+//AuthContext.tsx
 import React from "react";
 import firebase from "firebase/compat/app";
 
@@ -8,7 +9,6 @@ export interface AuthContextProps {
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
-// Set a default value for the context
 export const AuthContext = React.createContext<AuthContextProps>({
   user: null,
   setUser: () => {},

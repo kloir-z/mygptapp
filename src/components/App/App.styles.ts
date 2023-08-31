@@ -19,7 +19,7 @@ export const SidebarContainer = styled.div<{ showMenu: boolean; sidebarWidth: nu
   flex-grow: 0;
   flex-shrink: 0;
   height: calc(100vh - 2.25rem);
-  height: calc(100svh - 2.25rem);
+  height: calc(100dvh - 2.25rem);
   overflow-x: hidden;
   overflow-y: ${props => (props.showMenu ? 'scroll' : 'hidden')};
   width: ${props => (props.showMenu ? `${props.sidebarWidth}px` : '0')};

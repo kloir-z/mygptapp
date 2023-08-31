@@ -1,3 +1,4 @@
+//Topbar.styles.ts
 import styled from '@emotion/styled';
 
 export const TopbarContainer = styled.div`
@@ -5,7 +6,8 @@ export const TopbarContainer = styled.div`
   width: 100%;
   height: 2.25rem;
   background-color: #ffffff0a;
-  overflow: hidden;
+  align-items: center;
+  position: relative;
 `;
 
 export const StyledSelect = styled.select`
@@ -13,7 +15,7 @@ export const StyledSelect = styled.select`
   font-size: 1rem;
   color: #ffffffe3;
   background-color: #4c586a;
-  padding: 2px 4px;
+  padding: 6px 4px;
   border-radius: 3px;
   border: none;
   @media (hover: hover) and (pointer: fine) {
@@ -29,7 +31,7 @@ export const StyledOption = styled.option`
 
 export const StyledButton = styled.button`
   margin: 3px;
-  padding: 5px 10px;
+  padding: 8px 12px;
   font-size: 1rem;
   border-radius: 3px;
   border: none;

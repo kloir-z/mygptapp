@@ -126,7 +126,7 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, model, setModel, set
         inputMessage={inputMessage}
       />
       <div style={{ position: 'absolute', right: '0px' }}>
-      <div style={{ position: 'relative' }}>
+      <div style={{ position: 'relative', direction: 'rtl' }}>
         <StyledButton onClick={() => setShowUserMenu(!showUserMenu)}>
           <FaUser />
         </StyledButton>

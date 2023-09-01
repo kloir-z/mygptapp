@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
 import { TopbarContainer, StyledButton, StyledSelect, StyledOption, NotificationDot } from './styles/Topbar.styles';
 import { ConversationType, SystemPromptType } from './types/Conversations.types';
-import { v4 as uuidv4 } from 'uuid'; 
-import { FaBars, FaPlus, FaCog, FaUser } from 'react-icons/fa';
+import { FaBars, FaCog, FaUser } from 'react-icons/fa';
 import SettingsModal from './SettingsModal'; 
 import TokenCounter from './TokenCounter';
 import { AuthContext } from 'src/components/Auth/AuthContext';  
 import firebase from 'src/components/Auth/firebase';
+import GoogleButton from "../Conversations/GoogleButton";
 
 type TopbarProps = {
     conversations: ConversationType[];
@@ -23,19 +23,6 @@ type TopbarProps = {
     setSidebarTransition: React.Dispatch<React.SetStateAction<boolean>>;
     inputMessage: string;
   };
-
-const createNewConversation = (): ConversationType => {
-  return {
-    id: uuidv4(),
-    title: "New Conversation",
-    revisions: [
-      {
-        revision: "0",
-        conversation: [],
-      },
-    ],
-  };
-};
   
 const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, model, setModel, setConversations, activeConversation, setActiveConversation, setShowMenu, systemprompts, setSystemPrompts, setSidebarTransition, inputMessage }) => {
   const [totalTokenUpdateRequired, setTotalTokenUpdateRequired] = useState(false);
@@ -100,13 +87,6 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, model, setModel, set
       <StyledButton onClick={toggleMenu}>
         <FaBars />
       </StyledButton>
-      <StyledButton onClick={() => {
-        const newConv = createNewConversation();
-        setConversations((prev: ConversationType[]) => [...prev, newConv]);
-        setActiveConversation(newConv);
-      }}>
-        <FaPlus />
-      </StyledButton>
       <StyledButton onClick={() => setShowSettings(true)}>
         <FaCog />{apiKey ? null : <NotificationDot>●</NotificationDot>}
       </StyledButton>
@@ -131,8 +111,8 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, model, setModel, set
           <FaUser />
         </StyledButton>
         {showUserMenu && (
-          <div ref={userMenuRef} style={{ position: 'absolute', bottom: '-1.5em', zIndex: '1000'}}>
-            <button onClick={handleLogout}>Logout</button>
+          <div ref={userMenuRef} style={{ position: 'absolute', bottom: 'auto', zIndex: '1000'}}>
+            <GoogleButton isSignedIn={true} onClick={handleLogout} />
           </div>
         )}
       </div>

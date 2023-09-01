@@ -9,7 +9,7 @@ import Topbar from '../Conversations/Topbar'
 import Sidebar from '../Conversations/Sidebar'
 import Conversation from '../Conversations/Conversation'
 import SidebarResizer from '../Conversations/SidebarResizer';
-import { Spinner } from "../Conversations/Spinner";
+import GoogleButton from "../Conversations/GoogleButton";
 import FullSpinner from "../Conversations/FullSpinner";
 
 const App: React.FC = () => {
@@ -113,7 +113,7 @@ const App: React.FC = () => {
   if (!user) {
     return isLoading ? <FullSpinner /> : (
       <div style={{padding: '30px'}}>
-        <button onClick={handleLogin}>Login with Google</button>
+        <GoogleButton isSignedIn={false} onClick={handleLogin} />
       </div>
     );
   }
@@ -144,7 +144,6 @@ const App: React.FC = () => {
             setActiveConversation={setActiveConversation}
             handleUpdateConversations={handleUpdateConversations}
             handleDeleteConversation={handleDeleteConversation}
-            receivingId={receivingId}
           />
         </SidebarContainer>
         {showMenu && (

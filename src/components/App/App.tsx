@@ -10,6 +10,7 @@ import Sidebar from '../Conversations/Sidebar'
 import Conversation from '../Conversations/Conversation'
 import SidebarResizer from '../Conversations/SidebarResizer';
 import { Spinner } from "../Conversations/Spinner";
+import FullSpinner from "../Conversations/FullSpinner";
 
 const App: React.FC = () => {
   const { user, setUser } = useContext(AuthContext);
@@ -110,7 +111,7 @@ const App: React.FC = () => {
   };
   
   if (!user) {
-    return isLoading ? <Spinner /> : (
+    return isLoading ? <FullSpinner /> : (
       <div style={{padding: '30px'}}>
         <button onClick={handleLogin}>Login with Google</button>
       </div>

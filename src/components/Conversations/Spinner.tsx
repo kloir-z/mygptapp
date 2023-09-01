@@ -7,11 +7,11 @@ const spin = keyframes`
 `;
 
 export const Spinner = styled.div`
-  opacity: 0.5;
+  opacity: 0.7;
   border: 2.5px solid #f3f3f3;
   border-top: 2.5px solid #3498db;
   border-radius: 50%;
-  width: 0.8em;
-  height: 0.8em;
+  width: 1rem;
+  height: 1rem;
   animation: ${spin} 2s linear infinite;
 `;

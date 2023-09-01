@@ -10,8 +10,8 @@ export const ConversationContainer = styled.div`
 
 export const MessagesContainer = styled.div`
   margin: 0px;
-  height: calc(100vh - 115px);
-  height: calc(100dvh - 115px);
+  height: calc(100vh - 112px);
+  height: calc(100dvh - 112px);
   overflow-y: scroll;
 `;
 

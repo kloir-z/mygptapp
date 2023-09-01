@@ -1,9 +1,7 @@
-//AuthProvider.tsx
-import React, { useState, useEffect, ReactNode } from "react";
-import firebase from './firebase';
+// AuthProvider.tsx
+import React, { useState, useEffect, ReactNode } from 'react';
+import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
 import { AuthContext } from './AuthContext';
-
-type User = firebase.auth.Auth["currentUser"];
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -11,11 +9,10 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const auth = getAuth();
 
   useEffect(() => {
-    const auth = firebase.auth();
-
-    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
       } else {
@@ -23,12 +20,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
     });
 
-    return unsubscribe;
-  }, []);
+    return () => {
+      unsubscribe();
+    };
+  }, [auth]);
   
   return (
     <AuthContext.Provider value={{ user, setUser }}>
       {children}
     </AuthContext.Provider>
   );
-}
+};

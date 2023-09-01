@@ -1,8 +1,6 @@
-//AuthContext.tsx
-import React from "react";
-import firebase from "firebase/compat/app";
-
-type User = firebase.auth.Auth["currentUser"];
+// AuthContext.tsx
+import React from 'react';
+import { User } from 'firebase/auth';
 
 export interface AuthContextProps {
   user: User | null;

@@ -1,6 +1,7 @@
 //App.tsx
 import React, { useState, useContext, useEffect, useRef } from "react";
 import { AuthContext } from '../Auth/AuthContext';
+import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithRedirect } from 'firebase/auth';
 import { ConversationType, SystemPromptType, ConversationData } from '../Conversations/types/Conversations.types';
 import { fetchUserData, updateConversations, deleteConversation } from '../Auth/firebase';
 import { ScrollWrapper, MainContainer, SidebarContainer, Placeholder } from './App.styles'
@@ -9,11 +10,11 @@ import Sidebar from '../Conversations/Sidebar'
 import Conversation from '../Conversations/Conversation'
 import SidebarResizer from '../Conversations/SidebarResizer';
 import { Spinner } from "../Conversations/Spinner";
-import firebase from "firebase/compat/app";
 
 const App: React.FC = () => {
   const { user, setUser } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false); 
+  const auth = getAuth();
   const [conversations, setConversations] = useState<ConversationType[]>([]);
   const [systemprompts, setSystemPrompts] = useState<SystemPromptType[]>([]);
   const [activeConversation, setActiveConversation] = useState<ConversationType | null>(null);
@@ -89,7 +90,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    const unsubscribe = firebase.auth().onAuthStateChanged((authUser) => {
+    const unsubscribe = onAuthStateChanged(auth, (authUser) => {
       if (authUser) {
         setUser(authUser);
       } else {
@@ -101,12 +102,11 @@ const App: React.FC = () => {
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [auth]);
 
   const handleLogin = () => {
-    const auth = firebase.auth();
-    const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithRedirect(provider);
+    const provider = new GoogleAuthProvider();
+    signInWithRedirect(auth, provider);
   };
   
   if (!user) {

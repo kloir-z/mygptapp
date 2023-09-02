@@ -5,7 +5,6 @@ import { ConversationType } from './types/Conversations.types';
 import { FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
 import { MdOutlineChat } from 'react-icons/md';
 import useSidebar from 'src/hooks/useSidebar';
-import { FaPlus } from 'react-icons/fa';
 import { v4 as uuidv4 } from 'uuid'; 
 
 type SidebarProps = {

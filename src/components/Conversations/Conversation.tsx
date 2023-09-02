@@ -33,6 +33,8 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
   const { editingMessageIndex, setEditingMessageIndex, tempMessageContent, onDoubleClickMessage, handleContentChange, handleConfirmEditing, handleCancelEditing, deleteMessage, editTextAreaRef } = useEditing({handleUpdateConversations, activeConversation});
   const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(model, displayMessages, setReceivingMessage, setReceivingId, setqueuedMessageForReceivingId);
   const { scrollToBottom, messagesEndRef, scrollContainerRef } = useScroll(displayMessages, tempMessageContent, receivingMessage);
+  const [ showInitialMenu, setShowInitialMenu] = useState(false);
+
   const { setDebugInfo } = useDebugInfo();
   const handleStartResponse = () => {
     setReceivingId(activeConversation.id);
@@ -44,10 +46,6 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
 
   const showSendButton = displayMessages[displayMessages.length - 1]?.role === 'user' && editingMessageIndex === null && !receivingId;
 
-  const showInitialMenu = () => {
-    return !displayMessages.some(message => message.role === 'assistant');
-  };
-
   useEffect(() => {
     setDebugInfo(`id: ${activeConversation.id} , rcvid: ${receivingId}`);
   }, [activeConversation.id, receivingId]);
@@ -56,12 +54,14 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
     setDisplayMessages(activeConversation.revisions[0].conversation);
     setEditingMessageIndex(null);
     scrollToBottom();
+    const showMenu = !activeConversation.revisions[0].conversation.some(message => message.role === 'assistant');
+    setShowInitialMenu(showMenu);
   }, [activeConversation]);
 
   return (
     <ConversationContainer>
       <MessagesContainer className="convScrollRef" ref={scrollContainerRef}>
-        {showInitialMenu() && (
+        {showInitialMenu && (
           <InitialMenu
             systemprompts={systemprompts}
             activeConversation={activeConversation}

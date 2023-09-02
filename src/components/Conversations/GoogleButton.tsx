@@ -36,7 +36,7 @@ interface GoogleButtonProps {
 }
 
 const GoogleButton: React.FC<GoogleButtonProps> = ({ onClick, isSignedIn }) => {
-  const { user, setUser, handleLogout } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   useEffect(() => {
     const img = new Image();
     img.src = googleIcon;

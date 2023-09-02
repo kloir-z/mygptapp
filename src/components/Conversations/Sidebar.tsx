@@ -42,21 +42,42 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, setConversations, acti
   } = useSidebar(conversations, setConversations, handleUpdateConversations);
 
   useEffect(() => {
-    // タイトルが"New Conversation"で、roleが"assistant"のメッセージが含まれていないconversationを探す
-    const newConversationNeeded = !conversations.some(conversation => {
+    // タイトルが"New Conversation"で、メッセージが含まれていないconversationを全て見つける
+    const emptyNewConversations = conversations.filter(conversation => {
       return conversation.title === "New Conversation" && 
         !conversation.revisions.some(revision => 
-          revision.conversation.some(message => message.role === "assistant")
+          revision.conversation.length > 0
         );
     });
-
+  
+    // そのようなconversationが存在し、それが複数あれば、それを削除する
+    if (emptyNewConversations.length > 1) {
+      const newConversations = conversations.filter(conversation => {
+        return !emptyNewConversations.includes(conversation);
+      });
+      setConversations(newConversations);
+      return;
+    }
+  
+    // １つだけ存在する場合、それが最後でなければ、最後に移動する
+    if (emptyNewConversations.length === 1) {
+      const targetIndex = conversations.indexOf(emptyNewConversations[0]);
+      if (targetIndex < conversations.length - 1) {
+        const newConversations = [...conversations];
+        const [targetConversation] = newConversations.splice(targetIndex, 1);
+        newConversations.push(targetConversation);
+        setConversations(newConversations);
+      }
+    }
+  
     // そのようなconversationが存在しなければ、新しいものを追加する
-    if (newConversationNeeded) {
+    if (emptyNewConversations.length === 0) {
       const newConv = createNewConversation();
       setConversations(prev => [...prev, newConv]);
     }
-
-  }, [conversations, setConversations]); 
+  
+  }, [conversations, setConversations]);
+  
 
   const reversedConversations = useMemo(() => {
     return [...conversations].reverse();

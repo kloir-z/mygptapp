@@ -29,6 +29,8 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
   };
 
   useEffect(() => {
+    setSelectedPromptId("none");
+    setShowTranscriptPopup(false); 
     if (activeConversation.revisions[0].conversation[0]?.role === 'system') {
       const systemContent = activeConversation.revisions[0].conversation[0].content;
       const matchingPrompt = systemprompts.find(prompt => prompt.content === systemContent);

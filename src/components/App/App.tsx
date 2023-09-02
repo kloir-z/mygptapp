@@ -1,20 +1,19 @@
 //App.tsx
 import React, { useState, useContext, useEffect, useRef } from "react";
 import { AuthContext } from '../Auth/AuthContext';
-import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithRedirect } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 import { ConversationType, SystemPromptType, ConversationData } from '../Conversations/types/Conversations.types';
 import { fetchUserData, updateConversations, deleteConversation } from '../Auth/firebase';
-import { ScrollWrapper, MainContainer, SidebarContainer, Placeholder } from './App.styles'
+import { LoginContainer, ScrollWrapper, MainContainer, SidebarContainer, Placeholder } from './App.styles'
 import Topbar from '../Conversations/Topbar'
 import Sidebar from '../Conversations/Sidebar'
 import Conversation from '../Conversations/Conversation'
 import SidebarResizer from '../Conversations/SidebarResizer';
 import GoogleButton from "../Conversations/GoogleButton";
-import FullSpinner from "../Conversations/FullSpinner";
+import SpinnerFull from "../Conversations/SpinnerFull";
 
 const App: React.FC = () => {
-  const { user, setUser } = useContext(AuthContext);
-  const [isLoading, setIsLoading] = useState(false); 
+  const { user, isLoading, handleLogin } = useContext(AuthContext);
   const auth = getAuth();
   const [conversations, setConversations] = useState<ConversationType[]>([]);
   const [systemprompts, setSystemPrompts] = useState<SystemPromptType[]>([]);
@@ -88,33 +87,12 @@ const App: React.FC = () => {
   
     getUserData();
   }, [user?.uid]);
-
-  useEffect(() => {
-    setIsLoading(true);
-    const unsubscribe = onAuthStateChanged(auth, (authUser) => {
-      if (authUser) {
-        setUser(authUser);
-      } else {
-        setUser(null);
-      }
-      setIsLoading(false);
-    });
-  
-    return () => {
-      unsubscribe();
-    };
-  }, [auth]);
-
-  const handleLogin = () => {
-    const provider = new GoogleAuthProvider();
-    signInWithRedirect(auth, provider);
-  };
   
   if (!user) {
-    return isLoading ? <FullSpinner /> : (
-      <div style={{padding: '30px'}}>
+    return isLoading ? <SpinnerFull /> : (
+      <LoginContainer>
         <GoogleButton isSignedIn={false} onClick={handleLogin} />
-      </div>
+      </LoginContainer>
     );
   }
 

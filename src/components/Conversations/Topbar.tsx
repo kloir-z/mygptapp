@@ -1,3 +1,4 @@
+//Topbar.tsx
 import React, { useState, useRef, useEffect, useContext } from "react";
 import { TopbarContainer, StyledButton, StyledSelect, StyledOption, NotificationDot } from './styles/Topbar.styles';
 import { ConversationType, SystemPromptType } from './types/Conversations.types';
@@ -5,7 +6,6 @@ import { FaBars, FaCog, FaUser } from 'react-icons/fa';
 import SettingsModal from './SettingsModal'; 
 import TokenCounter from './TokenCounter';
 import { AuthContext } from 'src/components/Auth/AuthContext';  
-import firebase from 'src/components/Auth/firebase';
 import GoogleButton from "../Conversations/GoogleButton";
 
 type TopbarProps = {
@@ -35,7 +35,8 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, model, setModel, set
   const [showSettings, setShowSettings] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const userMenuRef = useRef<HTMLDivElement | null>(null);
-  const { user, setUser } = useContext(AuthContext);
+  const { handleLogout } = useContext(AuthContext);
+  
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -64,15 +65,6 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, model, setModel, set
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-  const handleLogout = () => {
-    firebase.auth().signOut().then(() => {
-      setUser(null);
-      setShowUserMenu(false); // メニューを閉じる
-    }).catch((error) => {
-      console.error("Logout failed:", error);
-    });
-  };
 
   const toggleMenu = () => {
     setShowMenu((prevState: Boolean) => !prevState);

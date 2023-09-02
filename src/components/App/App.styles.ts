@@ -13,6 +13,17 @@ export const MainContainer = styled.div`
   overflow: hidden;
 `;
 
+export const LoginContainer = styled.div`
+display: flex;
+justify-content: center;
+align-items: center;
+height: 100vh;
+width: 100%;
+position: fixed;
+top: 0;
+left: 0;
+`;
+
 export const SidebarContainer = styled.div<{ showMenu: boolean; sidebarWidth: number; sidebarTransition: boolean }>`
   display: flex;
   flex-direction: column;

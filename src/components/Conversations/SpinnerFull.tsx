@@ -1,4 +1,4 @@
-// FullSpinner.tsx
+// SpinnerFull.tsx
 import React from 'react';
 import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
@@ -9,16 +9,16 @@ const spin = keyframes`
 `;
 
 const Spinner = styled.div`
-  opacity: 0.7;
-  border: 6px solid #f3f3f3;
-  border-top: 6px solid #3498db;
+  opacity: 0.6;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
   border-radius: 50%;
-  width: 3rem;
-  height: 3rem;
+  width: 2.5rem;
+  height: 2.5rem;
   animation: ${spin} 2s linear infinite;
 `;
 
-const FullSpinnerContainer = styled.div`
+const SpinnerFullContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -31,12 +31,12 @@ const FullSpinnerContainer = styled.div`
   z-index: 9999;
 `;
 
-const FullSpinner: React.FC = () => {
+const SpinnerFull: React.FC = () => {
   return (
-    <FullSpinnerContainer>
+    <SpinnerFullContainer>
       <Spinner />
-    </FullSpinnerContainer>
+    </SpinnerFullContainer>
   );
 };
 
-export default FullSpinner;
+export default SpinnerFull;

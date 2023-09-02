@@ -1,6 +1,5 @@
-// AuthProvider.tsx
 import React, { useState, useEffect, ReactNode } from 'react';
-import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, User, GoogleAuthProvider, signInWithRedirect } from 'firebase/auth';
 import { AuthContext } from './AuthContext';
 
 interface AuthProviderProps {
@@ -9,24 +8,40 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const auth = getAuth();
 
+  const handleLogin = () => {
+    const provider = new GoogleAuthProvider();
+    signInWithRedirect(auth, provider);
+  };
+
+  const handleLogout = () => {
+    auth.signOut().then(() => {
+      setUser(null);
+    }).catch((error) => {
+      console.error("Logout failed:", error);
+    });
+  };
+
   useEffect(() => {
+    setIsLoading(true);
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
       } else {
         setUser(null);
       }
+      setIsLoading(false);
     });
 
     return () => {
       unsubscribe();
     };
   }, [auth]);
-  
+
   return (
-    <AuthContext.Provider value={{ user, setUser }}>
+    <AuthContext.Provider value={{ user, setUser, isLoading, handleLogin, handleLogout }}>
       {children}
     </AuthContext.Provider>
   );

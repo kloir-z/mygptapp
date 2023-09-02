@@ -22,12 +22,6 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
   const [loadingTranscript, setLoadingTranscript] = useState(false);
   const [selectedPromptId, setSelectedPromptId] = useState<string>("none");
 
-  const systemPromptActions: SystemPromptActionsType = {
-    '日本語要約': async () => {if (!activeConversation.revisions[0].conversation.some(message => message.role === 'user')) { setShowTranscriptPopup(true); }},
-    '英語要約': async () => {if (!activeConversation.revisions[0].conversation.some(message => message.role === 'user')) { setShowTranscriptPopup(true); }}
-    // 他のプロンプトと機能を追加
-  };
-
   useEffect(() => {
     setSelectedPromptId("none");
     setShowTranscriptPopup(false); 
@@ -37,9 +31,13 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
       
       if (matchingPrompt) {
         setSelectedPromptId(matchingPrompt.id);
+        if (matchingPrompt.title === '日本語要約') {
+          setShowTranscriptPopup(true);
+        }
       }
     }
   }, [activeConversation, systemprompts]);
+  
 
   const handleSystemPromptSelection = async (selectedPromptId: string) => {
     setSelectedPromptId(selectedPromptId);
@@ -59,12 +57,6 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
 
     const selectedPrompt = systemprompts.find(prompt => prompt.id === selectedPromptId);
     if (selectedPrompt) {
-      const action = systemPromptActions[selectedPrompt.title];
-      if (action) {
-        action();
-      } else {
-        setShowTranscriptPopup(false);
-      }
 
       const updatedMessages = [...activeConversation.revisions[0].conversation];
       if (updatedMessages[0]?.role === 'system') {

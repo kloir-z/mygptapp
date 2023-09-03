@@ -73,6 +73,7 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, setConversations, acti
     if (emptyNewConversations.length === 0) {
       const newConv = createNewConversation();
       setConversations(prev => [...prev, newConv]);
+      setActiveConversation(newConv);
     }
   
   }, [conversations, setConversations]);

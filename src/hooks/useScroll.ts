@@ -1,3 +1,4 @@
+//useScroll.ts
 import { useState, useEffect, useRef } from 'react';
 import { ConversationData } from 'src/components/Conversations/types/Conversations.types';
 

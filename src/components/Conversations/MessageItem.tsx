@@ -5,7 +5,7 @@ import { MessageDiv, EditTextarea, EditingText } from './styles/Conversation.sty
 import React, { useMemo } from 'react';
 
 const MessageItem: React.FC<{
-  message: ConversationData;
+  ConversationData: ConversationData;
   editing: boolean;
   index: number;
   onDoubleClick: () => void;
@@ -16,7 +16,7 @@ const MessageItem: React.FC<{
   handleContentChange: (value: string) => void;
   editTextAreaRef: React.RefObject<HTMLTextAreaElement>;
 }> = ({
-  message,
+  ConversationData,
   editing,
   index,
   onDoubleClick,
@@ -27,11 +27,11 @@ const MessageItem: React.FC<{
   handleContentChange,
   editTextAreaRef
 }) => {
-  const highlightedContent = useMemo(() => SyntaxHighlight(message.content), [message.content]);
+  const highlightedContent = useMemo(() => SyntaxHighlight(ConversationData.content), [ConversationData.content]);
 
   return (
     <MessageDiv
-      role={message.role}
+      role={ConversationData.role}
       onDoubleClick={onDoubleClick}
     >
       {editing ? (

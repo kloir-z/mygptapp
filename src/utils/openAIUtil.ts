@@ -1,22 +1,17 @@
+//openAIUtils.ts
 import { ConversationData } from '../components/Conversations/types/Conversations.types';
 
 type SendToOpenAIProps = {
   apiKey: string,
   model: string,
-  messages: ConversationData[],
-  messageContent?: string,
-  role?: string
+  messages: ConversationData[]
 };
 
-const sendToOpenAI = async ({ apiKey, model, messages, messageContent, role }: SendToOpenAIProps) => {
+const sendToOpenAI = async ({ apiKey, model, messages }: SendToOpenAIProps) => {
   let messageData = messages.map((message) => ({
     role: message.role,
     content: message.content,
   }));
-
-  if (messageContent && role) {
-    messageData.push({ role: role, content: messageContent });
-  }
 
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
@@ -38,9 +33,7 @@ type GetAIResponseProps = {
   model: string,
   messages: ConversationData[],
   stopReceiving: React.MutableRefObject<boolean>,
-  setReceivingMessage: React.Dispatch<React.SetStateAction<string>>,
-  messageContent?: string,
-  role?: string,
+  setReceivingMessage: React.Dispatch<React.SetStateAction<string>>
 };
 
 export const getAIResponse = async ({
@@ -48,11 +41,9 @@ export const getAIResponse = async ({
   model,
   messages,
   stopReceiving,
-  setReceivingMessage,
-  messageContent,
-  role
+  setReceivingMessage
 }: GetAIResponseProps): Promise<string> => {
-  const response = await sendToOpenAI({ apiKey, model, messages, messageContent, role });
+  const response = await sendToOpenAI({ apiKey, model, messages });
   const reader = response.body?.getReader();
   if (!reader) {
     throw new Error('Response body stream not available');

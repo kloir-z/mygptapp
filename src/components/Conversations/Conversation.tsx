@@ -31,7 +31,7 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
   const [displayMessages, setDisplayMessages] = useState<ConversationData[]>(activeConversation.revisions[0].conversation);
 
   const { editingMessageIndex, setEditingMessageIndex, tempMessageContent, onDoubleClickMessage, handleContentChange, handleConfirmEditing, handleCancelEditing, deleteMessage, editTextAreaRef } = useEditing({handleUpdateConversations, activeConversation});
-  const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(model, displayMessages, setReceivingMessage, setReceivingId, setqueuedMessageForReceivingId);
+  const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(apiKey, model, displayMessages, setReceivingMessage, setReceivingId, setqueuedMessageForReceivingId);
   const { scrollToBottom, messagesEndRef, scrollContainerRef } = useScroll(displayMessages, tempMessageContent, receivingMessage);
   const [ showInitialMenu, setShowInitialMenu] = useState(false);
 
@@ -68,10 +68,10 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
             handleUpdateConversations={handleUpdateConversations}
           />
         )}
-        {displayMessages.map((message: ConversationData, index: number) => (
+        {displayMessages.map((ConversationData: ConversationData, index: number) => (
           <MessageItem
             key={index}
-            message={message}
+            ConversationData={ConversationData}
             editing={editingMessageIndex === index}
             index={index}
             onDoubleClick={() => onDoubleClickMessage(displayMessages, index)}
@@ -91,7 +91,6 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
               awaitGetAIResponse={awaitGetAIResponse} 
               handleStartResponse={handleStartResponse}
               handleStopResponse={handleStopResponse}
-              apiKey={apiKey}
             />
           </div>
         )}

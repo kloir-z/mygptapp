@@ -4,6 +4,7 @@ import { ConversationData } from 'src/components/Conversations/types/Conversatio
 import { getAIResponse } from 'src/utils/openAIUtil';
 
 export const useAIResponse = (
+  apiKey: string,
   model: string,
   messages: ConversationData[],
   setReceivingMessage: React.Dispatch<React.SetStateAction<string>>,
@@ -12,17 +13,17 @@ export const useAIResponse = (
 ) => {
   const stopReceiving = useRef(false);
 
-  const awaitGetAIResponse = async (apiKey: string, messageContent?: string, role?: string): Promise<void> => {
+  const awaitGetAIResponse = async (inputMessage?: string): Promise<void> => {
     stopReceiving.current = false;
     setReceivingMessage('')
     let updatedMessages = [...messages];
 
-    if (messageContent) {
-      updatedMessages.push({ role: 'user', content: messageContent });
-      setQueuedMessageForReceivingId({ role: 'user', content: messageContent })
+    if (inputMessage) {
+      updatedMessages.push({ role: 'user', content: inputMessage });
+      setQueuedMessageForReceivingId({ role: 'user', content: inputMessage })
     }
 
-    const aiResponse = await getAIResponse({ apiKey, model, messages: updatedMessages, stopReceiving, setReceivingMessage, messageContent, role });
+    const aiResponse = await getAIResponse({ apiKey, model, messages: updatedMessages, stopReceiving, setReceivingMessage });
     setQueuedMessageForReceivingId({ role: 'assistant', content: aiResponse })
 
     setReceivingMessage('')

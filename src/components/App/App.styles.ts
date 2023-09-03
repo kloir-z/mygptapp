@@ -39,9 +39,3 @@ export const SidebarContainer = styled.div<{ showMenu: boolean; sidebarWidth: nu
   position: relative;
   transition: ${props => (props.sidebarTransition ? 'all 0.2s ease' : 'none')};
 `;
-
-export const Placeholder = styled.div`
-  color: #ebebeb;
-  margin: 1rem;
-  flex: 1;
-`;

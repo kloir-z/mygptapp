@@ -1,3 +1,4 @@
+//SendButton.tsx
 import React, { useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane, faStop } from '@fortawesome/free-solid-svg-icons'
@@ -6,26 +7,25 @@ import { Spinner } from "../Conversations/Spinner";
 
 type SendButtonProps = {
   receivingId: string;
-  awaitGetAIResponse: (apiKey: string, message?: string, role?: string) => Promise<void>;
+  awaitGetAIResponse: (inputMessage?: string) => Promise<void>;
   handleStartResponse: () => void;
   handleStopResponse: () => void;
-  apiKey: string;
-  message?: string;
-  setMessage?: React.Dispatch<React.SetStateAction<string>>;
+  inputMessage?: string;
+  setInputMessage?: React.Dispatch<React.SetStateAction<string>>;
   disabled?: boolean; 
 };
 
-const SendButton: React.FC<SendButtonProps> = ({ receivingId, awaitGetAIResponse, handleStartResponse, handleStopResponse, apiKey, message, setMessage, disabled }) => {
+const SendButton: React.FC<SendButtonProps> = ({ receivingId, awaitGetAIResponse, handleStartResponse, handleStopResponse, inputMessage, setInputMessage, disabled }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const handleGetAIResponse = async () => {
     handleStartResponse();
     try {
-      if (message && setMessage) {
-        setMessage(''); 
-        await awaitGetAIResponse(apiKey, message, 'user');
+      if (inputMessage && setInputMessage) {
+        setInputMessage(''); 
+        await awaitGetAIResponse(inputMessage);
       } else {
-        await awaitGetAIResponse(apiKey, undefined, undefined);
+        await awaitGetAIResponse(undefined);
       }
     } finally {
       handleStopResponse();

@@ -4,7 +4,7 @@ import { AuthContext } from '../Auth/AuthContext';
 import { getAuth } from 'firebase/auth';
 import { ConversationType, SystemPromptType, ConversationData } from '../Conversations/types/Conversations.types';
 import { fetchUserData, updateConversations, deleteConversation } from '../Auth/firebase';
-import { LoginContainer, ScrollWrapper, MainContainer, SidebarContainer, Placeholder } from './App.styles'
+import { LoginContainer, ScrollWrapper, MainContainer, SidebarContainer } from './App.styles'
 import Topbar from '../Conversations/Topbar'
 import Sidebar from '../Conversations/Sidebar'
 import Conversation from '../Conversations/Conversation'
@@ -66,6 +66,13 @@ const App: React.FC = () => {
       setActiveConversation(null);
     }
   }, [conversations]);
+
+  useEffect(() => {
+    if (activeConversation === null && conversations.length > 0) {
+      const lastConversation = conversations[conversations.length - 1];
+      setActiveConversation(lastConversation);
+    }
+  }, [conversations, activeConversation]);
 
   const handleDeleteConversation = async (id: string) => {
     if (window.confirm('Are You Sure to Delete?')) {
@@ -144,7 +151,7 @@ const App: React.FC = () => {
             setInputMessage={setInputMessage}
           />
         ) : (
-          <Placeholder>Please select a conversation</Placeholder>
+          <></>
         )}
       </MainContainer>
     </ScrollWrapper>

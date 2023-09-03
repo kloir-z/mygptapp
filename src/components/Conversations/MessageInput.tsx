@@ -7,7 +7,7 @@ import SendButton from './SendButton';
 
 type MessageInputProps = {
   receivingId: string;
-  awaitGetAIResponse: (apiKey: string, message?: string, role?: string) => Promise<void>;
+  awaitGetAIResponse: () => Promise<void>;
   handleStartResponse: () => void;
   handleStopResponse: () => void;
   apiKey: string;
@@ -16,7 +16,7 @@ type MessageInputProps = {
   setInputMessage: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const MessageInput: React.FC<MessageInputProps> = ({ receivingId, awaitGetAIResponse, handleStartResponse, handleStopResponse, apiKey, scrollWrapperRef, inputMessage, setInputMessage }) => {
+const MessageInput: React.FC<MessageInputProps> = ({ receivingId, awaitGetAIResponse, handleStartResponse, handleStopResponse, scrollWrapperRef, inputMessage, setInputMessage }) => {
   const { messagesEndRef, scrollContainerRef } = useScroll(undefined, inputMessage);
   const { setDebugInfo } = useDebugInfo();
 
@@ -44,12 +44,11 @@ const MessageInput: React.FC<MessageInputProps> = ({ receivingId, awaitGetAIResp
       />
       <SendButton
         receivingId={receivingId}
-        awaitGetAIResponse={async (apiKey, message, role) => awaitGetAIResponse(apiKey, message, role)}
+        awaitGetAIResponse={awaitGetAIResponse}
         handleStartResponse={handleStartResponse}
         handleStopResponse={handleStopResponse}
-        apiKey={apiKey}
-        message={inputMessage}
-        setMessage={setInputMessage} 
+        inputMessage={inputMessage}
+        setInputMessage={setInputMessage} 
         disabled={inputMessage.trim() === '' && !receivingId}
       />
       </MessageInputContainer>

@@ -7,8 +7,8 @@ import { FaCalculator } from 'react-icons/fa';
 import { Spinner } from './Spinner'
 
 type TokenCounterProps = {
+  conversations: ConversationType[] | [];
   activeConversation: ConversationType | null;
-  model: string;
   totalTokenUpdateRequired: boolean;
   setTotalTokenUpdateRequired: React.Dispatch<React.SetStateAction<boolean>>;
   inputTokenUpdateRequired: boolean;
@@ -16,7 +16,7 @@ type TokenCounterProps = {
   inputMessage: string;
 };
 
-const TokenCounter: React.FC<TokenCounterProps> = ({ activeConversation, model, totalTokenUpdateRequired, setTotalTokenUpdateRequired, inputTokenUpdateRequired, setInputTokenUpdateRequired, inputMessage }) => {
+const TokenCounter: React.FC<TokenCounterProps> = ({ conversations, activeConversation, totalTokenUpdateRequired, setTotalTokenUpdateRequired, inputTokenUpdateRequired, setInputTokenUpdateRequired, inputMessage }) => {
   const [inputTokenCount, setInputTokenCount] = useState<number>(0);
   const [totalTokenCount, setTotalTokenCount] = useState<number>(0);
   const [inputTokenLoading, setInputTokenLoading] = useState(false);
@@ -32,11 +32,10 @@ const TokenCounter: React.FC<TokenCounterProps> = ({ activeConversation, model, 
   };
 
   const checkMessageTokenCount = async () => {
-    if (totalTokenUpdateRequired && activeConversation) {
+    if (activeConversation) {
       setTotalTokenLoading(true);
       await getAndSetTokenCount([...activeConversation.revisions[0].conversation], setTotalTokenCount);
       setTotalTokenLoading(false);
-      setTotalTokenUpdateRequired(false);
     }
   };
 
@@ -45,8 +44,8 @@ const TokenCounter: React.FC<TokenCounterProps> = ({ activeConversation, model, 
   },[inputMessage]);
 
   useEffect(() => {
-    setTotalTokenUpdateRequired(true);
-  },[activeConversation]);
+    checkMessageTokenCount()
+  },[conversations, activeConversation]);
 
   return (
     <>

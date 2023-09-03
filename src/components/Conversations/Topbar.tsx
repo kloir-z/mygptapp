@@ -9,14 +9,12 @@ import { AuthContext } from 'src/components/Auth/AuthContext';
 import GoogleButton from "../Conversations/GoogleButton";
 
 type TopbarProps = {
+    apiKey: string;
+    setApiKey: React.Dispatch<React.SetStateAction<string>>;
     conversations: ConversationType[];
     model: string;
     setModel: React.Dispatch<React.SetStateAction<string>>;
-    apiKey: string;
-    setApiKey: React.Dispatch<React.SetStateAction<string>>;
     activeConversation: ConversationType | null;
-    setConversations: React.Dispatch<React.SetStateAction<ConversationType[]>>;
-    setActiveConversation: React.Dispatch<React.SetStateAction<ConversationType | null>>;
     setShowMenu: React.Dispatch<React.SetStateAction<boolean>>;
     systemprompts: SystemPromptType[];
     setSystemPrompts: React.Dispatch<React.SetStateAction<SystemPromptType[]>>;
@@ -24,7 +22,7 @@ type TopbarProps = {
     inputMessage: string;
   };
   
-const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, model, setModel, setConversations, activeConversation, setActiveConversation, setShowMenu, systemprompts, setSystemPrompts, setSidebarTransition, inputMessage }) => {
+const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model, setModel, activeConversation, setShowMenu, systemprompts, setSystemPrompts, setSidebarTransition, inputMessage }) => {
   const [totalTokenUpdateRequired, setTotalTokenUpdateRequired] = useState(false);
   const [inputTokenUpdateRequired, setInputTokenUpdateRequired] = useState(false);
 
@@ -89,8 +87,8 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, model, setModel, set
         <StyledOption value="gpt-4-0613">gpt4(8k)</StyledOption>
       </StyledSelect>
       <TokenCounter
+        conversations={conversations}
         activeConversation={activeConversation}
-        model={model}
         totalTokenUpdateRequired={totalTokenUpdateRequired}
         setTotalTokenUpdateRequired={setTotalTokenUpdateRequired}
         inputTokenUpdateRequired={inputTokenUpdateRequired}

@@ -106,14 +106,12 @@ const App: React.FC = () => {
   return (
     <ScrollWrapper ref={scrollWrapperRef}>
       <Topbar
+        apiKey={apiKey}
+        setApiKey={setApiKey}
         conversations={conversations}
         model={model}
         setModel={setModel}
-        apiKey={apiKey}
-        setApiKey={setApiKey}
         activeConversation={activeConversation}
-        setConversations={setConversations}
-        setActiveConversation={setActiveConversation}
         setShowMenu={setShowMenu}
         systemprompts={systemprompts}
         setSystemPrompts={setSystemPrompts}

@@ -1,3 +1,4 @@
+//tokenCounter.ts
 import { Tiktoken } from "@dqbd/tiktoken/lite";
 import cl100k_base from "@dqbd/tiktoken/encoders/cl100k_base.json";
 import { ConversationData } from "src/components/Conversations/types/Conversations.types";
@@ -13,6 +14,8 @@ const countTokens = (messages: ConversationData[]): number => {
   messages.forEach((message) => {
     const tokens = encoding.encode(message.content);
     totalTokens += tokens.length;
+    const roleTokens = encoding.encode(message.role);
+    totalTokens += roleTokens.length;
   });
 
   encoding.free();

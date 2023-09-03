@@ -47,7 +47,7 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
   const showSendButton = displayMessages[displayMessages.length - 1]?.role === 'user' && editingMessageIndex === null && !receivingId;
 
   useEffect(() => {
-    setDebugInfo(`id: ${activeConversation.id} , rcvid: ${receivingId}`);
+    // setDebugInfo(`id: ${activeConversation.id} , rcvid: ${receivingId}`);
   }, [activeConversation.id, receivingId]);
 
   useEffect(() => {

@@ -48,7 +48,7 @@ const SidebarResizer: React.FC<SidebarResizerProps> = ({ onResize, sidebarWidth,
     style={{
       cursor: 'ew-resize',
       width: '15px',
-      height: '95svh',
+      height: '94svh',
       position: 'absolute',
       left: sidebarWidth - 1,
       top: '2.25rem',

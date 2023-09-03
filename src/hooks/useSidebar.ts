@@ -4,7 +4,7 @@ import { ConversationType } from 'src/components/Conversations/types/Conversatio
 
 const useSidebar = (
   conversations: ConversationType[],
-  setConversations: Function,
+  setConversations: React.Dispatch<React.SetStateAction<ConversationType[]>>,
   handleUpdateConversations: (updatedConversation: ConversationType) => Promise<void>,
 ) => {
   const [editingTitle, setEditingTitle] = useState<string>("");

@@ -30,7 +30,6 @@ const createNewConversation = (): ConversationType => {
 };
 
 const Sidebar: React.FC<SidebarProps> = ({ conversations, setConversations, activeConversation, setActiveConversation, handleUpdateConversations, handleDeleteConversation }) => {
-  const inputRef = useRef<HTMLInputElement>(null);  
   const {
     editingTitle,
     setEditingTitle,
@@ -100,7 +99,6 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, setConversations, acti
           {editingId === conversation.id ? (
             <>
               <StyledInput 
-                ref={inputRef}
                 value={editingTitle} 
                 onChange={(e) => setEditingTitle(e.target.value)}
               />

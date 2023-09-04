@@ -128,7 +128,7 @@ const App: React.FC = () => {
           />
         </SidebarContainer>
         {showMenu && (
-        <SidebarResizer onResize={handleResize} sidebarWidth={sidebarWidth} minSidebarWidth={minSidebarWidth} maxSidebarWidth={maxSidebarWidth} />
+          <SidebarResizer onResize={handleResize} sidebarWidth={sidebarWidth} minSidebarWidth={minSidebarWidth} maxSidebarWidth={maxSidebarWidth} />
         )}
         {activeConversation ? (
           <Conversation

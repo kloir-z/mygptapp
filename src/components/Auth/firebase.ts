@@ -1,8 +1,8 @@
 //firebase.ts
-import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
-import "firebase/compat/firestore";
+import { initializeApp } from 'firebase/app';
+import { getFirestore, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { ConversationType, SystemPromptType, FetchedUserData } from '../Conversations/types/Conversations.types';
+import {initializeAuth, browserLocalPersistence, browserPopupRedirectResolver} from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -14,65 +14,68 @@ const firebaseConfig = {
   measurementId: process.env.REACT_APP_MEASUREMENT_ID,
 };
 
-firebase.initializeApp(firebaseConfig);
-
-const firestore = firebase.firestore();
+const app = initializeApp(firebaseConfig);
+const firestore = getFirestore(app);
+const auth = initializeAuth(app, {
+  persistence: [browserLocalPersistence],
+  popupRedirectResolver: browserPopupRedirectResolver,
+});
 
 const fetchUserData = async (userId?: string): Promise<FetchedUserData> => {
   if (!userId) return { conversations: [], systemPrompts: [] };
 
-  const docRef = firestore.collection("UserData").doc(userId);
-  const doc = await docRef.get();
-  const data = doc.data();
+  const docRef = doc(firestore, 'UserData', userId);
+  const docSnap = await getDoc(docRef);
 
-  const conversations = data?.conversations?.map((conversation: ConversationType) => ({ ...conversation, id: conversation.id })) || [];
-  const systemPrompts = data?.systemPrompts?.map((systemPrompt: SystemPromptType) => ({ ...systemPrompt, id: systemPrompt.id })) || [];
-
-  return { conversations, systemPrompts };
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    const conversations = data?.conversations?.map((conversation: ConversationType) => ({ ...conversation, id: conversation.id })) || [];
+    const systemPrompts = data?.systemPrompts?.map((systemPrompt: SystemPromptType) => ({ ...systemPrompt, id: systemPrompt.id })) || [];
+    return { conversations, systemPrompts };
+  } else {
+    return { conversations: [], systemPrompts: [] };
+  }
 };
 
-const ensureDocExists = async (docRef: firebase.firestore.DocumentReference) => {
-  const doc = await docRef.get();
-  if (!doc.exists) {
-    await docRef.set({});
+const ensureDocExists = async (docRef: any) => {
+  const docSnap = await getDoc(docRef);
+  if (!docSnap.exists()) {
+    await setDoc(docRef, {});
   }
 };
 
 const updateConversations = async (userId?: string, conversations: ConversationType[] = []) => {
   if (!userId) return;
 
-  const docRef = firestore.collection("UserData").doc(userId);
+  const docRef = doc(firestore, 'UserData', userId);
   await ensureDocExists(docRef);
 
-  await firestore.collection("UserData").doc(userId).update({
-    conversations: conversations,
-  });
+  await updateDoc(docRef, { conversations });
 };
 
 const deleteConversation = async (userId?: string, conversationId?: string) => {
   if (!userId || !conversationId) return;
 
-  const docRef = firestore.collection("UserData").doc(userId);
-  const doc = await docRef.get();
-  const data = doc.data();
-  if (!data || !data.conversations) return;
+  const docRef = doc(firestore, 'UserData', userId);
+  const docSnap = await getDoc(docRef);
 
-  const updatedConversations = data.conversations.filter((conversation: ConversationType) => conversation.id !== conversationId);
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    if (!data || !data.conversations) return;
 
-  await docRef.update({
-    conversations: updatedConversations,
-  });
+    const updatedConversations = data.conversations.filter((conversation: ConversationType) => conversation.id !== conversationId);
+
+    await updateDoc(docRef, { conversations: updatedConversations });
+  }
 };
 
 const updateSystemPrompts = async (userId?: string, systemprompts: SystemPromptType[] = []) => {
   if (!userId) return;
 
-  const docRef = firestore.collection("UserData").doc(userId);
+  const docRef = doc(firestore, 'UserData', userId);
   await ensureDocExists(docRef);
 
-  await firestore.collection("UserData").doc(userId).update({
-    systemPrompts: systemprompts,
-  });
+  await updateDoc(docRef, { systemPrompts: systemprompts });
 };
 
-export { firebase, fetchUserData, updateConversations, deleteConversation, updateSystemPrompts };
+export { auth, fetchUserData, updateConversations, deleteConversation, updateSystemPrompts };

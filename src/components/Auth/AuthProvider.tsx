@@ -1,7 +1,8 @@
 //AuthProvider.tsx
 import React, { useState, useEffect, ReactNode } from 'react';
-import { getAuth, onAuthStateChanged, User, GoogleAuthProvider, signInWithRedirect } from 'firebase/auth';
+import { onAuthStateChanged, User, GoogleAuthProvider, signInWithRedirect } from 'firebase/auth';
 import { AuthContext } from './AuthContext';
+import { auth } from './firebase';
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -10,7 +11,6 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const auth = getAuth();
 
   const handleLogin = () => {
     const provider = new GoogleAuthProvider();

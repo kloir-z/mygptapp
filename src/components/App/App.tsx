@@ -1,7 +1,6 @@
 //App.tsx
 import React, { useState, useContext, useEffect, useRef } from "react";
 import { AuthContext } from '../Auth/AuthContext';
-import { getAuth } from 'firebase/auth';
 import { ConversationType, SystemPromptType, ConversationData } from '../Conversations/types/Conversations.types';
 import { fetchUserData, updateConversations, deleteConversation } from '../Auth/firebase';
 import { LoginContainer, ScrollWrapper, MainContainer, SidebarContainer } from './App.styles'
@@ -14,7 +13,6 @@ import SpinnerFull from "../Conversations/SpinnerFull";
 
 const App: React.FC = () => {
   const { user, isLoading, handleLogin } = useContext(AuthContext);
-  const auth = getAuth();
   const [conversations, setConversations] = useState<ConversationType[]>([]);
   const [systemprompts, setSystemPrompts] = useState<SystemPromptType[]>([]);
   const [activeConversation, setActiveConversation] = useState<ConversationType | null>(null);

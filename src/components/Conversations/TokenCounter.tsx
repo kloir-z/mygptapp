@@ -7,6 +7,10 @@ import { FaCalculator } from 'react-icons/fa';
 import { Spinner } from './Spinner'
 
 type TokenCounterProps = {
+  inputTokenCount: number;
+  setInputTokenCount: React.Dispatch<React.SetStateAction<number>>;
+  totalTokenCount: number;
+  setTotalTokenCount: React.Dispatch<React.SetStateAction<number>>;
   conversations: ConversationType[] | [];
   activeConversation: ConversationType | null;
   totalTokenUpdateRequired: boolean;
@@ -16,9 +20,19 @@ type TokenCounterProps = {
   inputMessage: string;
 };
 
-const TokenCounter: React.FC<TokenCounterProps> = ({ conversations, activeConversation, totalTokenUpdateRequired, setTotalTokenUpdateRequired, inputTokenUpdateRequired, setInputTokenUpdateRequired, inputMessage }) => {
-  const [inputTokenCount, setInputTokenCount] = useState<number>(0);
-  const [totalTokenCount, setTotalTokenCount] = useState<number>(0);
+const TokenCounter: React.FC<TokenCounterProps> = ({
+  inputTokenCount,
+  setInputTokenCount,
+  totalTokenCount,
+  setTotalTokenCount,
+  conversations,
+  activeConversation,
+  totalTokenUpdateRequired,
+  setTotalTokenUpdateRequired,
+  inputTokenUpdateRequired,
+  setInputTokenUpdateRequired,
+  inputMessage,
+}) => {
   const [inputTokenLoading, setInputTokenLoading] = useState(false);
   const [totalTokenLoading, setTotalTokenLoading] = useState(false);
 

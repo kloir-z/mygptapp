@@ -23,6 +23,8 @@ type TopbarProps = {
   };
   
 const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model, setModel, activeConversation, setShowMenu, systemprompts, setSystemPrompts, setSidebarTransition, inputMessage }) => {
+  const [inputTokenCount, setInputTokenCount] = useState<number>(0);
+  const [totalTokenCount, setTotalTokenCount] = useState<number>(0);
   const [totalTokenUpdateRequired, setTotalTokenUpdateRequired] = useState(false);
   const [inputTokenUpdateRequired, setInputTokenUpdateRequired] = useState(false);
 
@@ -82,11 +84,21 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model
       </StyledButton>
       <SettingsModal show={showSettings} onClose={() => setShowSettings(false)} apiKey={apiKey} setApiKey={setApiKey} systemprompts={systemprompts} setSystemPrompts={setSystemPrompts} />
       <StyledSelect value={model} onChange={e => setModel(e.target.value)}>  
-        <StyledOption value="gpt-3.5-turbo-16k-0613">gpt3.5(16k)</StyledOption>
-        <StyledOption value="gpt-3.5-turbo-0613">gpt3.5(4k)</StyledOption>
-        <StyledOption value="gpt-4-0613">gpt4(8k)</StyledOption>
+        {(totalTokenCount + inputTokenCount < 4096 - 300) && (
+          <StyledOption value="gpt-3.5-turbo-0613">gpt3.5(4k)</StyledOption>
+        )}
+        {(totalTokenCount + inputTokenCount < 16384 - 300) && (
+          <StyledOption value="gpt-3.5-turbo-16k-0613">gpt3.5(16k)</StyledOption>
+        )}
+        {(totalTokenCount + inputTokenCount < 8192 - 300) && (
+          <StyledOption value="gpt-4-0613">gpt4(8k)</StyledOption>
+        )}
       </StyledSelect>
       <TokenCounter
+        inputTokenCount={inputTokenCount}
+        setInputTokenCount={setInputTokenCount}
+        totalTokenCount={totalTokenCount}
+        setTotalTokenCount={setTotalTokenCount}
         conversations={conversations}
         activeConversation={activeConversation}
         totalTokenUpdateRequired={totalTokenUpdateRequired}

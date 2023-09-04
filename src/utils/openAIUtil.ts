@@ -1,5 +1,6 @@
 //openAIUtils.ts
 import { ConversationData } from '../components/Conversations/types/Conversations.types';
+import debounce from 'lodash/debounce';
 
 type SendToOpenAIProps = {
   apiKey: string,
@@ -52,6 +53,8 @@ export const getAIResponse = async ({
   const decoder = new TextDecoder('utf-8');
   let aiMessageContent = '';
 
+  const debouncedSetReceivingMessage = debounce(setReceivingMessage, 10);
+
   try {
     let retries = 3;
     const read = async (): Promise<void> => {
@@ -79,7 +82,7 @@ export const getAIResponse = async ({
             const aiMessageChunk = json.choices[0]?.delta.content;
             if (typeof aiMessageChunk === 'string') {
               aiMessageContent += aiMessageChunk;
-              setReceivingMessage(aiMessageContent);
+              debouncedSetReceivingMessage(aiMessageContent);  
             }
           }
         }

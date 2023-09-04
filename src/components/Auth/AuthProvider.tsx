@@ -1,3 +1,4 @@
+//AuthProvider.tsx
 import React, { useState, useEffect, ReactNode } from 'react';
 import { getAuth, onAuthStateChanged, User, GoogleAuthProvider, signInWithRedirect } from 'firebase/auth';
 import { AuthContext } from './AuthContext';

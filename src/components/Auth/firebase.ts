@@ -31,7 +31,6 @@ const fetchUserData = async (userId?: string): Promise<FetchedUserData> => {
   return { conversations, systemPrompts };
 };
 
-
 const ensureDocExists = async (docRef: firebase.firestore.DocumentReference) => {
   const doc = await docRef.get();
   if (!doc.exists) {
@@ -77,5 +76,3 @@ const updateSystemPrompts = async (userId?: string, systemprompts: SystemPromptT
 };
 
 export { firebase, fetchUserData, updateConversations, deleteConversation, updateSystemPrompts };
-
-export default firebase; 

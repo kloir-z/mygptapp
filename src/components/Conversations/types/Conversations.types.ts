@@ -25,3 +25,8 @@ export type FetchedUserData = {
   conversations: ConversationType[];
   systemPrompts: SystemPromptType[];
 };
+
+export type ModelOption = {
+  value: string;
+  label: string;
+};

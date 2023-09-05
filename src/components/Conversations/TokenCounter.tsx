@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { getAndSetTokenCount } from '../../utils/tokenCounter';
 import { ConversationType } from './types/Conversations.types';
-import { TokenText } from './styles/Topbar.styles'
+import { TokenText } from '../styles/Topbar.styles'
 import { FaCalculator } from 'react-icons/fa';
 import { Spinner } from './Spinner'
 

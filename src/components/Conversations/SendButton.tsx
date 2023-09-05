@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane, faStop } from '@fortawesome/free-solid-svg-icons'
-import { SendButton as StyledSendButton } from './styles/MessageInput.styles'
+import { SendButton as StyledSendButton } from '../styles/MessageInput.styles'
 import { Spinner } from "../Conversations/Spinner";
 
 type SendButtonProps = {

@@ -1,6 +1,6 @@
 //Topbar.tsx
 import React, { useState, useRef, useEffect, useContext } from "react";
-import { TopbarContainer, StyledButton, StyledSelect, StyledOption, NotificationDot } from './styles/Topbar.styles';
+import { TopbarContainer, StyledButton, StyledSelect, StyledOption, NotificationDot, TopbarArea } from '../styles/Topbar.styles';
 import { ConversationType, SystemPromptType, ModelOption } from './types/Conversations.types';
 import { FaBars, FaCog, FaUser } from 'react-icons/fa';
 import SettingsModal from './SettingsModal'; 
@@ -97,47 +97,49 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model
   };
 
   return(
-    <TopbarContainer>
-      <StyledButton onClick={toggleMenu}>
-        <FaBars />
-      </StyledButton>
-      <StyledButton onClick={() => setShowSettings(true)}>
-        <FaCog />{apiKey ? null : <NotificationDot>●</NotificationDot>}
-      </StyledButton>
-      <SettingsModal show={showSettings} onClose={() => setShowSettings(false)} apiKey={apiKey} setApiKey={setApiKey} systemprompts={systemprompts} setSystemPrompts={setSystemPrompts} />
-      <StyledSelect value={model} onChange={e => handleModelChange(e.target.value)}>  
-        {availableModels.map((modelOption, index) => (
-          <StyledOption key={index} value={modelOption.value}>
-            {modelOption.label}
-          </StyledOption>
-        ))}
-      </StyledSelect>
-      <TokenCounter
-        inputTokenCount={inputTokenCount}
-        setInputTokenCount={setInputTokenCount}
-        totalTokenCount={totalTokenCount}
-        setTotalTokenCount={setTotalTokenCount}
-        conversations={conversations}
-        activeConversation={activeConversation}
-        totalTokenUpdateRequired={totalTokenUpdateRequired}
-        setTotalTokenUpdateRequired={setTotalTokenUpdateRequired}
-        inputTokenUpdateRequired={inputTokenUpdateRequired}
-        setInputTokenUpdateRequired={setInputTokenUpdateRequired}
-        inputMessage={inputMessage}
-      />
-      <div style={{ position: 'absolute', right: '0px' }}>
-      <div style={{ position: 'relative', direction: 'rtl' }}>
-        <StyledButton ref={userButtonRef} onClick={() => setShowUserMenu(!showUserMenu)}>
-          <FaUser />
+    <TopbarArea>
+      <TopbarContainer>
+        <StyledButton onClick={toggleMenu}>
+          <FaBars />
         </StyledButton>
-        {showUserMenu && (
-          <div ref={userMenuRef} style={{ position: 'absolute', bottom: 'auto', zIndex: '1000'}}>
-            <GoogleButton isSignedIn={true} onClick={handleLogout} />
-          </div>
-        )}
-      </div>
-      </div>
-    </TopbarContainer>
+        <StyledButton onClick={() => setShowSettings(true)}>
+          <FaCog />{apiKey ? null : <NotificationDot>●</NotificationDot>}
+        </StyledButton>
+        <SettingsModal show={showSettings} onClose={() => setShowSettings(false)} apiKey={apiKey} setApiKey={setApiKey} systemprompts={systemprompts} setSystemPrompts={setSystemPrompts} />
+        <StyledSelect value={model} onChange={e => handleModelChange(e.target.value)}>  
+          {availableModels.map((modelOption, index) => (
+            <StyledOption key={index} value={modelOption.value}>
+              {modelOption.label}
+            </StyledOption>
+          ))}
+        </StyledSelect>
+        <TokenCounter
+          inputTokenCount={inputTokenCount}
+          setInputTokenCount={setInputTokenCount}
+          totalTokenCount={totalTokenCount}
+          setTotalTokenCount={setTotalTokenCount}
+          conversations={conversations}
+          activeConversation={activeConversation}
+          totalTokenUpdateRequired={totalTokenUpdateRequired}
+          setTotalTokenUpdateRequired={setTotalTokenUpdateRequired}
+          inputTokenUpdateRequired={inputTokenUpdateRequired}
+          setInputTokenUpdateRequired={setInputTokenUpdateRequired}
+          inputMessage={inputMessage}
+        />
+        <div style={{ position: 'absolute', right: '0px' }}>
+        <div style={{ position: 'relative', direction: 'rtl' }}>
+          <StyledButton ref={userButtonRef} onClick={() => setShowUserMenu(!showUserMenu)}>
+            <FaUser />
+          </StyledButton>
+          {showUserMenu && (
+            <div ref={userMenuRef} style={{ position: 'absolute', bottom: 'auto', zIndex: '1000'}}>
+              <GoogleButton isSignedIn={true} onClick={handleLogout} />
+            </div>
+          )}
+        </div>
+        </div>
+      </TopbarContainer>
+    </TopbarArea>
   );
 };
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Spinner } from './Spinner'
 import { getYoutubeTranscript } from 'src/utils/openAIUtil';
 import { SystemPromptType, ConversationType, ConversationData } from './types/Conversations.types';
-import { InitialMenuContainer, StyledSelect, StyledOption, StyledInput, StyledButton } from './styles/InitialMenu.styles';
+import { InitialMenuContainer, StyledSelect, StyledOption, StyledInput, StyledButton } from '../styles/InitialMenu.styles';
 
 type InitialMenuProps = {
   systemprompts: SystemPromptType[];

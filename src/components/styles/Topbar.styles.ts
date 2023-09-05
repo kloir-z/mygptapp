@@ -1,13 +1,20 @@
 //Topbar.styles.ts
 import styled from '@emotion/styled';
 
+export const TopbarArea = styled.div`
+  width: 100%;
+  height: 2.25rem;
+  position: relative;
+`;
+
 export const TopbarContainer = styled.div`
   display: flex;
   width: 100%;
   height: 2.25rem;
-  background-color: #ffffff0a;
+  background-color: #282c34;
   align-items: center;
-  position: relative;
+  position: fixed;
+  z-index: 2000;
 `;
 
 export const StyledSelect = styled.select`

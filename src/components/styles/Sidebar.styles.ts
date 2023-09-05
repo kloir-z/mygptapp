@@ -64,7 +64,8 @@ export const Placeholder = styled.div`
 export const TitleLeft = styled.div`
   white-space: nowrap;
   overflow-x: auto;
-  display: inline-block;
+  display: flex;
+  align-items: center;
   svg {
     vertical-align: middle;
     width: 20px;

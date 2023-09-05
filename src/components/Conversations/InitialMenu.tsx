@@ -10,12 +10,6 @@ type InitialMenuProps = {
   handleUpdateConversations: (updatedConversation: ConversationType, shouldUpdateFirestore: boolean) => Promise<void>;
 };
 
-type SystemPromptActionsType = {
-    [key: string]: () => void;
-    '日本語要約': () => void;
-    '英語要約': () => void;
-  };
-
 const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversation, handleUpdateConversations }) => {
   const [showTranscriptPopup, setShowTranscriptPopup] = useState(false);
   const [youtubeUrl, setYoutubeUrl] = useState<string | null>(null);
@@ -38,7 +32,6 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
     }
   }, [activeConversation, systemprompts]);
   
-
   const handleSystemPromptSelection = async (selectedPromptId: string) => {
     setSelectedPromptId(selectedPromptId);
     if (selectedPromptId === 'none') {

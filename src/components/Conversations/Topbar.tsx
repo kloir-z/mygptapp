@@ -36,38 +36,22 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model
   const [availableModels, setAvailableModels] = useState<ModelOption[]>([]);
   const [isAutoSwitched, setIsAutoSwitched] = useState(false);
 
-  const [showApiKeyInput, setShowApiKeyInput] = useState(false);
-  const [tempApiKey, setTempApiKey] = useState(apiKey);
-  const apiKeyInputRef = useRef<HTMLDivElement | null>(null);
-  const apiKeyButtonRef = useRef<HTMLButtonElement | null>(null);
   const [showSettings, setShowSettings] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const userMenuRef = useRef<HTMLDivElement | null>(null);
   const { handleLogout } = useContext(AuthContext);
+  const userButtonRef = useRef<HTMLButtonElement | null>(null);
   
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (apiKeyButtonRef.current !== event.target && apiKeyInputRef.current && !apiKeyInputRef.current.contains(event.target as Node)) {
-        setShowApiKeyInput(false);
-        setTempApiKey(apiKey);
-      }
-    }
-  
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [apiKey]);
-
-
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        if (userButtonRef.current && userButtonRef.current.contains(event.target as Node)) {
+          return;
+        }
         setShowUserMenu(false);
       }
     }
-
+  
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -143,7 +127,7 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model
       />
       <div style={{ position: 'absolute', right: '0px' }}>
       <div style={{ position: 'relative', direction: 'rtl' }}>
-        <StyledButton onClick={() => setShowUserMenu(!showUserMenu)}>
+        <StyledButton ref={userButtonRef} onClick={() => setShowUserMenu(!showUserMenu)}>
           <FaUser />
         </StyledButton>
         {showUserMenu && (

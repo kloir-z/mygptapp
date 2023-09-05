@@ -34,6 +34,7 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model
   const [totalTokenUpdateRequired, setTotalTokenUpdateRequired] = useState(false);
   const [inputTokenUpdateRequired, setInputTokenUpdateRequired] = useState(false);
   const [availableModels, setAvailableModels] = useState<ModelOption[]>([]);
+  const [isAutoSwitched, setIsAutoSwitched] = useState(false);
 
   const [showApiKeyInput, setShowApiKeyInput] = useState(false);
   const [tempApiKey, setTempApiKey] = useState(apiKey);
@@ -87,15 +88,22 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model
   
     const isCurrentModelAvailable = newAvailableModels.some(modelOption => modelOption.value === model);
     
-    if (model === 'gpt-3.5-turbo-16k-0613' && currentTotalTokens < 4096 - 300) {
+    if (model === 'gpt-3.5-turbo-16k-0613' && currentTotalTokens < 4096 - 300 && isAutoSwitched) {
       setModel('gpt-3.5-turbo-0613');
+      setIsAutoSwitched(true); 
     } 
     else if (!isCurrentModelAvailable) {
       setModel(newAvailableModels[0]?.value || '');
+      setIsAutoSwitched(true); 
     }
   
   }, [totalTokenCount, inputTokenCount, model]);
 
+  const handleModelChange = (newModel: string) => {
+    setModel(newModel);
+    setIsAutoSwitched(false);
+  };
+  
   const toggleMenu = () => {
     setShowMenu((prevState: Boolean) => !prevState);
     setSidebarTransition(true);
@@ -113,7 +121,7 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model
         <FaCog />{apiKey ? null : <NotificationDot>●</NotificationDot>}
       </StyledButton>
       <SettingsModal show={showSettings} onClose={() => setShowSettings(false)} apiKey={apiKey} setApiKey={setApiKey} systemprompts={systemprompts} setSystemPrompts={setSystemPrompts} />
-      <StyledSelect value={model} onChange={e => setModel(e.target.value)}>  
+      <StyledSelect value={model} onChange={e => handleModelChange(e.target.value)}>  
         {availableModels.map((modelOption, index) => (
           <StyledOption key={index} value={modelOption.value}>
             {modelOption.label}

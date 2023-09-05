@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { ConversationData } from 'src/components/Conversations/types/Conversations.types';
 
-const useScroll = (messages?: ConversationData[], content?: string | null, receivingMessage?: string) => {
+const useScroll = (displayMessages?: ConversationData[], tempMessageContent?: string | null, receivingMessage?: string) => {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const [containerHeight, setContainerHeight] = useState<number>(0);
@@ -24,7 +24,7 @@ const useScroll = (messages?: ConversationData[], content?: string | null, recei
     if (scrollContainerRef.current && containerHeight != scrollContainerRef.current.scrollHeight) {
       setContainerHeight(scrollContainerRef.current.scrollHeight);
     }
-  }, [messages, content, receivingMessage]);
+  }, [displayMessages, tempMessageContent, receivingMessage]);
 
   useEffect(() => {
     if (scrollContainerRef.current) {

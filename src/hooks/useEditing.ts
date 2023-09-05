@@ -25,6 +25,7 @@ export const useEditing = ({handleUpdateConversations, activeConversation}:UseEd
   const [tempMessageContent, setTempMessageContent] = useState<string | null>(null);
 
   const onDoubleClickMessage = (messages: ConversationData[], index: number) => {
+    if (editingMessageIndex === index) return;
     setEditingMessageIndex(index);
     setTempMessageContent(messages[index]?.content || null);
   };

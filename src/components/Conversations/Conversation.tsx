@@ -32,7 +32,7 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
 
   const { editingMessageIndex, setEditingMessageIndex, tempMessageContent, onDoubleClickMessage, handleContentChange, handleConfirmEditing, handleCancelEditing, deleteMessage, editTextAreaRef } = useEditing({handleUpdateConversations, activeConversation});
   const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(apiKey, model, displayMessages, setReceivingMessage, setReceivingId, setqueuedMessageForReceivingId);
-  const { scrollToBottom, messagesEndRef, scrollContainerRef } = useScroll(displayMessages, tempMessageContent, receivingMessage);
+  const { messagesEndRef, scrollContainerRef } = useScroll(displayMessages, receivingMessage, editingMessageIndex);
   const [ showInitialMenu, setShowInitialMenu] = useState(false);
 
   const { setDebugInfo } = useDebugInfo();

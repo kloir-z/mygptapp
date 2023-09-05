@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { ConversationData } from 'src/components/Conversations/types/Conversations.types';
 
-const useScroll = (displayMessages?: ConversationData[], tempMessageContent?: string | null, receivingMessage?: string) => {
+const useScroll = (displayMessages?: ConversationData[], receivingMessage?: string, editingMessageIndex?: number | null) => {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const [containerHeight, setContainerHeight] = useState<number>(0);
@@ -17,26 +17,28 @@ const useScroll = (displayMessages?: ConversationData[], tempMessageContent?: st
       else {
         messagesEndRef.current?.scrollIntoView({ block: 'end', behavior: 'auto' });
       }
-    }, 5);
+    }, 0);
   };
 
   useEffect(() => {
-    if (scrollContainerRef.current && containerHeight != scrollContainerRef.current.scrollHeight) {
-      setContainerHeight(scrollContainerRef.current.scrollHeight);
-    }
-  }, [displayMessages, tempMessageContent, receivingMessage]);
+    setTimeout(() => {
+      if (scrollContainerRef.current && containerHeight != scrollContainerRef.current.scrollHeight) {
+        setContainerHeight(scrollContainerRef.current.scrollHeight);
+      }
+    }, 0);
+  }, [displayMessages, receivingMessage]);
 
   useEffect(() => {
     if (scrollContainerRef.current) {
       const { scrollHeight, scrollTop, clientHeight } = scrollContainerRef.current;
       const isWithinBottom = (scrollHeight - scrollTop - clientHeight) <= 80;
-      if (receivingMessage === '' || (receivingMessage && isWithinBottom)) {
+      if ((editingMessageIndex === null && receivingMessage === '') || (receivingMessage && isWithinBottom)) {
         scrollToBottom();
       }
     }
   }, [containerHeight]);
 
-  return { scrollToBottom, messagesEndRef, scrollContainerRef };
+  return { messagesEndRef, scrollContainerRef };
 };
 
 export default useScroll;

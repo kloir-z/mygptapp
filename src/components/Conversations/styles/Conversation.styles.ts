@@ -9,11 +9,10 @@ export const ConversationContainer = styled.div`
   position: relative;
   .fade-in {
     opacity: 0;
-    transition: opacity 0.4s ease-out;
   }
-
   .fade-in.show {
     opacity: 1;
+    transition: opacity 0.2s ease-out;
   }
 `;
 

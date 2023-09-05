@@ -10,7 +10,6 @@ import MessageItem from './MessageItem';
 import InitialMenu from './InitialMenu';
 import SendButton from './SendButton';
 import { useDebugInfo } from 'src/components/Debugger/DebugContext';
-import SpinnerFull from './SpinnerFull';
 import { Spinner } from './Spinner';
 
 type ConversationProps = {
@@ -75,59 +74,59 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
   return (
     <ConversationContainer>
       {isConversationLoading ? (
-        <SpinnerFull />
+        <div style={{width: '100%', height: '100%', display: 'flex', justifyContent:'center', alignItems:'center'}}><Spinner/></div>
       ) : (
         <>
-        <div className={`fade-in ${isFadedIn ? 'show' : ''}`}>
-        <MessagesContainer className="convScrollRef" ref={scrollContainerRef}>
-          {showInitialMenu && (
-            <InitialMenu
-              systemprompts={systemprompts}
-              activeConversation={activeConversation}
-              handleUpdateConversations={handleUpdateConversations}
-            />
-          )}
-          {displayMessages.map((ConversationData: ConversationData, index: number) => (
-            <MessageItem
-              key={index}
-              ConversationData={ConversationData}
-              editing={editingMessageIndex === index}
-              index={index}
-              onDoubleClick={() => onDoubleClickMessage(displayMessages, index)}
-              handleConfirmEditing={handleConfirmEditing}
-              handleCancelEditing={handleCancelEditing}
-              deleteMessage={deleteMessage}
-              tempMessageContent={tempMessageContent}
-              handleContentChange={handleContentChange}
-              editTextAreaRef={editTextAreaRef}
-            />
-          ))}
-          {receivingMessage && receivingId === activeConversation.id &&<MessageDiv role='assistant'>{receivingMessage}</MessageDiv>}
-          {showSendButton && (
-            <div style={{position: 'relative'}}>
-              <SendButton
+          <div className={`fade-in ${isFadedIn ? 'show' : ''}`}>
+            <MessagesContainer className="convScrollRef" ref={scrollContainerRef}>
+              {showInitialMenu && (
+                <InitialMenu
+                  systemprompts={systemprompts}
+                  activeConversation={activeConversation}
+                  handleUpdateConversations={handleUpdateConversations}
+                />
+              )}
+              {displayMessages.map((ConversationData: ConversationData, index: number) => (
+                <MessageItem
+                  key={index}
+                  ConversationData={ConversationData}
+                  editing={editingMessageIndex === index}
+                  index={index}
+                  onDoubleClick={() => onDoubleClickMessage(displayMessages, index)}
+                  handleConfirmEditing={handleConfirmEditing}
+                  handleCancelEditing={handleCancelEditing}
+                  deleteMessage={deleteMessage}
+                  tempMessageContent={tempMessageContent}
+                  handleContentChange={handleContentChange}
+                  editTextAreaRef={editTextAreaRef}
+                />
+              ))}
+              {receivingMessage && receivingId === activeConversation.id &&<MessageDiv role='assistant'>{receivingMessage}</MessageDiv>}
+              {showSendButton && (
+                <div style={{position: 'relative'}}>
+                  <SendButton
+                    receivingId={receivingId}
+                    awaitGetAIResponse={awaitGetAIResponse} 
+                    handleStartResponse={handleStartResponse}
+                    handleStopResponse={handleStopResponse}
+                  />
+                </div>
+              )}
+              <div className="convEndRef" ref={messagesEndRef} />
+            </MessagesContainer>
+            <InputContainer>
+              <MessageInput 
                 receivingId={receivingId}
                 awaitGetAIResponse={awaitGetAIResponse} 
                 handleStartResponse={handleStartResponse}
                 handleStopResponse={handleStopResponse}
+                apiKey={apiKey} 
+                scrollWrapperRef={scrollWrapperRef}
+                inputMessage={inputMessage}
+                setInputMessage={setInputMessage}
               />
-            </div>
-          )}
-          <div className="convEndRef" ref={messagesEndRef} />
-        </MessagesContainer>
-        <InputContainer>
-          <MessageInput 
-            receivingId={receivingId}
-            awaitGetAIResponse={awaitGetAIResponse} 
-            handleStartResponse={handleStartResponse}
-            handleStopResponse={handleStopResponse}
-            apiKey={apiKey} 
-            scrollWrapperRef={scrollWrapperRef}
-            inputMessage={inputMessage}
-            setInputMessage={setInputMessage}
-          />
-        </InputContainer>
-      </div>
+            </InputContainer>
+          </div>
         </>
       )}
     </ConversationContainer>

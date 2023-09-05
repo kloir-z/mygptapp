@@ -11,7 +11,7 @@ export const TopbarContainer = styled.div`
   display: flex;
   width: 100%;
   height: 2.25rem;
-  background-color: #282c34;
+  background-color: #343840;
   align-items: center;
   position: fixed;
   z-index: 2000;

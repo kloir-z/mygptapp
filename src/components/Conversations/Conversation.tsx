@@ -11,6 +11,7 @@ import InitialMenu from './InitialMenu';
 import SendButton from './SendButton';
 import { useDebugInfo } from 'src/components/Debugger/DebugContext';
 import SpinnerFull from './SpinnerFull';
+import { Spinner } from './Spinner';
 
 type ConversationProps = {
   activeConversation: ConversationType;
@@ -37,6 +38,7 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
   const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(apiKey, model, displayMessages, setReceivingMessage, setReceivingId, setqueuedMessageForReceivingId);
   const { messagesEndRef, scrollContainerRef } = useScroll(displayMessages, receivingMessage, editingMessageIndex);
   const [ showInitialMenu, setShowInitialMenu] = useState(false);
+  const [isFadedIn, setIsFadedIn] = useState(false);
 
   const { setDebugInfo } = useDebugInfo();
   const handleStartResponse = () => {
@@ -61,12 +63,22 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
     setIsConversationLoading(false);
   }, [activeConversation]);
 
+  useEffect(() => {
+    if (isConversationLoading) {
+      setIsFadedIn(false);
+    } else {
+      const timer = setTimeout(() => setIsFadedIn(true), 20);
+      return () => clearTimeout(timer);
+    }
+  }, [isConversationLoading]);
+
   return (
     <ConversationContainer>
       {isConversationLoading ? (
-        <SpinnerFull /> // スピナーを表示
+        <SpinnerFull />
       ) : (
         <>
+        <div className={`fade-in ${isFadedIn ? 'show' : ''}`}>
         <MessagesContainer className="convScrollRef" ref={scrollContainerRef}>
           {showInitialMenu && (
             <InitialMenu
@@ -115,6 +127,7 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
             setInputMessage={setInputMessage}
           />
         </InputContainer>
+      </div>
         </>
       )}
     </ConversationContainer>

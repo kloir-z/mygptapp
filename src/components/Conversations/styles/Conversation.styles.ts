@@ -7,6 +7,14 @@ export const ConversationContainer = styled.div`
   flex-grow: 1;
   width: 0px;
   position: relative;
+  .fade-in {
+    opacity: 0;
+    transition: opacity 0.4s ease-out;
+  }
+
+  .fade-in.show {
+    opacity: 1;
+  }
 `;
 
 export const MessagesContainer = styled.div`

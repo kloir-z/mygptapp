@@ -30,7 +30,7 @@ const useScroll = (displayMessages?: ConversationData[], tempMessageContent?: st
     if (scrollContainerRef.current) {
       const { scrollHeight, scrollTop, clientHeight } = scrollContainerRef.current;
       const isWithinBottom = (scrollHeight - scrollTop - clientHeight) <= 80;
-      if (isWithinBottom) {
+      if (receivingMessage === '' || (receivingMessage && isWithinBottom)) {
         scrollToBottom();
       }
     }

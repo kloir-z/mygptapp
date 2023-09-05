@@ -51,9 +51,8 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
   }, [activeConversation.id, receivingId]);
 
   useEffect(() => {
-    setDisplayMessages(activeConversation.revisions[0].conversation);
     setEditingMessageIndex(null);
-    scrollToBottom();
+    setDisplayMessages(activeConversation.revisions[0].conversation);
     const showMenu = !activeConversation.revisions[0].conversation.some(message => message.role === 'assistant');
     setShowInitialMenu(showMenu);
   }, [activeConversation]);

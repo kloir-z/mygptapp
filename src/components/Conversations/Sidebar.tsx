@@ -14,6 +14,7 @@ type SidebarProps = {
   setActiveConversation: React.Dispatch<React.SetStateAction<ConversationType | null>>;
   handleUpdateConversations: (updatedConversation: ConversationType) => Promise<void>;
   handleDeleteConversation: (id: string) => Promise<void>;
+  setIsConversationLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const createNewConversation = (): ConversationType => {
@@ -29,7 +30,7 @@ const createNewConversation = (): ConversationType => {
   };
 };
 
-const Sidebar: React.FC<SidebarProps> = ({ conversations, setConversations, activeConversation, setActiveConversation, handleUpdateConversations, handleDeleteConversation }) => {
+const Sidebar: React.FC<SidebarProps> = ({ conversations, setConversations, activeConversation, setActiveConversation, handleUpdateConversations, handleDeleteConversation, setIsConversationLoading }) => {
   const {
     editingTitle,
     setEditingTitle,
@@ -90,6 +91,7 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, setConversations, acti
           onClick={() => {
             if (activeConversation?.id !== conversation.id) {
               setActiveConversation(conversation);
+              setIsConversationLoading(true);
               cancelEdit();
             }
           }}

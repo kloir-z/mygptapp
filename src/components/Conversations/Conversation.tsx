@@ -10,6 +10,7 @@ import MessageItem from './MessageItem';
 import InitialMenu from './InitialMenu';
 import SendButton from './SendButton';
 import { useDebugInfo } from 'src/components/Debugger/DebugContext';
+import SpinnerFull from './SpinnerFull';
 
 type ConversationProps = {
   activeConversation: ConversationType;
@@ -25,9 +26,11 @@ type ConversationProps = {
   setqueuedMessageForReceivingId: React.Dispatch<React.SetStateAction<ConversationData | null>>;
   inputMessage: string;
   setInputMessage: React.Dispatch<React.SetStateAction<string>>;
+  isConversationLoading: boolean;
+  setIsConversationLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, apiKey, handleUpdateConversations, systemprompts, receivingId, setReceivingId, receivingMessage, setReceivingMessage, scrollWrapperRef, setqueuedMessageForReceivingId, inputMessage, setInputMessage }) => {
+const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, apiKey, handleUpdateConversations, systemprompts, receivingId, setReceivingId, receivingMessage, setReceivingMessage, scrollWrapperRef, setqueuedMessageForReceivingId, inputMessage, setInputMessage, isConversationLoading, setIsConversationLoading }) => {
   const [displayMessages, setDisplayMessages] = useState<ConversationData[]>(activeConversation.revisions[0].conversation);
 
   const { editingMessageIndex, setEditingMessageIndex, tempMessageContent, onDoubleClickMessage, handleContentChange, handleConfirmEditing, handleCancelEditing, deleteMessage, editTextAreaRef } = useEditing({handleUpdateConversations, activeConversation});
@@ -55,58 +58,65 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
     setDisplayMessages(activeConversation.revisions[0].conversation);
     const showMenu = !activeConversation.revisions[0].conversation.some(message => message.role === 'assistant');
     setShowInitialMenu(showMenu);
+    setIsConversationLoading(false);
   }, [activeConversation]);
 
   return (
     <ConversationContainer>
-      <MessagesContainer className="convScrollRef" ref={scrollContainerRef}>
-        {showInitialMenu && (
-          <InitialMenu
-            systemprompts={systemprompts}
-            activeConversation={activeConversation}
-            handleUpdateConversations={handleUpdateConversations}
-          />
-        )}
-        {displayMessages.map((ConversationData: ConversationData, index: number) => (
-          <MessageItem
-            key={index}
-            ConversationData={ConversationData}
-            editing={editingMessageIndex === index}
-            index={index}
-            onDoubleClick={() => onDoubleClickMessage(displayMessages, index)}
-            handleConfirmEditing={handleConfirmEditing}
-            handleCancelEditing={handleCancelEditing}
-            deleteMessage={deleteMessage}
-            tempMessageContent={tempMessageContent}
-            handleContentChange={handleContentChange}
-            editTextAreaRef={editTextAreaRef}
-          />
-        ))}
-        {receivingMessage && receivingId === activeConversation.id &&<MessageDiv role='assistant'>{receivingMessage}</MessageDiv>}
-        {showSendButton && (
-          <div style={{position: 'relative'}}>
-            <SendButton
-              receivingId={receivingId}
-              awaitGetAIResponse={awaitGetAIResponse} 
-              handleStartResponse={handleStartResponse}
-              handleStopResponse={handleStopResponse}
+      {isConversationLoading ? (
+        <SpinnerFull /> // スピナーを表示
+      ) : (
+        <>
+        <MessagesContainer className="convScrollRef" ref={scrollContainerRef}>
+          {showInitialMenu && (
+            <InitialMenu
+              systemprompts={systemprompts}
+              activeConversation={activeConversation}
+              handleUpdateConversations={handleUpdateConversations}
             />
-          </div>
-        )}
-        <div className="convEndRef" ref={messagesEndRef} />
-      </MessagesContainer>
-      <InputContainer>
-        <MessageInput 
-          receivingId={receivingId}
-          awaitGetAIResponse={awaitGetAIResponse} 
-          handleStartResponse={handleStartResponse}
-          handleStopResponse={handleStopResponse}
-          apiKey={apiKey} 
-          scrollWrapperRef={scrollWrapperRef}
-          inputMessage={inputMessage}
-          setInputMessage={setInputMessage}
-        />
-      </InputContainer>
+          )}
+          {displayMessages.map((ConversationData: ConversationData, index: number) => (
+            <MessageItem
+              key={index}
+              ConversationData={ConversationData}
+              editing={editingMessageIndex === index}
+              index={index}
+              onDoubleClick={() => onDoubleClickMessage(displayMessages, index)}
+              handleConfirmEditing={handleConfirmEditing}
+              handleCancelEditing={handleCancelEditing}
+              deleteMessage={deleteMessage}
+              tempMessageContent={tempMessageContent}
+              handleContentChange={handleContentChange}
+              editTextAreaRef={editTextAreaRef}
+            />
+          ))}
+          {receivingMessage && receivingId === activeConversation.id &&<MessageDiv role='assistant'>{receivingMessage}</MessageDiv>}
+          {showSendButton && (
+            <div style={{position: 'relative'}}>
+              <SendButton
+                receivingId={receivingId}
+                awaitGetAIResponse={awaitGetAIResponse} 
+                handleStartResponse={handleStartResponse}
+                handleStopResponse={handleStopResponse}
+              />
+            </div>
+          )}
+          <div className="convEndRef" ref={messagesEndRef} />
+        </MessagesContainer>
+        <InputContainer>
+          <MessageInput 
+            receivingId={receivingId}
+            awaitGetAIResponse={awaitGetAIResponse} 
+            handleStartResponse={handleStartResponse}
+            handleStopResponse={handleStopResponse}
+            apiKey={apiKey} 
+            scrollWrapperRef={scrollWrapperRef}
+            inputMessage={inputMessage}
+            setInputMessage={setInputMessage}
+          />
+        </InputContainer>
+        </>
+      )}
     </ConversationContainer>
   );
 };

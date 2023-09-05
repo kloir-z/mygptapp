@@ -25,6 +25,7 @@ const App: React.FC = () => {
   const [sidebarTransition, setSidebarTransition] = useState(false)
   const [queuedMessageForReceivingId, setqueuedMessageForReceivingId] = useState<ConversationData | null>(null);
   const [inputMessage, setInputMessage] = useState('');
+  const [isConversationLoading, setIsConversationLoading] = useState(false);
 
   const minSidebarWidth = 15;
   const maxSidebarWidth = 600;
@@ -125,6 +126,7 @@ const App: React.FC = () => {
             setActiveConversation={setActiveConversation}
             handleUpdateConversations={handleUpdateConversations}
             handleDeleteConversation={handleDeleteConversation}
+            setIsConversationLoading={setIsConversationLoading}
           />
         </SidebarContainer>
         {showMenu && (
@@ -145,6 +147,8 @@ const App: React.FC = () => {
             setqueuedMessageForReceivingId={setqueuedMessageForReceivingId}
             inputMessage={inputMessage}
             setInputMessage={setInputMessage}
+            isConversationLoading={isConversationLoading}
+            setIsConversationLoading={setIsConversationLoading}
           />
         ) : (
           <></>

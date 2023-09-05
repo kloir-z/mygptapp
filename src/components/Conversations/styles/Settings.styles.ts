@@ -57,8 +57,9 @@ export const SystemPromptTextarea = styled.textarea`
   position: relative;
   width: 70vw;
   width: 70svw;
-  max-width: 600px;
+  max-width: 900px;
   height: auto;
+  min-height: 200px;
   max-height: 40vh;
   max-height: 40svh;
   margin: 4px;

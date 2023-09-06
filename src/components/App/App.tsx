@@ -23,7 +23,7 @@ const App: React.FC = () => {
   const [apiKey, setApiKey] = useState('');
   const [sidebarWidth, setSidebarWidth] = useState(200);
   const [sidebarTransition, setSidebarTransition] = useState(false)
-  const [queuedMessageForReceivingId, setqueuedMessageForReceivingId] = useState<ConversationData | null>(null);
+  const [queuedMessageForReceivingId, setQueuedMessageForReceivingId] = useState<ConversationData | null>(null);
   const [inputMessage, setInputMessage] = useState('');
   const [isConversationLoading, setIsConversationLoading] = useState(false);
 
@@ -52,7 +52,7 @@ const App: React.FC = () => {
           handleUpdateConversations(targetConversation, queuedMessageForReceivingId.role !== 'user');
         }
       }
-      setqueuedMessageForReceivingId(null);
+      setQueuedMessageForReceivingId(null);
     }
   }, [queuedMessageForReceivingId]);
 
@@ -144,7 +144,7 @@ const App: React.FC = () => {
             receivingMessage={receivingMessage}
             setReceivingMessage={setReceivingMessage}
             scrollWrapperRef={scrollWrapperRef}
-            setqueuedMessageForReceivingId={setqueuedMessageForReceivingId}
+            setQueuedMessageForReceivingId={setQueuedMessageForReceivingId}
             inputMessage={inputMessage}
             setInputMessage={setInputMessage}
             isConversationLoading={isConversationLoading}

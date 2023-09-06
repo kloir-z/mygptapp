@@ -6,7 +6,7 @@ import { getAIResponse } from 'src/utils/openAIUtil';
 export const useAIResponse = (
   apiKey: string,
   model: string,
-  messages: ConversationData[],
+  displayMessages: ConversationData[],
   setReceivingMessage: React.Dispatch<React.SetStateAction<string>>,
   setReceivingId: React.Dispatch<React.SetStateAction<string>>,
   setQueuedMessageForReceivingId: React.Dispatch<React.SetStateAction<ConversationData | null>>,
@@ -16,7 +16,7 @@ export const useAIResponse = (
   const awaitGetAIResponse = async (inputMessage?: string): Promise<void> => {
     stopReceiving.current = false;
     setReceivingMessage('')
-    let updatedMessages = [...messages];
+    let updatedMessages = [...displayMessages];
 
     if (inputMessage) {
       updatedMessages.push({ role: 'user', content: inputMessage });

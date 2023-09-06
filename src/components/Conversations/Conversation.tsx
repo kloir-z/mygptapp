@@ -23,20 +23,20 @@ type ConversationProps = {
   receivingMessage: string;
   setReceivingMessage: React.Dispatch<React.SetStateAction<string>>;
   scrollWrapperRef: React.RefObject<HTMLDivElement>;
-  setqueuedMessageForReceivingId: React.Dispatch<React.SetStateAction<ConversationData | null>>;
+  setQueuedMessageForReceivingId: React.Dispatch<React.SetStateAction<ConversationData | null>>;
   inputMessage: string;
   setInputMessage: React.Dispatch<React.SetStateAction<string>>;
   isConversationLoading: boolean;
   setIsConversationLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, apiKey, handleUpdateConversations, systemprompts, receivingId, setReceivingId, receivingMessage, setReceivingMessage, scrollWrapperRef, setqueuedMessageForReceivingId, inputMessage, setInputMessage, isConversationLoading, setIsConversationLoading }) => {
+const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, apiKey, handleUpdateConversations, systemprompts, receivingId, setReceivingId, receivingMessage, setReceivingMessage, scrollWrapperRef, setQueuedMessageForReceivingId, inputMessage, setInputMessage, isConversationLoading, setIsConversationLoading }) => {
   const [displayMessages, setDisplayMessages] = useState<ConversationData[]>(activeConversation.revisions[0].conversation);
 
   const { editingMessageIndex, setEditingMessageIndex, tempMessageContent, onDoubleClickMessage, handleContentChange, handleConfirmEditing, handleCancelEditing, deleteMessage, editTextAreaRef } = useEditing({handleUpdateConversations, activeConversation});
-  const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(apiKey, model, displayMessages, setReceivingMessage, setReceivingId, setqueuedMessageForReceivingId);
+  const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(apiKey, model, displayMessages, setReceivingMessage, setReceivingId, setQueuedMessageForReceivingId);
   const { messagesEndRef, scrollContainerRef } = useScroll(displayMessages, receivingMessage, editingMessageIndex);
-  const [ showInitialMenu, setShowInitialMenu] = useState(false);
+  const [showInitialMenu, setShowInitialMenu] = useState(false);
   const [isFadedIn, setIsFadedIn] = useState(false);
 
   const { setDebugInfo } = useDebugInfo();
@@ -61,6 +61,11 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
     setShowInitialMenu(showMenu);
     setIsConversationLoading(false);
   }, [activeConversation]);
+
+  useEffect(() => {
+    const showMenu = !activeConversation.revisions[0].conversation.some(message => message.role === 'assistant');
+    setShowInitialMenu(showMenu);
+  }, [receivingId]);
 
   useEffect(() => {
     if (isConversationLoading) {
@@ -101,7 +106,7 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
                   editTextAreaRef={editTextAreaRef}
                 />
               ))}
-              {receivingMessage && receivingId === activeConversation.id &&<MessageDiv role='assistant'>{receivingMessage}</MessageDiv>}
+              {receivingId === activeConversation.id &&<MessageDiv role='assistant'>{receivingMessage}</MessageDiv>}
               {showSendButton && (
                 <div style={{position: 'relative'}}>
                   <SendButton

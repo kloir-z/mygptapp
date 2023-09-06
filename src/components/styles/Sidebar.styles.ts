@@ -28,24 +28,6 @@ export const ConversationItem = styled.div<{ active: boolean }>`
   }
 `;
 
-export const StyledButton = styled.button`
-  margin: 3px;
-  padding: 8px 12px;
-  font-size: 1rem;
-  border-radius: 3px;
-  border: none;
-  cursor: pointer;
-  color: #ffffffe3; 
-  background-color: #4c586a;
-  position: relative;
-  display: flex;
-  align-items: center;
-  @media (hover: hover) and (pointer: fine) {
-  &:hover {
-    background: #6a798e;
-  }}
-`;
-
 export const StyledInput = styled.input`
   font-size: 1rem;
   color: #4c586a;
@@ -61,7 +43,7 @@ export const Placeholder = styled.div`
   flex: 1;
 `;
 
-export const TitleLeft = styled.div`
+export const TitleContainer = styled.div`
   white-space: nowrap;
   overflow-x: auto;
   display: flex;
@@ -83,7 +65,7 @@ export const TitleLeft = styled.div`
   scrollbar-color: #525252 #282c34;
 `;
 
-export const TitleRight = styled.div`
+export const TitleEditIconsContainer = styled.div`
   margin-top: 8px;
   display: flex;
   flex-direction: row;

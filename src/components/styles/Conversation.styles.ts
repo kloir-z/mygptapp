@@ -21,6 +21,7 @@ export const MessagesContainer = styled.div`
   height: calc(100vh - 112px);
   height: calc(100dvh - 112px);
   overflow-y: scroll;
+  overflow-x: hidden;
 `;
 
 export const InputContainer = styled.div`

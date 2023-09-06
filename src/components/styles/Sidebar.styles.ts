@@ -13,11 +13,11 @@ export const ConversationItem = styled.div<{ active: boolean }>`
   border-radius: 4px;
   .Icon {
     font-size: 1rem;
-    transition: opacity 0.2s ease-in-out;
     background-color: #b3b3b3;
     border-radius: 3px;
     padding: 4px;
-    margin-left: 30px;
+    margin-right: 30px;
+    min-width: 1.2rem;
   }
   @media (hover: hover) {
     &:hover {

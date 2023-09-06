@@ -1,3 +1,4 @@
+//InitialMenu.tsx
 import React, { useState, useEffect } from 'react';
 import { Spinner } from './Spinner'
 import { getYoutubeTranscript } from 'src/utils/openAIUtil';
@@ -88,19 +89,32 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
 
   return (
     <InitialMenuContainer>
-      <StyledSelect value={selectedPromptId} onChange={e => handleSystemPromptSelection(e.target.value)}>
-        <StyledOption value="none">None</StyledOption>
-        {systemprompts.map(prompt => (
-          <StyledOption key={prompt.id} value={prompt.id}>{prompt.title}</StyledOption>
-        ))}
-      </StyledSelect>
+      <label>1. Select System Prompt:</label>
+      <div style={{display: 'flex', flexDirection:'row', paddingLeft: '10px'}}>
+        <StyledSelect value={selectedPromptId} onChange={e => handleSystemPromptSelection(e.target.value)}>
+            <StyledOption value="none">None</StyledOption>
+            {systemprompts.map(prompt => (
+              <StyledOption key={prompt.id} value={prompt.id}>{prompt.title}</StyledOption>
+            ))}
+        </StyledSelect>
+      </div>
+      <br></br>
       {showTranscriptPopup && (
         <>
-          <StyledInput type="text" placeholder="YouTube URL" onChange={e => setYoutubeUrl(e.target.value)} />
-          <StyledButton onClick={handleGetYtbTranscript}>GetTranscript</StyledButton>
+          <label>2. Use Youtube Transcript Get Tool:</label>
+          <div style={{display: 'flex', flexDirection:'column', paddingLeft: '10px'}}>
+            <StyledInput type="text" placeholder="YouTube URL" onChange={e => setYoutubeUrl(e.target.value)} />
+            <StyledButton 
+              onClick={handleGetYtbTranscript} 
+              disabled={loadingTranscript}
+            >
+              {loadingTranscript ? <Spinner /> : 'GetTranscript'}
+            </StyledButton>
+          </div>
+          <br></br>
         </>
       )}
-      {loadingTranscript && <Spinner />}
+      
     </InitialMenuContainer>
   );
 };

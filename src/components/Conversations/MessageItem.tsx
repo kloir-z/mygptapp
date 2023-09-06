@@ -44,7 +44,7 @@ const MessageItem: React.FC<{
           />
           <EditingText>
             Editing...
-            <FaCheck className="Icon" style={{ color: 'green' }} onClick={() => handleConfirmEditing(index)} />
+            <FaCheck className="Icon" style={{ color: 'rgb(41, 175, 0)' }} onClick={() => handleConfirmEditing(index)} />
             <FaTimes className="Icon" style={{ color: 'red' }} onClick={handleCancelEditing} />
             <FaTrash className="Icon" style={{ color: '#404040' }} onClick={() => deleteMessage(index)} />
           </EditingText>

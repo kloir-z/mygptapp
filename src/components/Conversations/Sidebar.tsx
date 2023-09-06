@@ -105,7 +105,7 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, setConversations, acti
                 onChange={(e) => setEditingTitle(e.target.value)}
               />
               <TitleRight>
-                <FaCheck className="Icon" style={{color:'rgb(0, 203, 105)'}} onClick={confirmEdit} />
+                <FaCheck className="Icon" style={{color:'rgb(41, 175, 0)'}} onClick={confirmEdit} />
                 <FaTimes className="Icon" style={{color:'red'}} onClick={cancelEdit} />
                 <FaTrash className="Icon" style={{color:'#404040'}} onClick={() => handleDeleteConversation(conversation.id)} />
               </TitleRight>

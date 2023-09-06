@@ -32,7 +32,12 @@ const useScroll = (displayMessages?: ConversationData[], receivingMessage?: stri
     if (scrollContainerRef.current) {
       const { scrollHeight, scrollTop, clientHeight } = scrollContainerRef.current;
       const isWithinBottom = (scrollHeight - scrollTop - clientHeight) <= 80;
-      if ((editingMessageIndex === null && receivingMessage === '') || (receivingMessage && isWithinBottom)) {
+      const hasAssistantMessage = displayMessages?.some(message => message.role === 'assistant');
+
+      if (
+        (editingMessageIndex === null && receivingMessage === '' && hasAssistantMessage) || 
+        (receivingMessage && isWithinBottom)
+      ) {
         scrollToBottom();
       }
     }

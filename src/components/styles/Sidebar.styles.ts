@@ -69,7 +69,7 @@ export const TitleEditIconsContainer = styled.div`
   margin-top: 8px;
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
+  justify-content: flex-start;
   padding-left: 20px;
 `;
 

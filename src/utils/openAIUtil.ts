@@ -1,5 +1,5 @@
 //openAIUtils.ts
-import { ConversationData } from '../components/Conversations/types/Conversations.types';
+import { ConversationData } from '../components/types/Conversations.types';
 import debounce from 'lodash/debounce';
 
 type SendToOpenAIProps = {

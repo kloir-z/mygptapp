@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { SystemPromptType } from './types/Conversations.types';
+import { SystemPromptType } from '../types/Conversations.types';
 import { SystemPromptSettingsContainer, StyledButton, StyledInput, StyledSelect, StyledOption, SystemPromptTextarea } from '../styles/Settings.styles';
 
 type SystemPromptSettingsProps = {

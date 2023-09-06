@@ -1,7 +1,7 @@
 //App.tsx
 import React, { useState, useContext, useEffect, useRef } from "react";
 import { AuthContext } from '../Auth/AuthContext';
-import { ConversationType, SystemPromptType, ConversationData } from '../Conversations/types/Conversations.types';
+import { ConversationType, SystemPromptType, ConversationData } from '../types/Conversations.types';
 import { fetchUserData, updateConversations, deleteConversation } from '../Auth/firebase';
 import { LoginContainer, ScrollWrapper, MainContainer, SidebarContainer } from '../styles/App.styles'
 import Topbar from '../Conversations/Topbar'

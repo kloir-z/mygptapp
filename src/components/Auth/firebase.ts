@@ -1,7 +1,7 @@
 //firebase.ts
 import { initializeApp } from 'firebase/app';
 import { getFirestore, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
-import { ConversationType, SystemPromptType, FetchedUserData } from '../Conversations/types/Conversations.types';
+import { ConversationType, SystemPromptType, FetchedUserData } from '../types/Conversations.types';
 import {initializeAuth, browserLocalPersistence, browserPopupRedirectResolver} from 'firebase/auth';
 
 const firebaseConfig = {

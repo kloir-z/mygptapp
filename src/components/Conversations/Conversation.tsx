@@ -1,6 +1,6 @@
 //Conversation.tsx
 import React, { useEffect, useState } from 'react';
-import { ConversationType, ConversationData, SystemPromptType } from './types/Conversations.types';
+import { ConversationType, ConversationData, SystemPromptType } from '../types/Conversations.types';
 import { ConversationContainer, MessagesContainer, InputContainer, MessageDiv } from '../styles/Conversation.styles'
 import { useEditing } from 'src/hooks/useEditing';
 import { useAIResponse } from 'src/hooks/useAIResponse'

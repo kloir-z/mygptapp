@@ -1,7 +1,7 @@
 //Sidebar.tsx
 import React, { useMemo, useRef, useEffect } from 'react';
 import { StyledInput, ConversationItem, StyledButton, TitleLeft, TitleRight } from '../styles/Sidebar.styles';
-import { ConversationType } from './types/Conversations.types';
+import { ConversationType } from '../types/Conversations.types';
 import { FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
 import { MdOutlineChat } from 'react-icons/md';
 import useSidebar from 'src/hooks/useSidebar';

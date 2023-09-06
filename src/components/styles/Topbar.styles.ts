@@ -15,6 +15,8 @@ export const TopbarContainer = styled.div`
   align-items: center;
   position: fixed;
   z-index: 2000;
+  top: 0px;
+  left: 0px;
 `;
 
 export const StyledSelect = styled.select`

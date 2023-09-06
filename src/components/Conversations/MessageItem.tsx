@@ -1,7 +1,9 @@
+//MessageItem.tsx
+import { useState } from 'react';
 import { ConversationData } from '../types/Conversations.types';
 import { SyntaxHighlight } from './SyntaxHighlight';
 import { FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
-import { MessageDiv, EditTextarea, EditingText } from '../styles/Conversation.styles';
+import { MessageDiv, EditTextarea, EditingText, ToggleCollapseDiv } from '../styles/Conversation.styles';
 import React, { useMemo } from 'react';
 
 const MessageItem: React.FC<{
@@ -27,32 +29,53 @@ const MessageItem: React.FC<{
   handleContentChange,
   editTextAreaRef
 }) => {
+  const toggleCollapse = () => setCollapsed(!collapsed);
+  const newLineCount = (ConversationData.content.match(/\n/g) || []).length;
+
+  const shouldDisplayToggle = (ConversationData.role === 'user' || ConversationData.role === 'system') && (ConversationData.content.length >= 600 || newLineCount >= 5);
+  const [collapsed, setCollapsed] = useState(shouldDisplayToggle);
+
   const highlightedContent = useMemo(() => SyntaxHighlight(ConversationData.content), [ConversationData.content]);
 
   return (
-    <MessageDiv
-      role={ConversationData.role}
-      onDoubleClick={onDoubleClick}
-    >
-      {editing ? (
+    <div style={{position: 'relative'}}>
+      <MessageDiv
+        role={ConversationData.role}
+        collapsed={collapsed}
+        onDoubleClick={onDoubleClick}
+      >
+        {editing ? (
+          <>
+            <EditTextarea
+              value={tempMessageContent || ''}
+              onChange={e => handleContentChange(e.target.value)}
+              rows={tempMessageContent?.split('\n').length || 1}
+              ref={editTextAreaRef}
+            />
+            <EditingText>
+              Editing...
+              <FaCheck className="Icon" style={{ color: 'rgb(41, 175, 0)' }} onClick={() => handleConfirmEditing(index)} />
+              <FaTimes className="Icon" style={{ color: 'red' }} onClick={handleCancelEditing} />
+              <FaTrash className="Icon" style={{ color: '#404040' }} onClick={() => deleteMessage(index)} />
+            </EditingText>
+          </>
+        ) : (
+          highlightedContent
+        )}
+      </MessageDiv>
+      {shouldDisplayToggle && (
         <>
-          <EditTextarea
-            value={tempMessageContent || ''}
-            onChange={e => handleContentChange(e.target.value)}
-            rows={tempMessageContent?.split('\n').length || 1}
-            ref={editTextAreaRef}
-          />
-          <EditingText>
-            Editing...
-            <FaCheck className="Icon" style={{ color: 'rgb(41, 175, 0)' }} onClick={() => handleConfirmEditing(index)} />
-            <FaTimes className="Icon" style={{ color: 'red' }} onClick={handleCancelEditing} />
-            <FaTrash className="Icon" style={{ color: '#404040' }} onClick={() => deleteMessage(index)} />
-          </EditingText>
+        <ToggleCollapseDiv 
+          role={ConversationData.role}
+          collapsed={collapsed} 
+          onClick={toggleCollapse}
+        >
+          {collapsed && '・・・・・・  Expand  ・・・・・・' || '▲ Collapse ▲'}
+        </ToggleCollapseDiv>
+        <div style={{position: 'absolute', bottom: '-1px', zIndex: '2100', width: '100%', backgroundColor: '#282c34', height: '2px'}}></div>
         </>
-      ) : (
-        highlightedContent
       )}
-    </MessageDiv>
+    </div>
   );
 };
 

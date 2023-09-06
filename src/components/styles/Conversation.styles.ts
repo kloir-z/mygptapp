@@ -31,7 +31,12 @@ export const InputContainer = styled.div`
   flex-shrink: 0;
 `;
 
-export const MessageDiv = styled.div<{role: string}>`
+type ToggleProps = { 
+  role: string; 
+  collapsed?: boolean; 
+};
+
+export const MessageDiv = styled.div<ToggleProps>`
   background-color: ${props => getColor(props.role)};
   padding: 10px;
   margin: 2px;
@@ -40,6 +45,43 @@ export const MessageDiv = styled.div<{role: string}>`
   font-size: 1rem;
   white-space: pre-wrap;
   word-break: break-word;
+  max-height: ${props => 
+    (props.role === 'user' || props.role === 'system') && props.collapsed !== undefined
+      ? (props.collapsed ? '150px' : '4000px')
+      : '4000px'
+  };
+  overflow: hidden;
+  transition: max-height 1s ease-out;
+`;
+
+export const ToggleCollapseDiv= styled.div<ToggleProps>`
+  margin: 0px 2px;
+  position: absolute;
+  bottom: 0px;
+  z-index: 2000;
+  width: calc(100% - 14px);
+  cursor: pointer;
+  background: ${props => {
+    if (props.collapsed) {
+      if (props.role === 'user') {
+        return 'linear-gradient(to bottom, rgb(76 88 106 / 10%), rgb(76 88 106))';
+      } else if (props.role === 'system') {
+        return 'linear-gradient(to bottom, rgb(26 34 44 / 10%), rgb(26 34 44))';
+      }
+    }
+    return '#00000000';
+  }};
+  height: ${props => props.collapsed ? '120px' : '15px'};
+  font-weight: ${props => props.collapsed ? 'bold' : ''};
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  font-size: ${props => props.collapsed ? '1rem' : '0.7rem'};
+  padding: ${props => props.collapsed ? '5px' : '1px'};
+  @media (hover: hover) and (pointer: fine) {
+  &:hover {
+    color: #ffffff92;
+  }}
 `;
 
 export const EditingText = styled.div`

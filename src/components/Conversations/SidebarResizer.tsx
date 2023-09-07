@@ -52,7 +52,7 @@ const SidebarResizer: React.FC<SidebarResizerProps> = ({ onResize, sidebarWidth,
       position: 'absolute',
       left: sidebarWidth - 1,
       top: '2.25rem',
-      zIndex: 1,
+      zIndex: 1500,
       }}
     />
   );

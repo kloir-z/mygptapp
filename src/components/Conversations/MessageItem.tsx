@@ -29,7 +29,14 @@ const MessageItem: React.FC<{
   handleContentChange,
   editTextAreaRef
 }) => {
-  const toggleCollapse = () => setCollapsed(!collapsed);
+  const toggleCollapse = () => {
+    setCollapsed(!collapsed);
+  
+    if (messageDivRef.current) {
+      messageDivRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   const newLineCount = (ConversationData.content.match(/\n/g) || []).length;
 
   const shouldDisplayToggle = (ConversationData.role === 'user' || ConversationData.role === 'system') && (ConversationData.content.length >= 600 || newLineCount >= 5);

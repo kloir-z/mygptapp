@@ -36,7 +36,7 @@ type ToggleProps = {
   collapsed?: boolean; 
 };
 
-export const MessageDiv = styled.div<ToggleProps>`
+export const MessageDiv = styled.div<ToggleProps & { maxHeight?: string, shouldAnimate?: boolean }>`
   background-color: ${props => getColor(props.role)};
   padding: 10px;
   margin: 2px;
@@ -47,18 +47,18 @@ export const MessageDiv = styled.div<ToggleProps>`
   word-break: break-word;
   max-height: ${props => 
     (props.role === 'user' || props.role === 'system') && props.collapsed !== undefined
-      ? (props.collapsed ? '150px' : '4000px')
-      : '4000px'
+      ? (props.collapsed ? '150px' : props.maxHeight)
+      : props.maxHeight
   };
   overflow: hidden;
-  transition: max-height 1s ease-out;
+  transition: ${props => props.shouldAnimate ? 'max-height 0.5s ease-in-out' : 'none'};
 `;
 
 export const ToggleCollapseDiv= styled.div<ToggleProps>`
   margin: 0px 2px;
   position: absolute;
-  bottom: 0px;
-  z-index: 2000;
+  bottom: -1px;
+  z-index: 1000;
   width: calc(100% - 14px);
   cursor: pointer;
   background: ${props => {
@@ -72,6 +72,7 @@ export const ToggleCollapseDiv= styled.div<ToggleProps>`
     return '#00000000';
   }};
   height: ${props => props.collapsed ? '120px' : '15px'};
+  transition: background 0.5s ease-in-out, height 0.5s ease-in-out;
   font-weight: ${props => props.collapsed ? 'bold' : ''};
   display: flex;
   align-items: flex-end;

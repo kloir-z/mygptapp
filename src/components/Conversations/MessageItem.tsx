@@ -1,5 +1,5 @@
 //MessageItem.tsx
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { ConversationData } from '../types/Conversations.types';
 import { SyntaxHighlight } from './SyntaxHighlight';
 import { FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
@@ -33,16 +33,34 @@ const MessageItem: React.FC<{
   const newLineCount = (ConversationData.content.match(/\n/g) || []).length;
 
   const shouldDisplayToggle = (ConversationData.role === 'user' || ConversationData.role === 'system') && (ConversationData.content.length >= 600 || newLineCount >= 5);
-  const [collapsed, setCollapsed] = useState(shouldDisplayToggle);
+  const [collapsed, setCollapsed] = useState(false);
+
+  const messageDivRef = useRef<HTMLDivElement>(null); 
+  const [maxHeight, setMaxHeight] = useState('10000px');
+  const [shouldAnimate, setShouldAnimate] = useState(false);
+
+  useEffect(() => {
+    if (messageDivRef.current) {
+      const height = messageDivRef.current.offsetHeight;
+      setMaxHeight(`${height}px`);
+      setCollapsed(shouldDisplayToggle);
+      setTimeout(() => {
+        setShouldAnimate(true);
+      }, 0);
+    }
+  }, []);
 
   const highlightedContent = useMemo(() => SyntaxHighlight(ConversationData.content), [ConversationData.content]);
 
   return (
     <div style={{position: 'relative'}}>
       <MessageDiv
+        ref={messageDivRef}
         role={ConversationData.role}
         collapsed={collapsed}
         onDoubleClick={onDoubleClick}
+        maxHeight={maxHeight}
+        shouldAnimate={shouldAnimate}
       >
         {editing ? (
           <>
@@ -70,9 +88,9 @@ const MessageItem: React.FC<{
           collapsed={collapsed} 
           onClick={toggleCollapse}
         >
-          {collapsed && '・・・・・・  Expand  ・・・・・・' || '▲ Collapse ▲'}
+          {collapsed && '▼ Expand ▼' || '▲ Collapse ▲'}
         </ToggleCollapseDiv>
-        <div style={{position: 'absolute', bottom: '-1px', zIndex: '2100', width: '100%', backgroundColor: '#282c34', height: '2px'}}></div>
+        <div style={{position: 'absolute', bottom: '-1px', zIndex: '1000', width: '100%', backgroundColor: '#282c34', height: '2px'}}></div>
         </>
       )}
     </div>

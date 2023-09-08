@@ -129,3 +129,38 @@ export const getYoutubeTranscript = async (youtubeUrl: string): Promise<string |
     return null;
   }
 };
+
+export const generateConversationTitle = async ({ apiKey, model, messages }: SendToOpenAIProps): Promise<string> => {
+  const firstUserMessage = messages.find(m => m.role === 'user');
+  const firstAssistantMessage = messages.find(m => m.role === 'assistant');
+
+  const trimmedUserMessage = firstUserMessage ? firstUserMessage.content.substring(0, 100) : '';
+  const trimmedAssistantMessage = firstAssistantMessage ? firstAssistantMessage.content.substring(0, 100) : '';
+
+  const newMessages = [
+    { role: 'system', content: '会話タイトル生成機として振舞ってください。以下の会話(抜粋)に適用する簡潔かつ適切なタイトルを生成して下さい。【厳守事項】必ず「タイトルのみ」をレスポンスしてください。レスポンスは鍵括弧などでくくらないでください。' },
+    { role: 'user', content: trimmedUserMessage },
+    { role: 'assistant', content: trimmedAssistantMessage },
+  ];
+
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: model,
+      messages: newMessages,
+      stream: false
+    })
+  });
+
+  const responseData = await response.json();
+  if (responseData.choices && responseData.choices[0]?.message?.content) {
+    const title = responseData.choices[0].message.content;
+    return title;
+  } else {
+    throw new Error('No content available in the API response');
+  }
+};

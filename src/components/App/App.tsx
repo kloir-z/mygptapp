@@ -10,6 +10,7 @@ import Conversation from '../Conversations/Conversation'
 import SidebarResizer from '../Conversations/SidebarResizer';
 import GoogleButton from "../Conversations/GoogleButton";
 import SpinnerFull from "../Conversations/SpinnerFull";
+import { generateConversationTitle } from "src/utils/openAIUtil"
 
 const App: React.FC = () => {
   const { user, isLoading, handleLogin } = useContext(AuthContext);
@@ -28,7 +29,7 @@ const App: React.FC = () => {
   const [isConversationLoading, setIsConversationLoading] = useState(false);
 
   const minSidebarWidth = 15;
-  const maxSidebarWidth = 600;
+  const maxSidebarWidth = 1000;
   const scrollWrapperRef = useRef(null);
 
   const handleUpdateConversations = async (updatedConversation: ConversationType, shouldUpdateFirestore: boolean = true) => {
@@ -59,12 +60,37 @@ const App: React.FC = () => {
   useEffect(() => {
     const updatedActiveConversation = conversations.find(conv => conv.id === activeConversation?.id);
     
+    // activeConversation のタイトルが "New Conversation" であり、assistant のメッセージが含まれているかチェック
+    if (updatedActiveConversation && updatedActiveConversation.title === 'New Conversation') {
+      const hasAssistantMessage = updatedActiveConversation.revisions.some(revision => 
+        revision.conversation.some(message => message.role === 'assistant')
+      );
+  
+      if (hasAssistantMessage) {
+        // generateConversationTitle を呼び出してタイトルを自動生成
+        generateConversationTitle({
+          apiKey: apiKey, 
+          model: 'gpt-3.5-turbo-0613',
+          messages: updatedActiveConversation.revisions[0].conversation
+        }).then(newTitle => {
+          if (newTitle) {
+            updatedActiveConversation.title = newTitle;
+            handleUpdateConversations(updatedActiveConversation).catch(err => {
+              console.error("Error updating the conversation:", err);
+            });
+          }
+        }).catch(err => {
+          console.error("Error generating title:", err);
+        });
+      }
+    }
+  
     if (updatedActiveConversation) { 
       setActiveConversation(updatedActiveConversation);
     } else if (!conversations.some(conv => conv.id === activeConversation?.id)) {
       setActiveConversation(null);
     }
-  }, [conversations]);
+  }, [conversations, apiKey, model]);
 
   useEffect(() => {
     if (activeConversation === null && conversations.length > 0) {

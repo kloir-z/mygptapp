@@ -33,7 +33,7 @@ const MessageItem: React.FC<{
 
   const newLineCount = (ConversationData.content.match(/\n/g) || []).length;
 
-  const shouldDisplayToggle = (ConversationData.role === 'user' || ConversationData.role === 'system') && (ConversationData.content.length >= 600 || newLineCount >= 5);
+  const shouldDisplayToggle = (ConversationData.role === 'user' || ConversationData.role === 'system') && (ConversationData.content.length >= 600 || newLineCount >= 10);
   const [collapsed, setCollapsed] = useState(false);
 
   const messageDivRef = useRef<HTMLDivElement>(null); 
@@ -69,7 +69,6 @@ const MessageItem: React.FC<{
     } else if (maxHeight !== '') {
       setMaxHeight('150px');
     }
-      console.log(maxHeight)
   }, [maxHeight]);
 
   useEffect(() => {

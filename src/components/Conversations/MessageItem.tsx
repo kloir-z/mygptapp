@@ -5,6 +5,7 @@ import { SyntaxHighlight } from './SyntaxHighlight';
 import { FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
 import { MessageDiv, EditTextarea, EditingText, ToggleCollapseDiv } from '../styles/Conversation.styles';
 import React, { useMemo } from 'react';
+import { Collapse } from '@mui/material';
 
 const MessageItem: React.FC<{
   ConversationData: ConversationData;
@@ -29,13 +30,6 @@ const MessageItem: React.FC<{
   handleContentChange,
   editTextAreaRef
 }) => {
-  const toggleCollapse = () => {
-    setCollapsed(!collapsed);
-  
-    if (messageDivRef.current) {
-      messageDivRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
 
   const newLineCount = (ConversationData.content.match(/\n/g) || []).length;
 
@@ -46,14 +40,46 @@ const MessageItem: React.FC<{
   const [maxHeight, setMaxHeight] = useState('10000px');
   const [shouldAnimate, setShouldAnimate] = useState(false);
 
-  useEffect(() => {
+  const toggleCollapse = () => {
+    if (collapsed) {
+      setMaxHeight('1500px');
+    } else {
+      if (messageDivRef.current) {
+        const height = messageDivRef.current.offsetHeight;
+        setMaxHeight(`${height}px`);
+      }
+      setTimeout(() => {
+        setMaxHeight('');
+      }, 700);
+    }
+  
     if (messageDivRef.current) {
-      const height = messageDivRef.current.offsetHeight;
-      setMaxHeight(`${height}px`);
-      setCollapsed(shouldDisplayToggle);
+      messageDivRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  useEffect(() => {
+    if (maxHeight === '150px') {
+      setCollapsed(true);
+    } else if (maxHeight === '1500px') {
+      setCollapsed(false);
+      setTimeout(() => {
+        setMaxHeight('');
+      }, 510);
+    } else if (maxHeight !== '') {
+      setMaxHeight('150px');
+    }
+      console.log(maxHeight)
+  }, [maxHeight]);
+
+  useEffect(() => {
+    if (messageDivRef.current && shouldDisplayToggle) {
+      setMaxHeight(`150px`);
       setTimeout(() => {
         setShouldAnimate(true);
       }, 0);
+    } else {
+      setMaxHeight('')
     }
   }, []);
 

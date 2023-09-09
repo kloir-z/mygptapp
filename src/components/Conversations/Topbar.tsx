@@ -105,7 +105,14 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model
         <StyledButton onClick={() => setShowSettings(true)}>
           <FaCog />{apiKey ? null : <NotificationDot>●</NotificationDot>}
         </StyledButton>
-        <SettingsModal show={showSettings} onClose={() => setShowSettings(false)} apiKey={apiKey} setApiKey={setApiKey} systemprompts={systemprompts} setSystemPrompts={setSystemPrompts} />
+        <SettingsModal
+          show={showSettings}
+          onClose={() => setShowSettings(false)}
+          apiKey={apiKey}
+          setApiKey={setApiKey}
+          systemprompts={systemprompts}
+          setSystemPrompts={setSystemPrompts}
+        />
         <StyledSelect value={model} onChange={e => handleModelChange(e.target.value)}>  
           {availableModels.map((modelOption, index) => (
             <StyledOption key={index} value={modelOption.value}>

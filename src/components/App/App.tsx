@@ -29,7 +29,7 @@ const App: React.FC = () => {
   const [isConversationLoading, setIsConversationLoading] = useState(false);
 
   const minSidebarWidth = 15;
-  const maxSidebarWidth = 1000;
+  const maxSidebarWidth = 1500;
   const scrollWrapperRef = useRef(null);
 
   const handleUpdateConversations = async (updatedConversation: ConversationType, shouldUpdateFirestore: boolean = true) => {

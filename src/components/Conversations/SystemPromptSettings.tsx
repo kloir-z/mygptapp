@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { SystemPromptType } from '../types/Conversations.types';
-import { SystemPromptSettingsContainer, StyledButton, StyledInput, StyledSelect, StyledOption, SystemPromptTextarea } from '../styles/Settings.styles';
+import { SystemPromptSettingsContainer, StyledButton, StyledInput, StyledSelect, StyledOption, SystemPromptTextarea } from '../styles/SettingsModal.styles';
 
 type SystemPromptSettingsProps = {
   systemprompts: SystemPromptType[];
@@ -85,9 +85,9 @@ const SystemPromptSettings: React.FC<SystemPromptSettingsProps> = ({ systempromp
       <label>Edit Content:</label>
         <SystemPromptTextarea placeholder="None" value={content} onChange={(e) => setContent(e.target.value)} rows={content.split('\n').length || 1} ref={textAreaRef} />
         <div>
-        <StyledButton disabled={!canCreate} onClick={handleCreate}>Create</StyledButton>
-        <StyledButton disabled={!canUpdate} onClick={handleUpdate}>Update</StyledButton>
-        <StyledButton disabled={selectedPromptIndex === null} onClick={handleDelete}>Delete</StyledButton>
+          <StyledButton disabled={!canCreate} onClick={handleCreate}>Create</StyledButton>
+          <StyledButton disabled={!canUpdate} onClick={handleUpdate}>Update</StyledButton>
+          <StyledButton disabled={selectedPromptIndex === null} onClick={handleDelete}>Delete</StyledButton>
         </div>
     </SystemPromptSettingsContainer>
   );

@@ -3,7 +3,7 @@ import { AuthContext } from '../Auth/AuthContext';
 import SystemPromptSettings from './SystemPromptSettings'; 
 import { SystemPromptType } from '../types/Conversations.types';
 import { updateSystemPrompts  } from '../Auth/firebase';
-import { StyledButton, StyledInput } from '../styles/Settings.styles';
+import { Overlay, ModalContainer, CloseButton, StatusLabel, StyledButton, StyledInput } from '../styles/SettingsModal.styles';
 
 type SettingsModalProps = {
   show: boolean;
@@ -17,7 +17,16 @@ type SettingsModalProps = {
 const SettingsModal: React.FC<SettingsModalProps> = ({ show, onClose, apiKey, setApiKey, systemprompts, setSystemPrompts }) => {
   const { user } = useContext(AuthContext);
   const [tempApiKey, setTempApiKey] = useState(apiKey);
+  const [fadeStatus, setFadeStatus] = useState<'in' | 'out'>('in');
 
+  const handleClose = () => {
+    setFadeStatus('out');
+    setTimeout(() => {
+      setFadeStatus('in');
+      onClose();
+    }, 210);
+  };
+    
   const handleOkClick = () => {
     setApiKey(tempApiKey);
   };
@@ -29,12 +38,12 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ show, onClose, apiKey, se
 
   return (
     show ? 
-    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000 }} onMouseDown={onClose}>
-      <div style={{ position: 'relative', background: '#282c34', padding: '20px', border: 'solid 1px rgb(83 87 97)', borderRadius: '5px', fontSize: '1rem' }} onMouseDown={e => e.stopPropagation()}>
-        <div style={{ position: 'absolute', top: '0px', right: '10px', cursor: 'pointer', fontSize: '1.7rem'}} onClick={onClose}>×</div>
+    <Overlay fadeStatus={fadeStatus} onMouseDown={handleClose}>
+      <ModalContainer fadeStatus={fadeStatus} onMouseDown={e => e.stopPropagation()}>
+        <CloseButton onClick={handleClose}>×</CloseButton>
         <form>
           <label>Set your OpenAI API key here.</label><br></br>
-          <label style={{ color: apiKey ? 'green' : 'red' }}>●</label>
+          <StatusLabel active={Boolean(apiKey)}>●</StatusLabel>
           <StyledInput 
             type="password" 
             value={tempApiKey}
@@ -49,8 +58,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ show, onClose, apiKey, se
           systemprompts={systemprompts}
           onUpdate={handleUpdateSystemPrompts}
         />
-      </div>
-    </div> : null
+        </ModalContainer>
+    </Overlay> : null
   );
 };
 

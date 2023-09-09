@@ -71,14 +71,14 @@ export const ToggleCollapseDiv= styled.div<ToggleProps>`
     }
     return '#00000000';
   }};
-  height: ${props => props.collapsed ? '120px' : '15px'};
+  height: ${props => props.collapsed ? '120px' : '40px'};
   transition: background 0.5s ease-in-out, height 0.5s ease-in-out;
   font-weight: ${props => props.collapsed ? 'bold' : ''};
   display: flex;
   align-items: flex-end;
   justify-content: center;
   font-size: ${props => props.collapsed ? '1rem' : '0.7rem'};
-  padding: ${props => props.collapsed ? '5px' : '1px'};
+  padding: ${props => props.collapsed ? '10px' : '2px'};
   @media (hover: hover) and (pointer: fine) {
   &:hover {
     color: #ffffff92;

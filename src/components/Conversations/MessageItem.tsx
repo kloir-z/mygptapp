@@ -120,7 +120,7 @@ const MessageItem: React.FC<{
           collapsed={collapsed} 
           onClick={toggleCollapse}
         >
-          {collapsed && '▼ Expand ▼' || '▲ Collapse ▲'}
+          {collapsed && '▼' || '▲'}
         </ToggleCollapseDiv>
         <div style={{position: 'absolute', bottom: '-1px', zIndex: '1000', width: '100%', backgroundColor: '#282c34', height: '2px'}}></div>
         </>

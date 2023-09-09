@@ -38,7 +38,7 @@ ReactDOM.render(
             scrollbar-color: #525252 #282c34;
           }
           body {
-            max-width: 1800px;
+            /* max-width: 1800px; */
             margin: 0;
             display: flex;
             flex-direction: column;

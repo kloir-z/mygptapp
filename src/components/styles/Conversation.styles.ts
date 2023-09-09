@@ -59,7 +59,7 @@ export const ToggleCollapseDiv= styled.div<ToggleProps>`
   position: absolute;
   bottom: -1px;
   z-index: 1000;
-  width: calc(100% - 14px);
+  width: calc(100% - 26px);
   cursor: pointer;
   background: ${props => {
     if (props.collapsed) {

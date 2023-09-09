@@ -65,4 +65,5 @@ export const SendButton = styled.button`
     background: rgba(70, 82, 92, 0.5);
     cursor: not-allowed;
   }
+  z-index: 1100;
 `;

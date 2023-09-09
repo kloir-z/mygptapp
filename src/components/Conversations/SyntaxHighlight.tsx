@@ -27,14 +27,25 @@ const customH1: CSSProperties = {
 };
 const customH2: CSSProperties = {
   whiteSpace: 'normal',
-  margin: '-4px 0px -4px 10px'
+  margin: '2px 0px -15px 10px'
 };
 const customH3: CSSProperties = {
   whiteSpace: 'normal',
-  margin: '-4px 0px -4px 20px'
+  margin: '2px 0px -15px 20px'
 };
 const customulol: CSSProperties = {
   whiteSpace: 'normal',
+  margin: '0px 0px 0px 0px'
+};
+const customTable: CSSProperties = {
+  borderCollapse: 'collapse',
+};
+const customThead: CSSProperties = {
+  backgroundColor: 'rgba(0, 0, 0, 0.214)',
+};
+const customThTd: CSSProperties = {
+  border: '1px solid rgb(200, 200, 200)',
+  padding: '3px 10px',
   margin: '0px 0px 0px 0px'
 };
 const commonStylePrewrap: CSSProperties = {
@@ -61,12 +72,12 @@ const components: Components = {
   ul: ({ node, ...props }) => <ul style={customulol} {...props} />,
   li: ({ node, ...props }) => <li style={commonStyle} {...props} />,
   blockquote: ({ node, ...props }) => <blockquote style={commonStyle} {...props} />,
-  table: ({ node, ...props }) => <table style={commonStyle} {...props} />,
-  thead: ({ node, ...props }) => <thead style={commonStyle} {...props} />,
+  table: ({ node, ...props }) => <table style={customTable} {...props} />,
+  thead: ({ node, ...props }) => <thead style={customThead} {...props} />,
   tbody: ({ node, ...props }) => <tbody style={commonStyle} {...props} />,
   tr: ({ node, ...props }) => <tr style={commonStyle} {...props} />,
-  th: ({ node, ...props }) => <th style={commonStyle} {...props} />,
-  td: ({ node, ...props }) => <td style={commonStyle} {...props} />
+  th: ({ node, ...props }) => <th style={customThTd} {...props} />,
+  td: ({ node, ...props }) => <td style={customThTd} {...props} />
 };
 
 const codeRegex = /```(\w+)?\n([\s\S]+?)```/g;

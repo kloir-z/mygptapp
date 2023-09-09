@@ -130,6 +130,28 @@ export const getYoutubeTranscript = async (youtubeUrl: string): Promise<string |
   }
 };
 
+export const getMarkdownContent = async (targetUrl: string): Promise<string | null> => {
+  const endpoint = "https://asia-northeast2-my-pj-20230703.cloudfunctions.net/get_txt_from_url"; 
+  const params = { url: targetUrl };
+
+  try {
+    console.log(encodeURIComponent(params.url))
+    const response = await fetch(`${endpoint}?url=${encodeURIComponent(params.url)}`);
+
+    if (response.status === 200) {
+      const data = await response.json();
+      const content = data['content'];
+
+      return content;
+    } else {
+      return `Error: ${response.status}, ${response.statusText}`;
+    }
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
 export const generateConversationTitle = async ({ apiKey, model, messages }: SendToOpenAIProps): Promise<string> => {
   const firstUserMessage = messages.find(m => m.role === 'user');
   const firstAssistantMessage = messages.find(m => m.role === 'assistant');

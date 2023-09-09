@@ -1,7 +1,7 @@
 //InitialMenu.tsx
 import React, { useState, useEffect } from 'react';
 import { Spinner } from './Spinner'
-import { getYoutubeTranscript } from 'src/utils/openAIUtil';
+import { getYoutubeTranscript, getMarkdownContent } from 'src/utils/openAIUtil';
 import { SystemPromptType, ConversationType, ConversationData } from '../types/Conversations.types';
 import { InitialMenuContainer, StyledSelect, StyledOption, StyledInput, StyledButton } from '../styles/InitialMenu.styles';
 
@@ -13,21 +13,25 @@ type InitialMenuProps = {
 
 const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversation, handleUpdateConversations }) => {
   const [showTranscriptPopup, setShowTranscriptPopup] = useState(false);
-  const [youtubeUrl, setYoutubeUrl] = useState<string | null>(null);
-  const [loadingTranscript, setLoadingTranscript] = useState(false);
+  const [showGetMdTxtPopup, setShowGetMdTxtPopup] = useState(false);
+  const [targetUrl, setTargetUrl] = useState<string | null>(null);
+  const [loadingContentFetch, setLoadingContentFetch] = useState(false);
   const [selectedPromptId, setSelectedPromptId] = useState<string>("none");
 
   useEffect(() => {
     setSelectedPromptId("none");
     setShowTranscriptPopup(false); 
+    setShowGetMdTxtPopup(false);
     if (activeConversation.revisions[0].conversation[0]?.role === 'system') {
       const systemContent = activeConversation.revisions[0].conversation[0].content;
       const matchingPrompt = systemprompts.find(prompt => prompt.content === systemContent);
       
       if (matchingPrompt) {
         setSelectedPromptId(matchingPrompt.id);
-        if (matchingPrompt.title === '日本語要約') {
+        if (matchingPrompt.title === 'Youtube要約') {
           setShowTranscriptPopup(true);
+        } else if (matchingPrompt.title === 'URL要約') {
+          setShowGetMdTxtPopup(true);
         }
       }
     }
@@ -68,20 +72,21 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
       await handleUpdateConversations(updatedConversation, false);
     }
   };
+  type FetchFunctionType = (url: string) => Promise<string | null>;
 
-  const handleGetYtbTranscript = async () => {
-    if (youtubeUrl) {
-      setLoadingTranscript(true);
-      const transcript = await getYoutubeTranscript(youtubeUrl);
-      if (transcript) {
-        const updatedMessages = [...activeConversation.revisions[0].conversation, { content: transcript, role: 'user' }];
+  const handleContentFetch = async (fetchFunction: FetchFunctionType, contentUrl: string | null, setLoading: React.Dispatch<React.SetStateAction<boolean>>) => {
+    if (contentUrl) {
+      setLoading(true);
+      const fetchedContent = await fetchFunction(contentUrl);
+      if (fetchedContent) {
+        const updatedMessages = [...activeConversation.revisions[0].conversation, { content: fetchedContent, role: 'user' }];
         const updatedConversation = {
           ...activeConversation,
           revisions: [
             { revision: '0', conversation: updatedMessages },
           ],
         };
-        setLoadingTranscript(false);
+        setLoading(false);
         await handleUpdateConversations(updatedConversation, false);
       }
     }
@@ -103,18 +108,34 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
         <>
           <label>2. Use Youtube Transcript Get Tool:</label>
           <div style={{display: 'flex', flexDirection:'column', paddingLeft: '10px'}}>
-            <StyledInput type="text" placeholder="YouTube URL" onChange={e => setYoutubeUrl(e.target.value)} />
+            <StyledInput type="text" placeholder="YouTube URL" onChange={e => setTargetUrl(e.target.value)} />
             <StyledButton 
-              onClick={handleGetYtbTranscript} 
-              disabled={loadingTranscript}
+              onClick={() => handleContentFetch(getYoutubeTranscript, targetUrl, setLoadingContentFetch)} 
+              disabled={loadingContentFetch}
             >
-              {loadingTranscript ? <Spinner /> : 'GetTranscript'}
+              {loadingContentFetch ? <Spinner /> : 'Get Content'}
             </StyledButton>
           </div>
           <br></br>
         </>
       )}
       
+      {showGetMdTxtPopup && (
+        <>
+          <label>2. Use Get Markdown Text from URL Tool:</label>
+          <div style={{display: 'flex', flexDirection:'column', paddingLeft: '10px'}}>
+            <StyledInput type="text" placeholder="URL" onChange={e => setTargetUrl(e.target.value)} />
+            <StyledButton 
+              onClick={() => handleContentFetch(getMarkdownContent, targetUrl, setLoadingContentFetch)} 
+              disabled={loadingContentFetch}
+            >
+              {loadingContentFetch ? <Spinner /> : 'Get Content'}
+            </StyledButton>
+          </div>
+          <br></br>
+        </>
+      )}
+
     </InitialMenuContainer>
   );
 };

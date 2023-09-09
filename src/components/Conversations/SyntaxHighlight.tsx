@@ -51,6 +51,7 @@ const customThTd: CSSProperties = {
 const commonStylePrewrap: CSSProperties = {
   whiteSpace: 'pre-wrap',
   margin: '0px',
+  paddingLeft: '20px',
   fontFamily: "MeiryoUI,-apple-system,BlinkMacSystemFont,'Roboto',sans-serif"
 };
 

@@ -54,7 +54,7 @@ export const MessageDiv = styled.div<ToggleProps & { maxHeight?: string, shouldA
   transition: ${props => props.shouldAnimate ? 'max-height 0.5s ease-in-out' : 'none'};
 `;
 
-export const ToggleCollapseDiv= styled.div<ToggleProps>`
+export const ToggleCollapseBarBottom= styled.div<ToggleProps>`
   margin: 0px 2px;
   position: absolute;
   bottom: -1px;
@@ -79,6 +79,26 @@ export const ToggleCollapseDiv= styled.div<ToggleProps>`
   justify-content: center;
   font-size: ${props => props.collapsed ? '1rem' : '0.7rem'};
   padding: ${props => props.collapsed ? '10px' : '2px'};
+  @media (hover: hover) and (pointer: fine) {
+  &:hover {
+    color: #ffffff92;
+  }}
+`;
+
+export const ToggleCollapseButton= styled.div`
+  margin: 0px;
+  position: absolute;
+  top: 0px;
+  right: 6px;
+  z-index: 1000;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  background: '#00000000';
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 4px;
   @media (hover: hover) and (pointer: fine) {
   &:hover {
     color: #ffffff92;

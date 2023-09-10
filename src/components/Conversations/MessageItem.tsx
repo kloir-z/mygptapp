@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from 'react';
 import { ConversationData } from '../types/Conversations.types';
 import { SyntaxHighlight } from './SyntaxHighlight';
 import { FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
-import { MessageDiv, EditTextarea, EditingText, ToggleCollapseDiv } from '../styles/Conversation.styles';
+import { MessageDiv, EditTextarea, EditingText, ToggleCollapseBarBottom, ToggleCollapseButton } from '../styles/Conversation.styles';
 import React, { useMemo } from 'react';
 import { Collapse } from '@mui/material';
 
@@ -129,13 +129,21 @@ const MessageItem: React.FC<{
       </MessageDiv>
       {shouldDisplayToggle && (
         <>
-        <ToggleCollapseDiv 
+        {!collapsed && 
+          <ToggleCollapseButton 
+            role={ConversationData.role}
+            onClick={toggleCollapse}
+          >
+            ▲
+          </ToggleCollapseButton>
+        }
+        <ToggleCollapseBarBottom 
           role={ConversationData.role}
           collapsed={collapsed} 
           onClick={toggleCollapse}
         >
           {collapsed && '▼' || '▲'}
-        </ToggleCollapseDiv>
+        </ToggleCollapseBarBottom>
         <div style={{position: 'absolute', bottom: '-1px', zIndex: '1000', width: '100%', backgroundColor: '#282c34', height: '2px'}}></div>
         </>
       )}

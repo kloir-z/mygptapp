@@ -59,27 +59,41 @@ const MessageItem: React.FC<{
   };
 
   useEffect(() => {
+    let timer: NodeJS.Timeout;
     if (maxHeight === '150px') {
       setCollapsed(true);
     } else if (maxHeight === '1500px') {
       setCollapsed(false);
-      setTimeout(() => {
+      timer = setTimeout(() => {
         setMaxHeight('');
       }, 510);
     } else if (maxHeight !== '') {
       setMaxHeight('150px');
     }
+    
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
   }, [maxHeight]);
 
   useEffect(() => {
+    let timer: NodeJS.Timeout;
     if (messageDivRef.current && shouldDisplayToggle) {
       setMaxHeight(`150px`);
-      setTimeout(() => {
+      timer = setTimeout(() => {
         setShouldAnimate(true);
       }, 0);
     } else {
       setMaxHeight('')
     }
+    
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
   }, []);
 
   const highlightedContent = useMemo(() => SyntaxHighlight(ConversationData.content), [ConversationData.content]);

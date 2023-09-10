@@ -84,7 +84,7 @@ const MessageItem: React.FC<{
       setMaxHeight(`150px`);
       timer = setTimeout(() => {
         setShouldAnimate(true);
-      }, 0);
+      }, 10);
     } else {
       setMaxHeight('')
     }

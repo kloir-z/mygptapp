@@ -20,6 +20,15 @@ const useScroll = (displayMessages?: ConversationData[], receivingMessage?: stri
     }, 0);
   };
 
+  const scrollToTop = () => {
+    setTimeout(() => {
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.scrollTop = 0;
+        window.scrollTo(0, 0);
+      }
+    }, 0);
+  };
+  
   useEffect(() => {
     setTimeout(() => {
       if (scrollContainerRef.current && containerHeight != scrollContainerRef.current.scrollHeight) {
@@ -43,7 +52,7 @@ const useScroll = (displayMessages?: ConversationData[], receivingMessage?: stri
     }
   }, [containerHeight]);
 
-  return { messagesEndRef, scrollContainerRef };
+  return { messagesEndRef, scrollContainerRef, scrollToTop, scrollToBottom };
 };
 
 export default useScroll;

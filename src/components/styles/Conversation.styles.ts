@@ -22,6 +22,7 @@ export const MessagesContainer = styled.div`
   height: calc(100dvh - 112px);
   overflow-y: scroll;
   overflow-x: hidden;
+  scroll-behavior: smooth;
 `;
 
 export const InputContainer = styled.div`
@@ -38,7 +39,7 @@ type ToggleProps = {
 
 export const MessageDiv = styled.div<ToggleProps & { maxHeight?: string, shouldAnimate?: boolean }>`
   background-color: ${props => getColor(props.role)};
-  padding: 10px;
+  padding: 20px;
   margin: 2px;
   text-align: left;
   font-family: MeiryoUI, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
@@ -106,9 +107,9 @@ export const ToggleCollapseButton= styled.div`
 `;
 
 export const EditingText = styled.div`
-  position: absolute;
-  right: 10px;
-  top: 2px;
+  position: fixed;
+  right: 57px;
+  top: 36px;
   margin: 0px;
   font-size: 1rem;
   color: rgb(12 12 12);

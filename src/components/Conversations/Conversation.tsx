@@ -9,6 +9,7 @@ import MessageInput from './MessageInput';
 import MessageItem from './MessageItem';
 import InitialMenu from './InitialMenu';
 import SendButton from './SendButton';
+import ScrollControlButtons from './ScrollControlButtons'; 
 import { useDebugInfo } from 'src/components/Debugger/DebugContext';
 import { Spinner } from './Spinner';
 
@@ -35,7 +36,7 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
 
   const { editingMessageIndex, setEditingMessageIndex, tempMessageContent, onDoubleClickMessage, handleContentChange, handleConfirmEditing, handleCancelEditing, deleteMessage, editTextAreaRef } = useEditing({handleUpdateConversations, activeConversation});
   const { awaitGetAIResponse, handleStopReceiving } = useAIResponse(apiKey, model, displayMessages, setReceivingMessage, setReceivingId, setQueuedMessageForReceivingId);
-  const { messagesEndRef, scrollContainerRef } = useScroll(displayMessages, receivingMessage, editingMessageIndex);
+  const { messagesEndRef, scrollContainerRef, scrollToTop, scrollToBottom } = useScroll(displayMessages, receivingMessage, editingMessageIndex);
   const [showInitialMenu, setShowInitialMenu] = useState(false);
   const [isFadedIn, setIsFadedIn] = useState(false);
 
@@ -118,6 +119,12 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
                 </div>
               )}
               <div className="convEndRef" ref={messagesEndRef} />
+              <ScrollControlButtons
+                scrollToTop={scrollToTop}
+                scrollToBottom={scrollToBottom}
+                scrollContainerRef={scrollContainerRef}
+                messagesEndRef={messagesEndRef}
+              />
             </MessagesContainer>
             <InputContainer>
               <MessageInput 

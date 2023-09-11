@@ -40,6 +40,7 @@ type ToggleProps = {
 export const MessageDiv = styled.div<ToggleProps & { maxHeight?: string, shouldAnimate?: boolean }>`
   background-color: ${props => getColor(props.role)};
   padding: 20px;
+  padding-left: 8px;
   margin: 2px;
   text-align: left;
   font-family: MeiryoUI, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;

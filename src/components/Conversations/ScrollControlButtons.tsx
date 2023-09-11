@@ -25,6 +25,11 @@ const ScrollControlButtons: React.FC<ScrollControlButtonsProps> = ({ scrollToTop
   const handleContainerMouseOver = () => setContainerHovered(true);
   const handleContainerMouseOut = () => setContainerHovered(false);
 
+  interface CustomWindow extends Window { MSStream?: any}
+  const customWindow = window as CustomWindow;
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !customWindow.MSStream;
+  
+
   const throttledSetContainerHovered = useRef(
     _.throttle(() => setContainerHovered(true), 50)
   ).current;
@@ -52,7 +57,7 @@ const ScrollControlButtons: React.FC<ScrollControlButtonsProps> = ({ scrollToTop
 
         scrollTimer = setTimeout(() => {
           setContainerHovered(false);
-        }, 300); // 300ミリ秒後にスクロールが止まっていれば containerHovered を false に設定
+        }, 200); // 300ミリ秒後にスクロールが止まっていれば containerHovered を false に設定
       };
   
       checkScroll();
@@ -73,10 +78,9 @@ const ScrollControlButtons: React.FC<ScrollControlButtonsProps> = ({ scrollToTop
     <div 
       style={{ 
         position: 'fixed', 
-        top: '33%', 
-        right: '16px', 
+        top: '70svh', 
+        right: isIOS ? '4px' : '16px',
         zIndex: 1000,
-        height: '350px',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',

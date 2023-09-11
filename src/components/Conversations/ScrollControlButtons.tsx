@@ -15,6 +15,7 @@ const ScrollControlButtons: React.FC<ScrollControlButtonsProps> = ({ scrollToTop
   const [bottomHovered, setBottomHovered] = useState(false);
   const [containerHovered, setContainerHovered] = useState(false);
   const [showButtons, setShowButtons] = useState(false);
+  const [mouseIsMoving, setMouseIsMoving] = useState(false);
 
   const handleTopMouseOver = () => setTopHovered(true);
   const handleTopMouseOut = () => setTopHovered(false);
@@ -72,6 +73,26 @@ const ScrollControlButtons: React.FC<ScrollControlButtonsProps> = ({ scrollToTop
     }
   }, [scrollContainerRef, throttledSetContainerHovered, messagesEndRef]);
 
+  useEffect(() => {
+    let mouseMoveTimer: NodeJS.Timeout | null = null;
+
+    const handleMouseMove = () => {
+      setMouseIsMoving(true);
+      if (mouseMoveTimer) {
+        clearTimeout(mouseMoveTimer);
+      }
+      mouseMoveTimer = setTimeout(() => {
+        setMouseIsMoving(false);
+      }, 250); // 250ミリ秒後にマウスが動いていなければ mouseIsMoving を false に設定
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+
   if (!showButtons) return null;
 
   return (
@@ -92,7 +113,7 @@ const ScrollControlButtons: React.FC<ScrollControlButtonsProps> = ({ scrollToTop
         style={{ 
           cursor: 'pointer', 
           marginBottom: '10px', 
-          opacity: topHovered ? 1 : (containerHovered ? 0.6 : 0.1),
+          opacity: topHovered && mouseIsMoving ? 1 : (containerHovered && mouseIsMoving ? 0.4 : 0.1),
           transition: 'opacity 0.3s ease'
         }} 
         onClick={scrollToTop}
@@ -106,7 +127,7 @@ const ScrollControlButtons: React.FC<ScrollControlButtonsProps> = ({ scrollToTop
       <div 
         style={{ 
           cursor: 'pointer', 
-          opacity: bottomHovered ? 1 : (containerHovered ? 0.6 : 0.1),
+          opacity: bottomHovered && mouseIsMoving ? 1 : (containerHovered && mouseIsMoving ? 0.4 : 0.1),
           transition: 'opacity 0.3s ease'
         }} 
         onClick={scrollToBottom}

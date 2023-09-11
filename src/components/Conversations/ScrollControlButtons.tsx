@@ -57,7 +57,7 @@ const ScrollControlButtons: React.FC<ScrollControlButtonsProps> = ({ scrollToTop
 
         scrollTimer = setTimeout(() => {
           setContainerHovered(false);
-        }, 200); // 300ミリ秒後にスクロールが止まっていれば containerHovered を false に設定
+        }, 200); // 200ミリ秒後にスクロールが止まっていれば containerHovered を false に設定
       };
   
       checkScroll();
@@ -78,7 +78,7 @@ const ScrollControlButtons: React.FC<ScrollControlButtonsProps> = ({ scrollToTop
     <div 
       style={{ 
         position: 'fixed', 
-        top: '70svh', 
+        top: '45svh', 
         right: isIOS ? '4px' : '16px',
         zIndex: 1000,
         display: 'flex',

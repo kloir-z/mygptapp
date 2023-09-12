@@ -3,9 +3,9 @@ import { useState, useRef, useEffect } from 'react';
 import { ConversationData } from '../types/Conversations.types';
 import { SyntaxHighlight } from './SyntaxHighlight';
 import { FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
-import { MessageDiv, EditTextarea, EditingText, ToggleCollapseBarBottom, ToggleCollapseButton } from '../styles/Conversation.styles';
+import { MessageDiv, EditTextarea, EditingText, ToggleCollapseBarBottom, ToggleCollapseButton, WakatiButton } from '../styles/Conversation.styles';
 import React, { useMemo } from 'react';
-import { Collapse } from '@mui/material';
+import { WakachiModal } from './WakachiModal';
 
 const MessageItem: React.FC<{
   ConversationData: ConversationData;
@@ -39,7 +39,8 @@ const MessageItem: React.FC<{
   const messageDivRef = useRef<HTMLDivElement>(null); 
   const [maxHeight, setMaxHeight] = useState('10000px');
   const [shouldAnimate, setShouldAnimate] = useState(false);
-
+  const [isWakachiModalOpen, setIsWakachiModalOpen] = useState(false);
+  
   const toggleCollapse = () => {
     if (collapsed) {
       setMaxHeight('1500px');
@@ -108,6 +109,12 @@ const MessageItem: React.FC<{
         maxHeight={maxHeight}
         shouldAnimate={shouldAnimate}
       >
+      <WakatiButton onClick={() => setIsWakachiModalOpen(true)}>Use Fast Reading</WakatiButton>
+      <WakachiModal 
+        text={ConversationData.content} 
+        show={isWakachiModalOpen} 
+        onClose={() => setIsWakachiModalOpen(false)}
+      />
         {editing ? (
           <>
             <EditTextarea

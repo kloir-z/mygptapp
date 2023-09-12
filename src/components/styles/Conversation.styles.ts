@@ -189,6 +189,25 @@ export const StyledButton = styled.button`
   }}
 `;
 
+export const WakatiButton = styled.button`
+  position: absolute;
+  top: 0px;
+  right: 35px;
+  margin: 0px;
+  padding: 2px 8px;
+  font-size: 0.65rem;
+  border-radius: 3px;
+  border: none;
+  cursor: pointer;
+  color: #ffffffe3;
+  opacity: 0.4;
+  background: rgba(51, 99, 150, 0.85);
+  @media (hover: hover) and (pointer: fine) {
+  &:hover {
+    background: rgba(65, 125, 189, 0.85);
+  }}
+`;
+
 const getColor = (role: string) => {
   switch (role) {
     case 'system':

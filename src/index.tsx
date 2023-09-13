@@ -23,7 +23,8 @@ ReactDOM.render(
               height: 8px;
             }
             ::-webkit-scrollbar-track {
-              background: #282c34;
+              background: #00000000;
+              border-radius: 4px;
             }
             ::-webkit-scrollbar-thumb {
               background: #525252a6;

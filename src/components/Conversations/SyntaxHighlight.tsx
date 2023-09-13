@@ -4,6 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import syntaxStyle from 'react-syntax-highlighter/dist/cjs/styles/prism/one-dark';
 import gfm from 'remark-gfm';
 import { Components } from 'react-markdown';
+import styled from '@emotion/styled';
 
 import bash from 'react-syntax-highlighter/dist/cjs/languages/prism/bash';
 import python from 'react-syntax-highlighter/dist/cjs/languages/prism/python';
@@ -16,6 +17,10 @@ SyntaxHighlighter.registerLanguage('python', python);
 SyntaxHighlighter.registerLanguage('tsx', tsx);
 SyntaxHighlighter.registerLanguage('javascript', javascript);
 SyntaxHighlighter.registerLanguage('css', css);
+
+const StyledSyntaxHighlighter = styled(SyntaxHighlighter)`
+  margin: 1.5rem 10px;
+`;
 
 const commonStyle: CSSProperties = {
   whiteSpace: 'normal',
@@ -97,9 +102,13 @@ export const SyntaxHighlight = (content: string) => {
     );
     const language = match[1] || 'javascript';
     parts.push(
-      <SyntaxHighlighter language={language} style={syntaxStyle}>
+      <>
+      <div style={{margin: '2rem 20px'}}>
+      <StyledSyntaxHighlighter language={language} style={syntaxStyle}>
         {match[2]}
-      </SyntaxHighlighter>
+      </StyledSyntaxHighlighter>
+      </div>
+      </>
     );
     lastIndex = match.index + match[0].length;
   }

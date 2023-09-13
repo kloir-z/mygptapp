@@ -70,7 +70,7 @@ export const WakachiModal: React.FC<WakachiModalProps> = ({ text, show, onClose 
   }, [isPlaying, groupedWakachi.length, playbackSpeed]);
 
   const goBackSentence = () => {
-    let newIndex = currentIndex - 6;
+    let newIndex = currentIndex - 3;
     if (newIndex < 0) {
       newIndex = groupedWakachi.length - 6;
     }

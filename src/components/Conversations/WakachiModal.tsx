@@ -4,7 +4,7 @@ import { getWakachi } from 'src/utils/kuromojiUtils';
 import { Overlay, ModalContainer } from '../styles/SettingsModal.styles';
 import { Spinner } from './Spinner';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlay, faPause, faUndo } from '@fortawesome/free-solid-svg-icons';
+import { faPlay, faPause, faUndo, faBackward  } from '@fortawesome/free-solid-svg-icons';
 
 type WakachiModalProps = {
   text: string;
@@ -33,7 +33,7 @@ export const WakachiModal: React.FC<WakachiModalProps> = ({ text, show, onClose 
     if (show) {
       setIsLoading(true);
       setPlaybackSpeed(200);
-      getWakachi({ text, maxLength: 3 })
+      getWakachi({ text, maxLength: 5 })
         .then((result) => {
           setGroupedWakachi(result);
           setIsLoading(false);
@@ -69,16 +69,48 @@ export const WakachiModal: React.FC<WakachiModalProps> = ({ text, show, onClose 
     };
   }, [isPlaying, groupedWakachi.length, playbackSpeed]);
 
+  const goBackSentence = () => {
+    let newIndex = currentIndex - 6;
+    if (newIndex < 0) {
+      newIndex = groupedWakachi.length - 6;
+    }
+    while (newIndex > 0) {
+      if (groupedWakachi[newIndex].includes('。') || groupedWakachi[newIndex] === ' ') {
+        newIndex++;
+        break;
+      }
+      newIndex--;
+    }
+    setCurrentIndex(newIndex);
+  };
+
   return (
     show ?
     <Overlay fadeStatus={fadeStatus} onMouseDown={handleClose}>
-      <ModalContainer fadeStatus={fadeStatus} onMouseDown={e => e.stopPropagation()} style={{width: '80svw', maxWidth: '400px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+      <ModalContainer
+        fadeStatus={fadeStatus}
+        onMouseDown={e => e.stopPropagation()}
+        onDoubleClick={e => e.stopPropagation()}
+        style={{
+          width: '80svw',
+          maxWidth: '400px',
+          height: '160px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
         {isLoading ? <Spinner /> : (
           <>
             <div className="field">
               <p>{groupedWakachi[currentIndex]}</p>
             </div>
             <div className="field is-grouped">
+              <button className="button" onClick={goBackSentence} aria-label="文の先頭に戻る">
+                <FontAwesomeIcon icon={faBackward} />
+              </button>
+              <span>  </span>
               <button className="button" onClick={() => setIsPlaying(!isPlaying)} aria-label={isPlaying ? '一時停止' : '再生'}>
                 <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} />
               </button>
@@ -89,7 +121,7 @@ export const WakachiModal: React.FC<WakachiModalProps> = ({ text, show, onClose 
             </div>
             <br></br>
             <span>{playbackSpeed} ms</span>
-            <div className="field">
+            <div className="field" style={{width: '95%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
             <input
               type="range"
               min="50"
@@ -98,7 +130,19 @@ export const WakachiModal: React.FC<WakachiModalProps> = ({ text, show, onClose 
               value={playbackSpeed}
               onChange={(e) => setPlaybackSpeed(Number(e.target.value))}
               aria-label="再生速度"
+              style={{width: '100%'}}
             />
+            <br></br>
+            <input
+              type="range"
+              min="0"
+              max={groupedWakachi.length - 1}
+              value={currentIndex}
+              onChange={(e) => setCurrentIndex(Number(e.target.value))}
+              aria-label="進捗シークバー"
+              style={{width: '100%'}}
+            />
+            <br></br>
             </div>
           </>
         )}

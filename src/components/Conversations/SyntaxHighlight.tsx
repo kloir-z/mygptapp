@@ -103,7 +103,7 @@ export const SyntaxHighlight = (content: string) => {
     const language = match[1] || 'javascript';
     parts.push(
       <>
-      <div style={{margin: '2rem 20px'}}>
+      <div style={{margin: '2rem 5px 2rem 15px'}}>
       <StyledSyntaxHighlighter language={language} style={syntaxStyle}>
         {match[2]}
       </StyledSyntaxHighlighter>

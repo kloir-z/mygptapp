@@ -90,8 +90,8 @@ export const ToggleCollapseBarBottom= styled.div<ToggleProps>`
 export const ToggleCollapseButton= styled.div`
   margin: 0px;
   position: absolute;
-  top: 0px;
-  right: 6px;
+  top: -2px;
+  right: 4px;
   z-index: 1000;
   width: 24px;
   height: 24px;
@@ -192,7 +192,7 @@ export const StyledButton = styled.button`
 export const WakatiButton = styled.button`
   position: absolute;
   top: 0px;
-  right: 35px;
+  right: 40px;
   margin: 0px;
   padding: 2px 8px;
   font-size: 0.65rem;

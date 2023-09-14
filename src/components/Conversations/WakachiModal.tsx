@@ -32,7 +32,6 @@ export const WakachiModal: React.FC<WakachiModalProps> = ({ text, show, onClose 
   useEffect(() => {
     if (show) {
       setIsLoading(true);
-      setPlaybackSpeed(200);
       getWakachi({ text, maxLength: 3 })
         .then((result) => {
           setGroupedWakachi(result);

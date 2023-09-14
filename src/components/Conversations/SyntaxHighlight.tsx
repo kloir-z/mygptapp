@@ -53,6 +53,11 @@ const customThTd: CSSProperties = {
   padding: '3px 10px',
   margin: '0px 0px 0px 0px'
 };
+const customCode: CSSProperties = {
+  fontWeight: 'bold',
+  padding: '2px 10px',
+  backgroundColor: 'rgba(0, 0, 0, 0.12)',
+};
 const commonStylePrewrap: CSSProperties = {
   whiteSpace: 'pre-wrap',
   margin: '0px',
@@ -73,7 +78,7 @@ const components: Components = {
   em: ({ node, ...props }) => <em style={commonStyle} {...props} />,
   strong: ({ node, ...props }) => <strong style={commonStyle} {...props} />,
   pre: ({ node, ...props }) => <pre style={commonStylePrewrap} {...props} />,
-  code: ({ node, ...props }) => <code style={commonStylePrewrap} {...props} />,
+  code: ({ node, ...props }) => <code style={customCode} {...props} />,
   ol: ({ node, ...props }) => <ol style={customulol} {...props} />,
   ul: ({ node, ...props }) => <ul style={customulol} {...props} />,
   li: ({ node, ...props }) => <li style={commonStyle} {...props} />,

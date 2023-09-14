@@ -20,30 +20,22 @@ export const getWakachi = async ({ text, maxLength }: WakachiProps): Promise<str
 
       let groupedWakachi: string[] = [];
       let tempGroup = "";
-      let previousIsSpecial = false;
 
       tokens.forEach((token: IpadicFeatures) => {
         let word = token.surface_form;
         
         const pos = token.pos;
-        console.log(`Word: ${word}, POS: ${pos}`);
+        // console.log(`Word: ${word}, POS: ${pos}`);
 
-        const isSpecialChar = word.includes("\n") || word.includes("。");
+        const isSpecialChar = word.includes("\n") || word.includes("。") || word.includes("、");
         if (isSpecialChar) {
           word = word.trim().replace(/^#+/g, '').replace(/^ *-+/g, '');
           tempGroup += word;
-          if(!previousIsSpecial){
-            for (let i = 0; i < 5; i++) {
-              groupedWakachi.push(tempGroup);
-            }
-            previousIsSpecial = true;
-          }else{
+          if (tempGroup !== "") {
             groupedWakachi.push(tempGroup);
-            previousIsSpecial = false;
-          } 
+          }
           tempGroup = "";
         } else {
-          previousIsSpecial = false;
           word = word.trim().replace(/^#+/g, '').replace(/^ *-+/g, '');
           if (tempGroup.length + word.length > maxLength && !(pos === "助詞" || pos === "助動詞" || pos === "接頭詞" || pos === "記号")) {
             if (tempGroup) {
@@ -59,6 +51,7 @@ export const getWakachi = async ({ text, maxLength }: WakachiProps): Promise<str
       if (tempGroup) {
         groupedWakachi.push(tempGroup);
       }
+      console.log(groupedWakachi)
 
       resolve(groupedWakachi);
     });

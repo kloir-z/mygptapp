@@ -33,7 +33,7 @@ export const WakachiModal: React.FC<WakachiModalProps> = ({ text, show, onClose 
     if (show) {
       setIsLoading(true);
       setPlaybackSpeed(200);
-      getWakachi({ text, maxLength: 5 })
+      getWakachi({ text, maxLength: 3 })
         .then((result) => {
           setGroupedWakachi(result);
           setIsLoading(false);
@@ -94,7 +94,7 @@ export const WakachiModal: React.FC<WakachiModalProps> = ({ text, show, onClose 
         style={{
           width: '80svw',
           maxWidth: '400px',
-          height: '160px',
+          height: '200px',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
@@ -104,7 +104,7 @@ export const WakachiModal: React.FC<WakachiModalProps> = ({ text, show, onClose 
         {isLoading ? <Spinner /> : (
           <>
             <div className="field">
-              <p>{groupedWakachi[currentIndex]}</p>
+              <p style={{fontSize: '1.5rem', height: '1.5rem'}}>{groupedWakachi[currentIndex]}</p>
             </div>
             <div className="field is-grouped">
               <button className="button" onClick={goBackSentence} aria-label="文の先頭に戻る">

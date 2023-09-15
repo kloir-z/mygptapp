@@ -72,14 +72,19 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
       await handleUpdateConversations(updatedConversation, false);
     }
   };
-  type FetchFunctionType = (url: string) => Promise<string | null>;
+  type FetchFunctionType = (url: string) => Promise<string[] | string | null>;
 
   const handleContentFetch = async (fetchFunction: FetchFunctionType, contentUrl: string | null, setLoading: React.Dispatch<React.SetStateAction<boolean>>) => {
     if (contentUrl) {
       setLoading(true);
-      const fetchedContent = await fetchFunction(contentUrl);
-      if (fetchedContent) {
-        const updatedMessages = [...activeConversation.revisions[0].conversation, { content: fetchedContent, role: 'user' }];
+      const fetchedContentArray = await fetchFunction(contentUrl);
+      if (fetchedContentArray) {
+        // fetchedContentArrayをループして、各ページの内容を追加
+        let updatedMessages = [...activeConversation.revisions[0].conversation];
+        for (const fetchedContent of fetchedContentArray) {
+          updatedMessages.push({ content: fetchedContent, role: 'user' });
+        }
+  
         const updatedConversation = {
           ...activeConversation,
           revisions: [
@@ -91,6 +96,7 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
       }
     }
   };
+  
 
   return (
     <InitialMenuContainer>

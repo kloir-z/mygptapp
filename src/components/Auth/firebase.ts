@@ -79,6 +79,7 @@ const updateConversations = async (userId?: string, conversations: ConversationT
     await setDoc(docRef, { conversations: chunk });
     start = nextStart;
     i++;
+    await deleteUnusedDocs(userId!, i - 1, 'conversations');
   }
 };
 
@@ -101,6 +102,7 @@ const updateSystemPrompts = async (userId?: string, systemPrompts: SystemPromptT
     await setDoc(docRef, { systemPrompts: chunk });
     start = nextStart;
     i++;
+    await deleteUnusedDocs(userId!, i - 1, 'systemPrompts');
   }
 };
 
@@ -125,6 +127,20 @@ const deleteConversation = async (userId?: string, conversationId?: string) => {
   const newConversations = conversations.filter((conv) => conv.id !== conversationId);
 
   await updateConversations(userId, newConversations);
+};
+
+const deleteUnusedDocs = async (userId: string, lastUsedIndex: number, collectionType: 'conversations' | 'systemPrompts') => {
+  let i = lastUsedIndex + 1;
+  while (true) {
+    const docRef = doc(firestore, 'UserData', `${userId}-${collectionType}-${i}`);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      await deleteDoc(docRef);
+    } else {
+      break;
+    }
+    i++;
+  }
 };
 
 const getChunk = <T>(array: T[], start: number, limit: number): [T[], number] => {

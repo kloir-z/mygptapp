@@ -4,6 +4,7 @@ import { Spinner } from './Spinner'
 import { getYoutubeTranscript, getMarkdownContent } from 'src/utils/openAIUtil';
 import { SystemPromptType, ConversationType, ConversationData } from '../types/Conversations.types';
 import { InitialMenuContainer, StyledSelect, StyledOption, StyledInput, StyledButton } from '../styles/InitialMenu.styles';
+import OCRComponent from './OCRComponent';
 
 type InitialMenuProps = {
   systemprompts: SystemPromptType[];
@@ -17,11 +18,14 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
   const [targetUrl, setTargetUrl] = useState<string | null>(null);
   const [loadingContentFetch, setLoadingContentFetch] = useState(false);
   const [selectedPromptId, setSelectedPromptId] = useState<string>("none");
+  const [showOcrPopup, setShowOcrPopup] = useState(false);
+  const [ocrText, setOcrText] = useState<string | null>(null);
 
   useEffect(() => {
     setSelectedPromptId("none");
     setShowTranscriptPopup(false); 
     setShowGetMdTxtPopup(false);
+    setShowOcrPopup(false);
     if (activeConversation.revisions[0].conversation[0]?.role === 'system') {
       const systemContent = activeConversation.revisions[0].conversation[0].content;
       const matchingPrompt = systemprompts.find(prompt => prompt.content === systemContent);
@@ -32,11 +36,32 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
           setShowTranscriptPopup(true);
         } else if (matchingPrompt.title === 'URL要約') {
           setShowGetMdTxtPopup(true);
+        } else if (matchingPrompt.title === 'OCRして要約') {
+          setShowOcrPopup(true);
         }
       }
     }
   }, [activeConversation, systemprompts]);
   
+  useEffect(() => {
+    if (ocrText) {
+      const updatedMessages = [...activeConversation.revisions[0].conversation];
+      updatedMessages.push({ content: ocrText, role: 'user' });
+
+      const updatedConversation = {
+        ...activeConversation,
+        revisions: [
+          { revision: '0', conversation: updatedMessages },
+        ],
+      };
+
+      handleUpdateConversations(updatedConversation, false).then(() => {
+        // 成功したらocrTextをnullにリセット
+        setOcrText(null);
+      });
+    }
+  }, [ocrText, activeConversation, handleUpdateConversations]);
+
   const handleSystemPromptSelection = async (selectedPromptId: string) => {
     setSelectedPromptId(selectedPromptId);
     if (selectedPromptId === 'none') {
@@ -97,7 +122,6 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
     }
   };
   
-
   return (
     <InitialMenuContainer>
       <label>1. Select System Prompt:</label>
@@ -141,6 +165,7 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
           <br></br>
         </>
       )}
+      {showOcrPopup && <OCRComponent setOcrText={setOcrText} />}
 
     </InitialMenuContainer>
   );

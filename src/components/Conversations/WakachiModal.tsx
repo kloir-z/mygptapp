@@ -46,6 +46,19 @@ export const WakachiModal: React.FC<WakachiModalProps> = ({ text, show, onClose 
 
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
+    
+    const minSpeed = 50; // 最低速度をミリ秒で設定。この値は自由に調整できます。
+    
+    const calculatePlaybackSpeed = () => {
+      const currentText = groupedWakachi[currentIndex];
+      const textLength = currentText ? currentText.length : 0;
+      // ここで係数をかけています、この例では10を使っていますが、調整可能です。
+      const dynamicSpeed = playbackSpeed * textLength / 2;
+      
+      // 計算された速度とminSpeedを比較し、大きい方を使用します。
+      return Math.max(dynamicSpeed, minSpeed);
+    };
+    
     if (isPlaying) {
       timer = setInterval(() => {
         setCurrentIndex((prevIndex) => {
@@ -55,18 +68,21 @@ export const WakachiModal: React.FC<WakachiModalProps> = ({ text, show, onClose 
           }
           return prevIndex + 1;
         });
-      }, playbackSpeed);
+      }, calculatePlaybackSpeed());
     } else {
       if (timer) {
         clearInterval(timer);
       }
     }
+    
     return () => {
       if (timer) {
         clearInterval(timer);
       }
     };
-  }, [isPlaying, groupedWakachi.length, playbackSpeed]);
+  }, [isPlaying, groupedWakachi, currentIndex, playbackSpeed]);
+  
+  
 
   const goBackSentence = () => {
     let newIndex = currentIndex - 3;
@@ -141,6 +157,9 @@ export const WakachiModal: React.FC<WakachiModalProps> = ({ text, show, onClose 
               aria-label="進捗シークバー"
               style={{width: '100%'}}
             />
+            <span>
+              {currentIndex}/{groupedWakachi.length - 1}
+            </span>
             <br></br>
             </div>
           </>

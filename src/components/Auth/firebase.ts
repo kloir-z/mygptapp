@@ -1,6 +1,6 @@
 //firebase.ts
 import { initializeApp } from 'firebase/app';
-import { getFirestore, doc, getDocs, collection, getDoc, deleteDoc, setDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDocs, collection, getDoc, deleteDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { ConversationType, SystemPromptType, FetchedUserData } from '../types/Conversations.types';
 import {initializeAuth, browserLocalPersistence, browserPopupRedirectResolver} from 'firebase/auth';
 
@@ -24,67 +24,121 @@ const auth = initializeAuth(app, {
 const fetchUserData = async (userId?: string): Promise<FetchedUserData> => {
   if (!userId) return { conversations: [], systemPrompts: [] };
 
-  await ensureDocExists(userId);
+  let conversations: ConversationType[] = [];
+  let systemPrompts: SystemPromptType[] = [];
 
-  const conversations = await getDocs(collection(firestore, `UserData/${userId}/conversations`));
-  const systemPrompts = await getDocs(collection(firestore, `UserData/${userId}/systemPrompts`));
-
-  return {
-    conversations: conversations.docs.map(doc => doc.data() as ConversationType),
-    systemPrompts: systemPrompts.docs.map(doc => doc.data() as SystemPromptType)
-  };
-};
-
-const ensureDocExists = async (userId: string) => {
-  const docRef = doc(firestore, 'UserData', userId);
-  const docSnap = await getDoc(docRef);
-  
-  if (!docSnap.exists()) {
-    await setDoc(docRef, {});
+  let i = 0;
+  while (true) {
+    const docRef = doc(firestore, 'UserData', `${userId}-conversations-${i}`);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      conversations = conversations.concat(docSnap.data()?.conversations ?? []);
+    } else {
+      if (i === 0) {
+        await setDoc(docRef, { conversations: [] });
+      }
+      break;
+    }
+    i++;
   }
+
+  let j = 0;
+  while (true) {
+    const docRef = doc(firestore, 'UserData', `${userId}-systemPrompts-${j}`);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      systemPrompts = systemPrompts.concat(docSnap.data()?.systemPrompts ?? []);
+    } else {
+      if (j === 0) {
+        await setDoc(docRef, { systemPrompts: [] });
+      }
+      break;
+    }
+    j++;
+  }
+
+  return { conversations, systemPrompts };
 };
 
 const updateConversations = async (userId?: string, conversations: ConversationType[] = []) => {
   if (!userId) return;
 
-  await ensureDocExists(userId);
+  let start = 0;
+  let i = 0;
+  const limit = 500000;
+  while (start < conversations.length) {
+    const [chunk, nextStart] = getChunk(conversations, start, limit);
+    const chunkSize = JSON.stringify({ conversations: chunk }).length;
 
-  for (let i = 0; i < conversations.length; i++) {
-    const conversation = conversations[i];
-    if (!/^(\d{6}-).*/.test(conversation.id)) {
-      const indexPadded = String(i).padStart(6, '0');
-      conversation.id = `${indexPadded}-${conversation.id}`;
+    if (chunkSize >= limit) {
+      console.error('Chunk size is close to or exceeds the limit!');
+      return;
     }
 
-    const docRef = doc(firestore, `UserData/${userId}/conversations/${conversation.id}`);
-    await setDoc(docRef, conversation, { merge: true });
+    const docRef = doc(firestore, 'UserData', `${userId}-conversations-${i}`);
+    await setDoc(docRef, { conversations: chunk });
+    start = nextStart;
+    i++;
   }
 };
 
 const updateSystemPrompts = async (userId?: string, systemPrompts: SystemPromptType[] = []) => {
   if (!userId) return;
 
-  await ensureDocExists(userId);
+  let start = 0;
+  let i = 0;
+  const limit = 500000;
+  while (start < systemPrompts.length) {
+    const [chunk, nextStart] = getChunk(systemPrompts, start, limit);
+    const chunkSize = JSON.stringify({ systemPrompts: chunk }).length;
 
-  for (let i = 0; i < systemPrompts.length; i++) {
-    const systemPrompt = systemPrompts[i];
-    if (!/^(\d{6}-).*/.test(systemPrompt.id)) {
-      const indexPadded = String(i).padStart(6, '0');
-      systemPrompt.id = `${indexPadded}-${systemPrompt.id}`;
+    if (chunkSize >= limit) {
+      console.error('Chunk size is close to or exceeds the limit!');
+      return;
     }
 
-    const docRef = doc(firestore, `UserData/${userId}/systemPrompts/${systemPrompt.id}`);
-    await setDoc(docRef, systemPrompt, { merge: true });
+    const docRef = doc(firestore, 'UserData', `${userId}-systemPrompts-${i}`);
+    await setDoc(docRef, { systemPrompts: chunk });
+    start = nextStart;
+    i++;
   }
 };
 
 const deleteConversation = async (userId?: string, conversationId?: string) => {
   if (!userId || !conversationId) return;
 
-  await ensureDocExists(userId);
+  let conversations: ConversationType[] = [];
+  
+  let i = 0;
+  while (true) {
+    const docRef = doc(firestore, 'UserData', `${userId}-conversations-${i}`);
+    const docSnap = await getDoc(docRef);
 
-  const docRef = doc(firestore, `UserData/${userId}/conversations/${conversationId}`);
-  await deleteDoc(docRef);
+    if (docSnap.exists()) {
+      conversations = conversations.concat(docSnap.data()?.conversations ?? []);
+    } else {
+      break;
+    }
+    i++;
+  }
+
+  const newConversations = conversations.filter((conv) => conv.id !== conversationId);
+
+  await updateConversations(userId, newConversations);
+};
+
+const getChunk = <T>(array: T[], start: number, limit: number): [T[], number] => {
+  let size = 0;
+  let end = start;
+
+  while (end < array.length) {
+    // JSON.stringifyを使っておおよそのサイズを計算。これは完全ではありませんが、近似値としては有用です。
+    size += JSON.stringify(array[end]).length;
+    if (size > limit) break;
+    end++;
+  }
+
+  return [array.slice(start, end), end];
 };
 
 export { auth, fetchUserData, updateConversations, deleteConversation, updateSystemPrompts };

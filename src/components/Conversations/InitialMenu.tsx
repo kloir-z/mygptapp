@@ -104,10 +104,13 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
       setLoading(true);
       const fetchedContentArray = await fetchFunction(contentUrl);
       if (fetchedContentArray) {
-        // fetchedContentArrayをループして、各ページの内容を追加
         let updatedMessages = [...activeConversation.revisions[0].conversation];
-        for (const fetchedContent of fetchedContentArray) {
-          updatedMessages.push({ content: fetchedContent, role: 'user' });
+        if (Array.isArray(fetchedContentArray)) {
+          for (const fetchedContent of fetchedContentArray) {
+            updatedMessages.push({ content: fetchedContent, role: 'user' });
+          }
+        } else if (typeof fetchedContentArray === 'string') {
+          updatedMessages.push({ content: fetchedContentArray, role: 'user' });
         }
   
         const updatedConversation = {

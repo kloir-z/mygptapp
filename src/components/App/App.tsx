@@ -27,6 +27,7 @@ const App: React.FC = () => {
   const [queuedMessageForReceivingId, setQueuedMessageForReceivingId] = useState<ConversationData | null>(null);
   const [inputMessage, setInputMessage] = useState('');
   const [isConversationLoading, setIsConversationLoading] = useState(false);
+  const [gcpApiKey, setGcpApiKey] = useState<string>("");
 
   const minSidebarWidth = 15;
   const maxSidebarWidth = 1500;
@@ -116,6 +117,16 @@ const App: React.FC = () => {
       setConversations(fetchedData.conversations);
       setSystemPrompts(fetchedData.systemPrompts);
     };
+    
+    const savedGcpApiKey = localStorage.getItem('gcpApiKey');
+    const savedApiKey = localStorage.getItem('apiKey');
+
+    if (savedGcpApiKey) {
+      setGcpApiKey(savedGcpApiKey);
+    }
+    if (savedApiKey) {
+      setApiKey(savedApiKey);
+    }
   
     getUserData();
   }, [user?.uid]);
@@ -175,6 +186,8 @@ const App: React.FC = () => {
             setInputMessage={setInputMessage}
             isConversationLoading={isConversationLoading}
             setIsConversationLoading={setIsConversationLoading}
+            gcpApiKey={gcpApiKey}
+            setGcpApiKey={setGcpApiKey}
           />
         ) : (
           <></>

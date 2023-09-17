@@ -10,9 +10,11 @@ type InitialMenuProps = {
   systemprompts: SystemPromptType[];
   activeConversation: ConversationType;
   handleUpdateConversations: (updatedConversation: ConversationType, shouldUpdateFirestore: boolean) => Promise<void>;
+  gcpApiKey: string;
+  setGcpApiKey: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversation, handleUpdateConversations }) => {
+const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversation, handleUpdateConversations, gcpApiKey, setGcpApiKey }) => {
   const [showTranscriptPopup, setShowTranscriptPopup] = useState(false);
   const [showGetMdTxtPopup, setShowGetMdTxtPopup] = useState(false);
   const [targetUrl, setTargetUrl] = useState<string | null>(null);
@@ -168,7 +170,13 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
           <br></br>
         </>
       )}
-      {showOcrPopup && <OCRComponent setOcrText={setOcrText} />}
+      {showOcrPopup &&
+        <OCRComponent
+          setOcrText={setOcrText} 
+          gcpApiKey={gcpApiKey}
+          setGcpApiKey={setGcpApiKey}
+        />
+      }
 
     </InitialMenuContainer>
   );

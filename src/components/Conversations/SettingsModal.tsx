@@ -29,6 +29,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ show, onClose, apiKey, se
     
   const handleOkClick = () => {
     setApiKey(tempApiKey);
+    localStorage.setItem('apiKey', tempApiKey);
   };
   
   const handleUpdateSystemPrompts = async (updatedSystemPrompts: SystemPromptType[]) => {

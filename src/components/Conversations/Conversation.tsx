@@ -29,9 +29,11 @@ type ConversationProps = {
   setInputMessage: React.Dispatch<React.SetStateAction<string>>;
   isConversationLoading: boolean;
   setIsConversationLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  gcpApiKey: string;
+  setGcpApiKey: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, apiKey, handleUpdateConversations, systemprompts, receivingId, setReceivingId, receivingMessage, setReceivingMessage, scrollWrapperRef, setQueuedMessageForReceivingId, inputMessage, setInputMessage, isConversationLoading, setIsConversationLoading }) => {
+const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, apiKey, handleUpdateConversations, systemprompts, receivingId, setReceivingId, receivingMessage, setReceivingMessage, scrollWrapperRef, setQueuedMessageForReceivingId, inputMessage, setInputMessage, isConversationLoading, setIsConversationLoading, gcpApiKey, setGcpApiKey }) => {
   const [displayMessages, setDisplayMessages] = useState<ConversationData[]>(activeConversation.revisions[0].conversation);
 
   const { editingMessageIndex, setEditingMessageIndex, tempMessageContent, onDoubleClickMessage, handleContentChange, handleConfirmEditing, handleCancelEditing, deleteMessage, editTextAreaRef } = useEditing({handleUpdateConversations, activeConversation});
@@ -90,6 +92,8 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
                   systemprompts={systemprompts}
                   activeConversation={activeConversation}
                   handleUpdateConversations={handleUpdateConversations}
+                  gcpApiKey={gcpApiKey}
+                  setGcpApiKey={setGcpApiKey}
                 />
               )}
               {displayMessages.map((ConversationData: ConversationData, index: number) => (

@@ -5,8 +5,7 @@ import { ConversationType, SystemPromptType, ModelOption } from '../types/Conver
 import { FaBars, FaCog, FaUser } from 'react-icons/fa';
 import SettingsModal from './SettingsModal'; 
 import TokenCounter from './TokenCounter';
-import { AuthContext } from 'src/components/Auth/AuthContext';  
-import GoogleButton from "../Conversations/GoogleButton";
+import UserMenu from './UserMenu';
 
 type TopbarProps = {
     apiKey: string;
@@ -35,28 +34,9 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model
   const [inputTokenUpdateRequired, setInputTokenUpdateRequired] = useState(false);
   const [availableModels, setAvailableModels] = useState<ModelOption[]>([]);
   const [isAutoSwitched, setIsAutoSwitched] = useState(false);
-
   const [showSettings, setShowSettings] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const userMenuRef = useRef<HTMLDivElement | null>(null);
-  const { handleLogout } = useContext(AuthContext);
   const userButtonRef = useRef<HTMLButtonElement | null>(null);
-  
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
-        if (userButtonRef.current && userButtonRef.current.contains(event.target as Node)) {
-          return;
-        }
-        setShowUserMenu(false);
-      }
-    }
-  
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
   useEffect(() => {
     const currentTotalTokens = totalTokenCount + inputTokenCount;
@@ -134,16 +114,18 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model
           inputMessage={inputMessage}
         />
         <div style={{ position: 'absolute', right: '0px' }}>
-        <div style={{ position: 'relative', direction: 'rtl' }}>
-          <StyledButton ref={userButtonRef} onClick={() => setShowUserMenu(!showUserMenu)}>
-            <FaUser />
-          </StyledButton>
-          {showUserMenu && (
-            <div ref={userMenuRef} style={{ position: 'absolute', bottom: 'auto', zIndex: '1000'}}>
-              <GoogleButton isSignedIn={true} onClick={handleLogout} />
-            </div>
-          )}
-        </div>
+          <div style={{ position: 'relative', direction: 'rtl' }}>
+            <StyledButton ref={userButtonRef} onClick={() => setShowUserMenu(!showUserMenu)}>
+              <FaUser />
+            </StyledButton>
+            {showUserMenu && (
+              <UserMenu
+                apiKey={apiKey}
+                userButtonRef={userButtonRef}
+                setShowUserMenu={setShowUserMenu}
+              />
+            )}
+          </div>
         </div>
       </TopbarContainer>
     </TopbarArea>

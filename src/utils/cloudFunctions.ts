@@ -52,7 +52,7 @@ export const getYoutubeTranscript = async (youtubeUrl: string): Promise<string |
           },
           "features": [
             {
-              "type": "TEXT_DETECTION"
+              "type": "DOCUMENT_TEXT_DETECTION"
             }
           ]
         }

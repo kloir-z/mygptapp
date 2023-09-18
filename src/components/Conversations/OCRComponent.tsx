@@ -56,7 +56,6 @@ const OCRComponent: React.FC<OCRComponentProps> = ({ setOcrText, gcpApiKey, setG
           setOcrText(result);
         }
       }
-      console.log('execute')
     }
 
     if (mergeResults) {

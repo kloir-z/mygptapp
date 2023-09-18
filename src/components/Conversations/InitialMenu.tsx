@@ -62,7 +62,7 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
         setOcrText(null);
       });
     }
-  }, [ocrText, activeConversation, handleUpdateConversations]);
+  }, [ocrText]);
 
   const handleSystemPromptSelection = async (selectedPromptId: string) => {
     setSelectedPromptId(selectedPromptId);

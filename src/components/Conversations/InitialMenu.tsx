@@ -108,8 +108,22 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
       if (fetchedContentArray) {
         let updatedMessages = [...activeConversation.revisions[0].conversation];
         if (Array.isArray(fetchedContentArray)) {
-          for (const fetchedContent of fetchedContentArray) {
-            updatedMessages.push({ content: fetchedContent, role: 'user' });
+          const allLines: string[][] = fetchedContentArray.map(fetchedContent => fetchedContent.split('\n'));
+          const linesToRemove = new Set<string>();
+          
+          // 最初のページから削除する行を決定
+          for (const line of allLines[0]) {
+            if (allLines.every(lines => lines.includes(line))) {
+              linesToRemove.add(line);
+            }
+          }
+          console.log("Lines to be removed:", Array.from(linesToRemove));
+          
+          // すべてのページから削除する行を削除
+          for (const linesInPage of allLines) {
+            const filteredLines = linesInPage.filter(line => !linesToRemove.has(line));
+            const uniqueContent = filteredLines.join('\n');
+            updatedMessages.push({ content: uniqueContent, role: 'user' });
           }
         } else if (typeof fetchedContentArray === 'string') {
           updatedMessages.push({ content: fetchedContentArray, role: 'user' });
@@ -132,10 +146,10 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
       <label>1. Select System Prompt:</label>
       <div style={{display: 'flex', flexDirection:'row', paddingLeft: '10px'}}>
         <StyledSelect value={selectedPromptId} onChange={e => handleSystemPromptSelection(e.target.value)}>
-            <StyledOption value="none">None</StyledOption>
-            {systemprompts.map(prompt => (
-              <StyledOption key={prompt.id} value={prompt.id}>{prompt.title}</StyledOption>
-            ))}
+          <StyledOption value="none">None</StyledOption>
+          {systemprompts.map(prompt => (
+            <StyledOption key={prompt.id} value={prompt.id}>{prompt.title}</StyledOption>
+          ))}
         </StyledSelect>
       </div>
       <br></br>

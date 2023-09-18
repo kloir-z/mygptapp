@@ -135,7 +135,6 @@ export const getMarkdownContent = async (targetUrl: string): Promise<string[] | 
   const params = { url: targetUrl };
 
   try {
-    console.log(encodeURIComponent(params.url))
     const response = await fetch(`${endpoint}?url=${encodeURIComponent(params.url)}`);
 
     if (response.status === 200) {

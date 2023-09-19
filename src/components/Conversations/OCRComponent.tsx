@@ -1,7 +1,8 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { getOcrResult } from 'src/utils/cloudFunctions';
-import { InitialMenuContainer, StyledSelect, StyledOption, StyledInput, StyledButton } from '../styles/InitialMenu.styles';
+import { StyledInput, StyledButton } from '../styles/InitialMenu.styles';
+import { mergeImages, blobToFile } from 'src/utils/ocrUtils'
 
 type OCRComponentProps = {
   setOcrText: React.Dispatch<React.SetStateAction<string | null>>,
@@ -11,7 +12,7 @@ type OCRComponentProps = {
 
 const OCRComponent: React.FC<OCRComponentProps> = ({ setOcrText, gcpApiKey, setGcpApiKey }) => {
   const [ocrImages, setOcrImages] = useState<File[]>([]);
-  const [mergeResults, setMergeResults] = useState<boolean>(false); 
+  const [mergeResults, setMergeResults] = useState<boolean>(true); 
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setOcrImages((prevImages) => [...prevImages, ...acceptedFiles]);
@@ -46,22 +47,36 @@ const OCRComponent: React.FC<OCRComponentProps> = ({ setOcrText, gcpApiKey, setG
   }, [gcpApiKey]);
 
   const executeOcr = async () => {
-    let allResults = ''; // すべてのOCR結果を格納する変数
+    if (mergeResults && gcpApiKey) {
+      const mergedImageBlob = await mergeImages(ocrImages);
+      if (mergedImageBlob) {
+        const mergedImageFile = blobToFile(mergedImageBlob, "merged_image.png");const objectUrl = URL.createObjectURL(mergedImageFile);
+        // const img = document.createElement('img');
+        // img.src = objectUrl;
+        // img.width = 1000; // 任意の数値
+        // document.body.appendChild(img); 
+        const result = await getOcrResult(mergedImageFile, gcpApiKey);
+        setOcrText(result);
+        return;
+      }
+    }
+  
+    let allResults = ''; 
     for (const ocrImage of ocrImages) {
       if (ocrImage && gcpApiKey) {
         const result = await getOcrResult(ocrImage, gcpApiKey);
-        if (mergeResults) {
-          allResults += result; // 結果を結合
-        } else {
+        if (!mergeResults) {
           setOcrText(result);
+        } else {
+          allResults += result;
         }
       }
     }
-
-    if (mergeResults) {
-      setOcrText(allResults); // 結合した結果をセット
+  
+    if (!mergeResults) {
+      setOcrText(allResults);
     }
-  };
+  };  
 
   const removeImage = (indexToRemove: number) => {
     setOcrImages((prevImages) => prevImages.filter((_, index) => index !== indexToRemove));

@@ -140,6 +140,15 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
       }
     }
   };
+
+  const fetchFromClipboard = async () => {
+    try {
+      const clipboardText = await navigator.clipboard.readText();
+      setTargetUrl(clipboardText);
+    } catch (err) {
+      console.error("クリップボードからテキストを取得できませんでした:", err);
+    }
+  };
   
   return (
     <InitialMenuContainer>
@@ -157,7 +166,9 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
         <>
           <label>2. Use Youtube Transcript Get Tool:</label>
           <div style={{display: 'flex', flexDirection:'column', paddingLeft: '10px'}}>
-            <StyledInput type="text" placeholder="YouTube URL" onChange={e => setTargetUrl(e.target.value)} />
+            <StyledButton onClick={fetchFromClipboard}>Get from Clipboard</StyledButton>
+            <StyledInput type="text" placeholder="YouTube URL" onChange={e => setTargetUrl(e.target.value)} value={targetUrl || ''}/>
+          <br></br>
             <StyledButton 
               onClick={() => handleContentFetch(getYoutubeTranscript, targetUrl, setLoadingContentFetch)} 
               disabled={loadingContentFetch}
@@ -173,7 +184,9 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
         <>
           <label>2. Use Get Markdown Text from URL Tool:</label>
           <div style={{display: 'flex', flexDirection:'column', paddingLeft: '10px'}}>
-            <StyledInput type="text" placeholder="URL" onChange={e => setTargetUrl(e.target.value)} />
+            <StyledButton onClick={fetchFromClipboard}>Get from Clipboard</StyledButton>
+            <StyledInput type="text" placeholder="URL" onChange={e => setTargetUrl(e.target.value)} value={targetUrl || ''}/>
+          <br></br>
             <StyledButton 
               onClick={() => handleContentFetch(getMarkdownContent, targetUrl, setLoadingContentFetch)} 
               disabled={loadingContentFetch}

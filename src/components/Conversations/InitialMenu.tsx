@@ -99,48 +99,69 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
       await handleUpdateConversations(updatedConversation, false);
     }
   };
-  type FetchFunctionType = (url: string) => Promise<string[] | string | null>;
 
-  const handleContentFetch = async (fetchFunction: FetchFunctionType, contentUrl: string | null, setLoading: React.Dispatch<React.SetStateAction<boolean>>) => {
-    if (contentUrl) {
-      setLoading(true);
-      const fetchedContentArray = await fetchFunction(contentUrl);
-      if (fetchedContentArray) {
-        let updatedMessages = [...activeConversation.revisions[0].conversation];
-        if (Array.isArray(fetchedContentArray)) {
-          const allLines: string[][] = fetchedContentArray.map(fetchedContent => fetchedContent.split('\n'));
-          const linesToRemove = new Set<string>();
-          
-          // 最初のページから削除する行を決定
-          for (const line of allLines[0]) {
-            if (allLines.every(lines => lines.includes(line))) {
-              linesToRemove.add(line);
-            }
-          }
-          console.log("Lines to be removed:", Array.from(linesToRemove));
-          
-          // すべてのページから削除する行を削除
-          for (const linesInPage of allLines) {
-            const filteredLines = linesInPage.filter(line => !linesToRemove.has(line));
-            const uniqueContent = filteredLines.join('\n');
-            updatedMessages.push({ content: uniqueContent, role: 'user' });
-          }
-        } else if (typeof fetchedContentArray === 'string') {
-          updatedMessages.push({ content: fetchedContentArray, role: 'user' });
-        }
+  const handleYoutubeTranscriptFetch = async (url: string | null) => {
+    if (!url) return;
+    setLoadingContentFetch(true);
+    const content = await getYoutubeTranscript(url);
+    if (content !== null) {
+      let updatedMessages = [...activeConversation.revisions[0].conversation];
+      updatedMessages.push({ content: content, role: 'user' });
   
-        const updatedConversation = {
-          ...activeConversation,
-          revisions: [
-            { revision: '0', conversation: updatedMessages },
-          ],
-        };
-        setLoading(false);
-        await handleUpdateConversations(updatedConversation, false);
-      }
+      const updatedConversation = {
+        ...activeConversation,
+        revisions: [
+          { revision: '0', conversation: updatedMessages },
+        ],
+      };
+      setLoadingContentFetch(false);
+      await handleUpdateConversations(updatedConversation, false);
     }
   };
 
+  const handleMarkdownContentFetch = async (url: string | null) => {
+    if (!url) return;
+  
+    setLoadingContentFetch(true);
+  
+    const fetchedContentArray = await getMarkdownContent(url);
+  
+    if (!Array.isArray(fetchedContentArray)) {
+      console.log('Failed to fetch Markdown content or content is not an array');
+      setLoadingContentFetch(false);
+      return;
+    }
+    
+    let updatedMessages = [...activeConversation.revisions[0].conversation];
+    const allLines = fetchedContentArray.map(content => content.split('\n'));
+    const linesToRemove = new Set<string>();
+  
+    if (allLines.length > 1) {
+      for (const line of allLines[0]) {
+        if (allLines.every(lines => lines.includes(line))) {
+          linesToRemove.add(line);
+        }
+      }
+  
+      allLines.forEach(linesInPage => {
+        const filteredLines = linesInPage.filter(line => !linesToRemove.has(line));
+        updatedMessages.push({ content: filteredLines.join('\n'), role: 'user' });
+      });
+    } else if (allLines.length === 1) {
+      updatedMessages.push({ content: allLines[0].join('\n'), role: 'user' });
+    }
+  
+    const updatedConversation = {
+      ...activeConversation,
+      revisions: [
+        { revision: '0', conversation: updatedMessages },
+      ],
+    };
+  
+    setLoadingContentFetch(false);
+    await handleUpdateConversations(updatedConversation, false);
+  };
+  
   const fetchFromClipboard = async () => {
     try {
       const clipboardText = await navigator.clipboard.readText();
@@ -170,7 +191,7 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
             <StyledInput type="text" placeholder="YouTube URL" onChange={e => setTargetUrl(e.target.value)} value={targetUrl || ''}/>
           <br></br>
             <StyledButton 
-              onClick={() => handleContentFetch(getYoutubeTranscript, targetUrl, setLoadingContentFetch)} 
+              onClick={() => handleYoutubeTranscriptFetch(targetUrl)} 
               disabled={loadingContentFetch}
             >
               {loadingContentFetch ? <Spinner /> : 'Get Content'}
@@ -188,7 +209,7 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
             <StyledInput type="text" placeholder="URL" onChange={e => setTargetUrl(e.target.value)} value={targetUrl || ''}/>
           <br></br>
             <StyledButton 
-              onClick={() => handleContentFetch(getMarkdownContent, targetUrl, setLoadingContentFetch)} 
+              onClick={() => handleMarkdownContentFetch(targetUrl)} 
               disabled={loadingContentFetch}
             >
               {loadingContentFetch ? <Spinner /> : 'Get Content'}

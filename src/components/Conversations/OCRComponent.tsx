@@ -13,6 +13,7 @@ type OCRComponentProps = {
 const OCRComponent: React.FC<OCRComponentProps> = ({ setOcrText, gcpApiKey, setGcpApiKey }) => {
   const [ocrImages, setOcrImages] = useState<File[]>([]);
   const [mergeResults, setMergeResults] = useState<boolean>(true); 
+  const [useMarkdown, setUseMarkdown] = useState<boolean>(false); 
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setOcrImages((prevImages) => [...prevImages, ...acceptedFiles]);
@@ -50,12 +51,13 @@ const OCRComponent: React.FC<OCRComponentProps> = ({ setOcrText, gcpApiKey, setG
     if (mergeResults && gcpApiKey) {
       const mergedImageBlob = await mergeImages(ocrImages);
       if (mergedImageBlob) {
-        const mergedImageFile = blobToFile(mergedImageBlob, "merged_image.png");const objectUrl = URL.createObjectURL(mergedImageFile);
+        const mergedImageFile = blobToFile(mergedImageBlob, "merged_image.png");
+        // const objectUrl = URL.createObjectURL(mergedImageFile);
         // const img = document.createElement('img');
         // img.src = objectUrl;
         // img.width = 1000; // 任意の数値
         // document.body.appendChild(img); 
-        const result = await getOcrResult(mergedImageFile, gcpApiKey);
+        const result = await getOcrResult(mergedImageFile, gcpApiKey, useMarkdown);
         setOcrText(result);
         return;
       }
@@ -64,7 +66,7 @@ const OCRComponent: React.FC<OCRComponentProps> = ({ setOcrText, gcpApiKey, setG
     let allResults = ''; 
     for (const ocrImage of ocrImages) {
       if (ocrImage && gcpApiKey) {
-        const result = await getOcrResult(ocrImage, gcpApiKey);
+        const result = await getOcrResult(ocrImage, gcpApiKey, useMarkdown);
         if (!mergeResults) {
           setOcrText(result);
         } else {
@@ -133,29 +135,29 @@ const OCRComponent: React.FC<OCRComponentProps> = ({ setOcrText, gcpApiKey, setG
         </div>
         <br></br>
         
-        {ocrImages.length > 1 && (
-          <div>
-            <label>5. Select Option:</label>
-            <label>
-              <input
-                type="radio"
-                value="merge"
-                checked={mergeResults}
-                onChange={() => setMergeResults(true)}
-              />
-              Merge Results
-            </label>
-            <label>
-              <input
-                type="radio"
-                value="separate"
-                checked={!mergeResults}
-                onChange={() => setMergeResults(false)}
-              />
-              Separate Results
-            </label>
-          </div>
-        )}
+        <div>
+          <label>5. Select Option:</label>
+          <br></br><br></br>
+          <label>
+            <input
+              type="checkbox"
+              checked={useMarkdown}
+              onChange={() => setUseMarkdown(!useMarkdown)}
+            />
+            Use Markdown
+          </label>
+          {ocrImages.length > 1 && (
+              <label>
+                <input
+                  type="checkbox"
+                  checked={mergeResults}
+                  onChange={() => setMergeResults(!mergeResults)}
+                />
+                Merge Results
+              </label>
+          )}
+        </div>
+        <br></br>
         <StyledButton onClick={executeOcr}>
           Execute OCR
         </StyledButton>

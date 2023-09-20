@@ -21,6 +21,8 @@ export const getYoutubeTranscript = async (youtubeUrl: string): Promise<string |
   export const getMarkdownContent = async (targetUrl: string): Promise<string[] | null> => {
     const endpoint = "https://asia-northeast2-my-pj-20230703.cloudfunctions.net/get_txt_from_url";
     const params = { url: targetUrl };
+
+    console.log(targetUrl)
   
     try {
       const response = await fetch(`${endpoint}?url=${encodeURIComponent(params.url)}`);
@@ -38,8 +40,7 @@ export const getYoutubeTranscript = async (youtubeUrl: string): Promise<string |
       return null;
     }
   };
-
-  export const getOcrResult = async (imageFile: File, apiKey: string): Promise<string | null> => {
+  export const getOcrResult = async (imageFile: File, apiKey: string, useMarkdown: boolean): Promise<string | null> => {
     const imageBase64 = await convertToBase64(imageFile);
     const endpoint = `https://vision.googleapis.com/v1/images:annotate?key=${apiKey}`;
   
@@ -71,8 +72,13 @@ export const getYoutubeTranscript = async (youtubeUrl: string): Promise<string |
         const data = await response.json();
         const fullTextAnnotation = data.responses[0]?.fullTextAnnotation || null;
         if (fullTextAnnotation) {
-          const markdownString = toMarkdown(fullTextAnnotation); // ここでマークダウン変換
-          return markdownString;  // マークダウン形式のテキストを返す
+          if (useMarkdown) {
+            const markdownString = toMarkdown(fullTextAnnotation);
+            console.log(fullTextAnnotation)
+            return markdownString;
+          } else {
+            return fullTextAnnotation.text;
+          }
         }
         return null;
       } else {
@@ -100,7 +106,7 @@ export const getYoutubeTranscript = async (youtubeUrl: string): Promise<string |
     const isLikelyHeading = (text: string, x: number, blockXs: number[]) => {
       return !text.endsWith('。') &&
              !text.endsWith('、') &&
-             text.length < 20 &&
+            //  text.length < 20 &&
              blockXs.some(blockX => Math.abs(blockX - x) <= 5);
     };
   
@@ -116,7 +122,7 @@ export const getYoutubeTranscript = async (youtubeUrl: string): Promise<string |
             tempText += sentence;
           }
           if (index < array.length - 1) {
-            tempText += "。"; // Add back the period except for the last sentence
+            tempText += "。";
           }
         }
       });
@@ -137,7 +143,7 @@ export const getYoutubeTranscript = async (youtubeUrl: string): Promise<string |
               paraText += symbol.text;
             });
           });
-          blockText += paraText; // Accumulate each paragraph text into block text
+          blockText += paraText;
         });
   
         const vertices = block.boundingBox?.vertices;
@@ -146,9 +152,9 @@ export const getYoutubeTranscript = async (youtubeUrl: string): Promise<string |
         }
   
         if (isLikelyHeading(blockText, vertices[0].x, blockXs)) {
-          blockStrings.push(`## ${blockText}`);  // Add heading
+          blockStrings.push(`## ${blockText}`);
         } else {
-          blockStrings.push(formatText(blockText));  // Add formatted text
+          blockStrings.push(formatText(blockText));
         }
       });
     });

@@ -1,10 +1,14 @@
 //UserMenu.styles.ts
 import styled from '@emotion/styled';
 
-export const MenuButton = styled.button`
+interface MenuButtonProps {
+  isSignedIn?: boolean;
+}
+
+export const MenuButton = styled.button<MenuButtonProps>`
   background-color: #4c586a;
   color: white;
-  width: 100%;
+  width: ${props => props.isSignedIn ? '100%' : '200px'};
   height: auto;
   padding: 8px 16px;
   border-radius: 2px;

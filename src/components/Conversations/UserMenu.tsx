@@ -34,7 +34,7 @@ const UserMenu: React.FC<UserMenuProps> = ({apiKey, userButtonRef, setShowUserMe
 
   return (
     <div ref={userMenuRef} style={{ position: 'absolute', bottom: 'auto', zIndex: '1000'}}>
-      <MenuButton>Usage Check</MenuButton>
+      <MenuButton isSignedIn={!!user}>Usage Check</MenuButton>
       <GoogleButton isSignedIn={!!user} onClick={handleLogout} />
     </div>
   );

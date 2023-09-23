@@ -17,7 +17,7 @@ const GoogleButton: React.FC<GoogleButtonProps> = ({ onClick, isSignedIn }) => {
   }, []);
   
   return (
-    <MenuButton onClick={onClick}>
+    <MenuButton isSignedIn={isSignedIn} onClick={onClick}>
       <Icon18px src={googleIcon} alt="Google Logo" />
       {isSignedIn ? 'Sign out' : 'Sign in with Google'} 
       {user && (

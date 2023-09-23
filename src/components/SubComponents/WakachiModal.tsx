@@ -109,12 +109,13 @@ export const WakachiModal: React.FC<WakachiModalProps> = ({ text, show, onClose 
         style={{
           width: '80svw',
           maxWidth: '400px',
-          height: '200px',
+          height: '300px',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center'
         }}
+        onClick={() => setIsPlaying(!isPlaying)}
       >
         {isLoading ? <Spinner /> : (
           <>
@@ -122,15 +123,15 @@ export const WakachiModal: React.FC<WakachiModalProps> = ({ text, show, onClose 
               <p style={{fontSize: '1.5rem', height: '1.5rem'}}>{groupedWakachi[currentIndex]}</p>
             </div>
             <div className="field is-grouped">
-              <button className="button" onClick={goBackSentence} aria-label="文の先頭に戻る">
+              <button className="button" onClick={(e) => { e.stopPropagation(); goBackSentence()}} aria-label="文の先頭に戻る">
                 <FontAwesomeIcon icon={faBackward} />
               </button>
               <span>  </span>
-              <button className="button" onClick={() => setIsPlaying(!isPlaying)} aria-label={isPlaying ? '一時停止' : '再生'}>
+              <button className="button" onClick={(e) => { e.stopPropagation(); setIsPlaying(!isPlaying)}} aria-label={isPlaying ? '一時停止' : '再生'}>
                 <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} />
               </button>
               <span>  </span>
-              <button className="button" onClick={() => setCurrentIndex(0)} aria-label="最初に戻る">
+              <button className="button" onClick={(e) => { e.stopPropagation(); setCurrentIndex(0)}} aria-label="最初に戻る">
                 <FontAwesomeIcon icon={faUndo} />
               </button>
             </div>
@@ -143,6 +144,7 @@ export const WakachiModal: React.FC<WakachiModalProps> = ({ text, show, onClose 
               max="700"
               step="10"
               value={playbackSpeed}
+              onClick={(e) => e.stopPropagation()}
               onChange={(e) => setPlaybackSpeed(Number(e.target.value))}
               aria-label="再生速度"
               style={{width: '100%'}}
@@ -153,6 +155,7 @@ export const WakachiModal: React.FC<WakachiModalProps> = ({ text, show, onClose 
               min="0"
               max={groupedWakachi.length - 1}
               value={currentIndex}
+              onClick={(e) => e.stopPropagation()}
               onChange={(e) => setCurrentIndex(Number(e.target.value))}
               aria-label="進捗シークバー"
               style={{width: '100%'}}

@@ -7,7 +7,7 @@ type UseEditingReturnType = {
   tempMessageContent: string | null;
   setEditingMessageIndex: React.Dispatch<React.SetStateAction<number | null>>;
   setTempMessageContent: React.Dispatch<React.SetStateAction<string | null>>;
-  onDoubleClickMessage: (messages: ConversationData[], index: number) => void;
+  onDoubleClickMessage: (e: React.MouseEvent, messages: ConversationData[], index: number) => void;
   handleContentChange: (newContent: string) => void;
   handleConfirmEditing: (index: number) => void;
   handleCancelEditing: () => void;
@@ -24,7 +24,8 @@ export const useEditing = ({handleUpdateConversations, activeConversation}:UseEd
   const [editingMessageIndex, setEditingMessageIndex] = useState<number | null>(null);
   const [tempMessageContent, setTempMessageContent] = useState<string | null>(null);
 
-  const onDoubleClickMessage = (messages: ConversationData[], index: number) => {
+  const onDoubleClickMessage = (e: React.MouseEvent, messages: ConversationData[], index: number) => {
+    e.preventDefault();  
     if (editingMessageIndex === index) return;
     setEditingMessageIndex(index);
     setTempMessageContent(messages[index]?.content || null);

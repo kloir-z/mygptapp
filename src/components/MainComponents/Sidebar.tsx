@@ -95,7 +95,7 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, setConversations, acti
               cancelEdit();
             }
           }}
-          onDoubleClick={() => editingId !== conversation.id && toggleEditingTitle(conversation.id, conversation.title)}
+          onDoubleClick={(e) => {e.preventDefault(); editingId !== conversation.id && toggleEditingTitle(conversation.id, conversation.title)}}
           active={activeConversation?.id === conversation.id}
         >
           {editingId === conversation.id ? (

@@ -11,7 +11,7 @@ const MessageItem: React.FC<{
   ConversationData: ConversationData;
   editing: boolean;
   index: number;
-  onDoubleClick: () => void;
+  onDoubleClick: (e: React.MouseEvent) => void;
   handleConfirmEditing: (index: number) => void;
   handleCancelEditing: () => void;
   deleteMessage: (index: number) => void;

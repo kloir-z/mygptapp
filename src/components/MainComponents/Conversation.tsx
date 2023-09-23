@@ -102,7 +102,9 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
                   ConversationData={ConversationData}
                   editing={editingMessageIndex === index}
                   index={index}
-                  onDoubleClick={() => onDoubleClickMessage(displayMessages, index)}
+                  onDoubleClick={(e) => {
+                    onDoubleClickMessage(e, displayMessages, index);
+                  }}
                   handleConfirmEditing={handleConfirmEditing}
                   handleCancelEditing={handleCancelEditing}
                   deleteMessage={deleteMessage}

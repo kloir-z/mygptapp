@@ -128,6 +128,7 @@ export const EditingText = styled.div`
     padding: 4px;
     margin-left: 30px;
   }
+  z-index: 3000;
 `;
 
 export const EditTextarea = styled.textarea`

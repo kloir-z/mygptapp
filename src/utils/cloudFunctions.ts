@@ -74,7 +74,7 @@ export const getYoutubeTranscript = async (youtubeUrl: string): Promise<string |
         if (data.responses.length === 0 || !data.responses[0]?.fullTextAnnotation) {
           const errorText = 'No text annotations found.';
           console.error(errorText);
-          return Promise.reject(new Error(errorText));
+          return errorText;
         }
         const fullTextAnnotation = data.responses[0]?.fullTextAnnotation || null;
         if (fullTextAnnotation) {

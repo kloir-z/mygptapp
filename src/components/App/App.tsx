@@ -1,15 +1,15 @@
 //App.tsx
 import React, { useState, useContext, useEffect, useRef } from "react";
 import { AuthContext } from '../Auth/AuthContext';
-import { ConversationType, SystemPromptType, ConversationData } from '../types/Conversations.types';
+import { ConversationType, SystemPromptType, ConversationData } from '../../types/Conversations.types';
 import { fetchUserData, updateConversations, deleteConversation } from '../Auth/firebase';
-import { LoginContainer, ScrollWrapper, MainContainer, SidebarContainer } from '../styles/App.styles'
-import Topbar from '../Conversations/Topbar'
-import Sidebar from '../Conversations/Sidebar'
-import Conversation from '../Conversations/Conversation'
-import SidebarResizer from '../Conversations/SidebarResizer';
-import GoogleButton from "../Conversations/GoogleButton";
-import SpinnerFull from "../Conversations/SpinnerFull";
+import { LoginContainer, ScrollWrapper, MainContainer, SidebarContainer } from '../../styles/App.styles'
+import Topbar from '../MainComponents/Topbar'
+import Sidebar from '../MainComponents/Sidebar'
+import Conversation from '../MainComponents/Conversation'
+import SidebarResizer from '../Parts/SidebarResizer';
+import GoogleButton from "../Parts/GoogleButton";
+import SpinnerFull from "../Parts/SpinnerFull";
 import { generateConversationTitle } from "src/utils/openAIUtil"
 
 const App: React.FC = () => {

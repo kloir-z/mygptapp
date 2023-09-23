@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { getOcrResult } from 'src/utils/cloudFunctions';
-import { StyledInput, StyledButton } from '../styles/InitialMenu.styles';
+import { StyledInput, StyledButton } from '../../styles/InitialMenu.styles';
 import { mergeImages, blobToFile } from 'src/utils/ocrUtils'
-import { Spinner } from './Spinner';  
+import { Spinner } from '../Parts/Spinner';  
 import {
   DropzoneContainer,
   PreviewImageContainer,
@@ -11,7 +11,7 @@ import {
   ImagePreview,
   CheckboxContainer,
   OptionsContainer
-} from '../styles/OCRComponent.styles';
+} from '../../styles/OCRComponent.styles';
 
 type OCRComponentProps = {
   setOcrText: React.Dispatch<React.SetStateAction<string | null>>,

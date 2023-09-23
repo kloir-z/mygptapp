@@ -1,7 +1,7 @@
 //tokenCounter.ts
 import { Tiktoken } from "@dqbd/tiktoken/lite";
 import cl100k_base from "@dqbd/tiktoken/encoders/cl100k_base.json";
-import { ConversationData } from "src/components/types/Conversations.types";
+import { ConversationData } from "src/types/Conversations.types";
 
 const countTokens = (messages: ConversationData[]): number => {
   const encoding = new Tiktoken(

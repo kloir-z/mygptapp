@@ -1,9 +1,9 @@
 //MessageItem.tsx
 import { useState, useRef, useEffect } from 'react';
-import { ConversationData } from '../types/Conversations.types';
+import { ConversationData } from '../../types/Conversations.types';
 import { SyntaxHighlight } from './SyntaxHighlight';
 import { FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
-import { MessageDiv, EditTextarea, EditingText, ToggleCollapseBarBottom, ToggleCollapseButton, WakatiButton } from '../styles/Conversation.styles';
+import { MessageDiv, EditTextarea, EditingText, ToggleCollapseBarBottom, ToggleCollapseButton, WakatiButton } from '../../styles/Conversation.styles';
 import React, { useMemo } from 'react';
 import { WakachiModal } from './WakachiModal';
 

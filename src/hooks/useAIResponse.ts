@@ -1,6 +1,6 @@
 //useAIResponse.ts
 import { useRef } from 'react';
-import { ConversationData } from 'src/components/types/Conversations.types';
+import { ConversationData } from 'src/types/Conversations.types';
 import { getAIResponse } from 'src/utils/openAIUtil';
 
 export const useAIResponse = (

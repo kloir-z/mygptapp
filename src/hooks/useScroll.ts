@@ -1,6 +1,6 @@
 //useScroll.ts
 import { useState, useEffect, useRef } from 'react';
-import { ConversationData } from 'src/components/types/Conversations.types';
+import { ConversationData } from 'src/types/Conversations.types';
 
 const useScroll = (displayMessages?: ConversationData[], receivingMessage?: string, editingMessageIndex?: number | null) => {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);

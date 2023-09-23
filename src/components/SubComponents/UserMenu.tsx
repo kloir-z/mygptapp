@@ -1,9 +1,9 @@
 //UserMenu.tsx
 import React, { useRef, useEffect } from "react";
 import { AuthContext } from 'src/components/Auth/AuthContext';  
-import GoogleButton from "../Conversations/GoogleButton";
+import GoogleButton from "../Parts/GoogleButton";
 import { useContext } from 'react';
-import { MenuButton } from 'src/components/styles/UserMenu.styles'
+import { MenuButton } from 'src/styles/UserMenu.styles'
 
 interface UserMenuProps {
   apiKey: string;

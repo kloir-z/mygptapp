@@ -1,6 +1,6 @@
 //useSidebar.ts
 import { useState } from 'react';
-import { ConversationType } from 'src/components/types/Conversations.types';
+import { ConversationType } from 'src/types/Conversations.types';
 
 const useSidebar = (
   conversations: ConversationType[],

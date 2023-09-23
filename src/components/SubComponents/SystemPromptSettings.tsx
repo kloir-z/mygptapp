@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
-import { SystemPromptType } from '../types/Conversations.types';
-import { SystemPromptSettingsContainer, StyledButton, StyledInput, StyledSelect, StyledOption, SystemPromptTextarea } from '../styles/SettingsModal.styles';
+import { SystemPromptType } from '../../types/Conversations.types';
+import { SystemPromptSettingsContainer, StyledButton, StyledInput, StyledSelect, StyledOption, SystemPromptTextarea } from '../../styles/SettingsModal.styles';
 
 type SystemPromptSettingsProps = {
   systemprompts: SystemPromptType[];

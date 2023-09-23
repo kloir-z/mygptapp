@@ -1,9 +1,9 @@
 //MessageInput.tsx
 import React, { useRef, useEffect } from 'react';
-import { MessageInputContainer, StyledTextarea } from '../styles/MessageInput.styles'
+import { MessageInputContainer, StyledTextarea } from '../../styles/MessageInput.styles'
 import { useDebugInfo } from 'src/components/Debugger/DebugContext';
 import useScroll from 'src/hooks/useScroll'
-import SendButton from './SendButton';
+import SendButton from '../Parts/SendButton';
 
 type MessageInputProps = {
   receivingId: string;

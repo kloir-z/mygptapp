@@ -1,8 +1,8 @@
 // WakachiModal.tsx
 import React, { useState, useEffect } from 'react';
 import { getWakachi } from 'src/utils/kuromojiUtils';
-import { Overlay, ModalContainer } from '../styles/SettingsModal.styles';
-import { Spinner } from './Spinner';
+import { Overlay, ModalContainer } from '../../styles/SettingsModal.styles';
+import { Spinner } from '../Parts/Spinner';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay, faPause, faUndo, faBackward  } from '@fortawesome/free-solid-svg-icons';
 

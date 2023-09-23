@@ -1,17 +1,17 @@
 //Conversation.tsx
 import React, { useEffect, useState } from 'react';
-import { ConversationType, ConversationData, SystemPromptType } from '../types/Conversations.types';
-import { ConversationContainer, MessagesContainer, InputContainer, MessageDiv } from '../styles/Conversation.styles'
+import { ConversationType, ConversationData, SystemPromptType } from '../../types/Conversations.types';
+import { ConversationContainer, MessagesContainer, InputContainer, MessageDiv } from '../../styles/Conversation.styles'
 import { useEditing } from 'src/hooks/useEditing';
 import { useAIResponse } from 'src/hooks/useAIResponse'
 import useScroll from 'src/hooks/useScroll'
 import MessageInput from './MessageInput';
-import MessageItem from './MessageItem';
-import InitialMenu from './InitialMenu';
-import SendButton from './SendButton';
-import ScrollControlButtons from './ScrollControlButtons'; 
+import MessageItem from '../SubComponents/MessageItem';
+import InitialMenu from '../SubComponents/InitialMenu';
+import SendButton from '../Parts/SendButton';
+import ScrollControlButtons from '../Parts/ScrollControlButtons'; 
 import { useDebugInfo } from 'src/components/Debugger/DebugContext';
-import { Spinner } from './Spinner';
+import { Spinner } from '../Parts/Spinner';
 
 type ConversationProps = {
   activeConversation: ConversationType;

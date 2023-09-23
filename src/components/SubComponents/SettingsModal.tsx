@@ -1,9 +1,9 @@
 import React, { useState, useContext } from "react";
 import { AuthContext } from '../Auth/AuthContext';
 import SystemPromptSettings from './SystemPromptSettings'; 
-import { SystemPromptType } from '../types/Conversations.types';
+import { SystemPromptType } from '../../types/Conversations.types';
 import { updateSystemPrompts  } from '../Auth/firebase';
-import { Overlay, ModalContainer, CloseButton, StatusLabel, StyledButton, StyledInput } from '../styles/SettingsModal.styles';
+import { Overlay, ModalContainer, CloseButton, StatusLabel, StyledButton, StyledInput } from '../../styles/SettingsModal.styles';
 
 type SettingsModalProps = {
   show: boolean;

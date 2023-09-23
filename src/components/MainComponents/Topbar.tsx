@@ -1,11 +1,11 @@
 //Topbar.tsx
 import React, { useState, useRef, useEffect, useContext } from "react";
-import { TopbarContainer, StyledButton, StyledSelect, StyledOption, NotificationDot, TopbarArea } from '../styles/Topbar.styles';
-import { ConversationType, SystemPromptType, ModelOption } from '../types/Conversations.types';
+import { TopbarContainer, StyledButton, StyledSelect, StyledOption, NotificationDot, TopbarArea } from '../../styles/Topbar.styles';
+import { ConversationType, SystemPromptType, ModelOption } from '../../types/Conversations.types';
 import { FaBars, FaCog, FaUser } from 'react-icons/fa';
-import SettingsModal from './SettingsModal'; 
-import TokenCounter from './TokenCounter';
-import UserMenu from './UserMenu';
+import SettingsModal from '../SubComponents/SettingsModal'; 
+import TokenCounter from '../Parts/TokenCounter';
+import UserMenu from '../SubComponents/UserMenu';
 
 type TopbarProps = {
     apiKey: string;

@@ -1,9 +1,9 @@
 //InitialMenu.tsx
 import React, { useState, useEffect } from 'react';
-import { Spinner } from './Spinner'
+import { Spinner } from '../Parts/Spinner'
 import { getYoutubeTranscript, getMarkdownContent } from 'src/utils/openAIUtil';
-import { SystemPromptType, ConversationType, ConversationData } from '../types/Conversations.types';
-import { InitialMenuContainer, StyledSelect, StyledOption, StyledInput, StyledButton } from '../styles/InitialMenu.styles';
+import { SystemPromptType, ConversationType, ConversationData } from '../../types/Conversations.types';
+import { InitialMenuContainer, StyledSelect, StyledOption, StyledInput, StyledButton } from '../../styles/InitialMenu.styles';
 import OCRComponent from './OCRComponent';
 
 type InitialMenuProps = {

@@ -1,6 +1,6 @@
 export const mergeImages = async (imageFiles: File[]): Promise<Blob | null> => {
     const imageElements: HTMLImageElement[] = [];
-    const gap = 50;
+    const gap = 30;
   
     for (const file of imageFiles) {
       const url = URL.createObjectURL(file);

@@ -40,6 +40,7 @@ export const getYoutubeTranscript = async (youtubeUrl: string): Promise<string |
       return null;
     }
   };
+  
   export const getOcrResult = async (imageFile: File, apiKey: string, useMarkdown: boolean): Promise<string | null> => {
     const imageBase64 = await convertToBase64(imageFile);
     const endpoint = `https://vision.googleapis.com/v1/images:annotate?key=${apiKey}`;
@@ -67,13 +68,11 @@ export const getYoutubeTranscript = async (youtubeUrl: string): Promise<string |
         },
         body: JSON.stringify(payload)
       });
-      console.log(response)
   
       if (response.status === 200) {
         const data = await response.json();
         if (data.responses.length === 0 || !data.responses[0]?.fullTextAnnotation) {
           const errorText = 'No text annotations found.';
-          console.error(errorText);
           return errorText;
         }
         const fullTextAnnotation = data.responses[0]?.fullTextAnnotation || null;
@@ -86,14 +85,12 @@ export const getYoutubeTranscript = async (youtubeUrl: string): Promise<string |
             return fullTextAnnotation.text;
           }
         }
-        return null;
+        return 'Unexpected error: Annotation object is null.';
       } else {
-        console.error("Server responded with status:", response.status);
-        return null;
+        return `Server responded with status: ${response.status}`;
       }
     } catch (error) {
-      console.error(error);
-      return null;
+      return `Caught an exception: ${error}`;
     }
   };
   

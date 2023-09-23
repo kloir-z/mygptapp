@@ -3,6 +3,15 @@ import { useDropzone } from 'react-dropzone';
 import { getOcrResult } from 'src/utils/cloudFunctions';
 import { StyledInput, StyledButton } from '../styles/InitialMenu.styles';
 import { mergeImages, blobToFile } from 'src/utils/ocrUtils'
+import { Spinner } from './Spinner';  
+import {
+  DropzoneContainer,
+  PreviewImageContainer,
+  DeleteButton,
+  ImagePreview,
+  CheckboxContainer,
+  OptionsContainer
+} from '../styles/OCRComponent.styles';
 
 type OCRComponentProps = {
   setOcrText: React.Dispatch<React.SetStateAction<string | null>>,
@@ -14,6 +23,7 @@ const OCRComponent: React.FC<OCRComponentProps> = ({ setOcrText, gcpApiKey, setG
   const [ocrImages, setOcrImages] = useState<File[]>([]);
   const [mergeResults, setMergeResults] = useState<boolean>(true); 
   const [useMarkdown, setUseMarkdown] = useState<boolean>(false); 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setOcrImages((prevImages) => [...prevImages, ...acceptedFiles]);
@@ -48,35 +58,40 @@ const OCRComponent: React.FC<OCRComponentProps> = ({ setOcrText, gcpApiKey, setG
   }, [gcpApiKey]);
 
   const executeOcr = async () => {
-    if (mergeResults && gcpApiKey) {
-      const mergedImageBlob = await mergeImages(ocrImages);
-      if (mergedImageBlob) {
-        const mergedImageFile = blobToFile(mergedImageBlob, "merged_image.png");
-        // const objectUrl = URL.createObjectURL(mergedImageFile);
-        // const img = document.createElement('img');
-        // img.src = objectUrl;
-        // img.width = 1000; // 任意の数値
-        // document.body.appendChild(img); 
-        const result = await getOcrResult(mergedImageFile, gcpApiKey, useMarkdown);
-        setOcrText(result);
-        return;
-      }
-    }
-  
-    let allResults = ''; 
-    for (const ocrImage of ocrImages) {
-      if (ocrImage && gcpApiKey) {
-        const result = await getOcrResult(ocrImage, gcpApiKey, useMarkdown);
-        if (!mergeResults) {
+    try {
+      setIsLoading(true);
+      if (mergeResults && gcpApiKey) {
+        const mergedImageBlob = await mergeImages(ocrImages);
+        if (mergedImageBlob) {
+          const mergedImageFile = blobToFile(mergedImageBlob, "merged_image.png");
+          // const objectUrl = URL.createObjectURL(mergedImageFile);
+          // const img = document.createElement('img');
+          // img.src = objectUrl;
+          // img.width = 1000; // 任意の数値
+          // document.body.appendChild(img); 
+          const result = await getOcrResult(mergedImageFile, gcpApiKey, useMarkdown);
           setOcrText(result);
-        } else {
-          allResults += result;
+          return;
         }
       }
-    }
-  
-    if (!mergeResults) {
-      setOcrText(allResults);
+    
+      let allResults = ''; 
+      for (const ocrImage of ocrImages) {
+        if (ocrImage && gcpApiKey) {
+          const result = await getOcrResult(ocrImage, gcpApiKey, useMarkdown);
+          if (!mergeResults) {
+            setOcrText(result);
+          } else {
+            allResults += result;
+          }
+        }
+      }
+    
+      if (!mergeResults) {
+        setOcrText(allResults);
+      }
+    } finally {
+      setIsLoading(false);
     }
   };  
 
@@ -97,69 +112,51 @@ const OCRComponent: React.FC<OCRComponentProps> = ({ setOcrText, gcpApiKey, setG
             onChange={(e) => setGcpApiKey(e.target.value)}
           />
         </div>
-        <div {...getRootProps()} style={{ border: '2px dashed gray', margin: '10px', padding: '20px', textAlign: 'center', width: '60%' }}>
+        <DropzoneContainer {...getRootProps()}>
           <input {...getInputProps()} />
           {isDragActive ? "Drop it like it's hot!" : '4. Click me or drag a file to upload! (or Ctrl+V/Cmd+V to paste)'}
-        </div>
-
+        </DropzoneContainer>
 
         <div style={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>
           {ocrImages.map((image, index) => (
-            <div key={index} style={{ position: 'relative' }}>
-              <img 
+            <PreviewImageContainer key={index}>
+              <ImagePreview 
                 src={URL.createObjectURL(image)} 
                 alt="Preview" 
-                style={{ width: '200px', height: 'auto', border: 'solid 1px #AAA' }} 
               />
-              <button 
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  right: 0,
-                  backgroundColor: 'red',
-                  color: 'white',
-                  fontSize: '16px',
-                  lineHeight: '16px',
-                  borderRadius: '50%',
-                  width: '24px',
-                  height: '24px',
-                  textAlign: 'center',
-                  cursor: 'pointer'
-                }} 
-                onClick={() => removeImage(index)}
-              >
-                ×
-              </button>
-            </div>
+              <DeleteButton onClick={() => removeImage(index)}>×</DeleteButton>
+            </PreviewImageContainer>
           ))}
         </div>
         <br></br>
         
-        <div>
+        <OptionsContainer>
           <label>5. Select Option:</label>
           <br></br><br></br>
-          <label>
-            <input
-              type="checkbox"
-              checked={useMarkdown}
-              onChange={() => setUseMarkdown(!useMarkdown)}
-            />
-            Use Markdown
-          </label>
-          {ocrImages.length > 1 && (
-              <label>
-                <input
-                  type="checkbox"
-                  checked={mergeResults}
-                  onChange={() => setMergeResults(!mergeResults)}
-                />
-                Merge Results
-              </label>
-          )}
-        </div>
+          <CheckboxContainer>
+            <label>
+              <input
+                type="checkbox"
+                checked={useMarkdown}
+                onChange={() => setUseMarkdown(!useMarkdown)}
+              />
+              Use Markdown
+            </label>
+            {ocrImages.length > 1 && (
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={mergeResults}
+                    onChange={() => setMergeResults(!mergeResults)}
+                  />
+                  Merge Results
+                </label>
+            )}
+          </CheckboxContainer>
+        </OptionsContainer>
         <br></br>
-        <StyledButton onClick={executeOcr}>
-          Execute OCR
+        <StyledButton onClick={executeOcr} disabled={isLoading}>
+          {isLoading ? <Spinner /> : 'Execute OCR'}
         </StyledButton>
       </div>
     </>

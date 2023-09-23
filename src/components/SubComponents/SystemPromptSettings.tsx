@@ -71,7 +71,8 @@ const SystemPromptSettings: React.FC<SystemPromptSettingsProps> = ({ systempromp
 
   return (
     <SystemPromptSettingsContainer>
-      <label>System Prompt:</label>
+      <h2>System Prompt Editor</h2>
+      <label>Select :</label>
         <StyledSelect value={selectedPromptIndex === null ? -1 : selectedPromptIndex} onChange={(e) => handleSelectionChange(Number(e.target.value))}>
           <StyledOption value={-1}>New</StyledOption>
           {systemprompts.map((prompt, index) => (
@@ -80,9 +81,9 @@ const SystemPromptSettings: React.FC<SystemPromptSettingsProps> = ({ systempromp
             </StyledOption>
           ))}
         </StyledSelect>
-      <label>Edit Title:</label>
+      <label>Edit Title :</label>
         <StyledInput placeholder="None" type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
-      <label>Edit Content:</label>
+      <label>Edit Content :</label>
         <SystemPromptTextarea placeholder="None" value={content} onChange={(e) => setContent(e.target.value)} rows={content.split('\n').length || 1} ref={textAreaRef} />
         <div>
           <StyledButton disabled={!canCreate} onClick={handleCreate}>Create</StyledButton>

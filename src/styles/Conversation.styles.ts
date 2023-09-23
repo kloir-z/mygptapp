@@ -18,8 +18,8 @@ export const ConversationContainer = styled.div`
 
 export const MessagesContainer = styled.div`
   margin: 0px;
-  height: calc(100vh - 112px);
-  height: calc(100dvh - 112px);
+  height: calc(100vh - 83px);
+  height: calc(100dvh - 83px);
   overflow-y: scroll;
   overflow-x: hidden;
   /* scroll-behavior: smooth; */
@@ -146,7 +146,10 @@ export const EditTextarea = styled.textarea`
   font-size: 1rem;
   color: #ffffffe3; 
   background-color: #4c586a;
-;
+  &:focus {
+    outline: none;
+    border: 1px solid #8a94a4;
+  }
 `;
 
 export const StyledSelect = styled.select`
@@ -157,6 +160,7 @@ export const StyledSelect = styled.select`
   padding: 5px 8px;
   border-radius: 3px;
   border: none;
+  height: 32px;
 `;
 
 export const StyledOption = styled.option`
@@ -168,10 +172,14 @@ export const StyledInput = styled.input`
   font-size: 1rem;
   color: #4c586a;
   background-color: #ebebeb;
-  border: none;
+  border: solid 1px #ebebeb;
   padding: 5px 4px;
   margin: 0px;
   border-radius: 3px;
+  &:focus {
+    outline: none;
+    border: 1px solid #4c586a;
+  }
 `;
 
 export const StyledButton = styled.button`

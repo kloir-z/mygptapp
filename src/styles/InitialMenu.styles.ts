@@ -19,6 +19,7 @@ export const StyledSelect = styled.select`
   padding: 6px 4px;
   border-radius: 3px;
   border: none;
+  height: 32px;
 `;
 
 export const StyledOption = styled.option`
@@ -34,9 +35,13 @@ export const StyledInput = styled.input`
   max-width: 450px;
   color: #4c586a;
   background-color: #ebebeb;
-  border: none;
+  border: solid 1px #ebebeb;
   padding: 5px 4px;
   border-radius: 3px;
+  &:focus {
+    outline: none;
+    border: 1px solid #4c586a;
+  }
 `;
 
 export const StyledButton = styled.button`

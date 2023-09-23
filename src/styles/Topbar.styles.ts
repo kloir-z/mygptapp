@@ -20,13 +20,14 @@ export const TopbarContainer = styled.div`
 `;
 
 export const StyledSelect = styled.select`
-  margin: 3px;
+  margin: 2px;
   font-size: 1rem;
   color: #ffffffe3;
   background-color: #4c586a;
   padding: 6px 4px;
   border-radius: 3px;
   border: none;
+  height: 32px;
   @media (hover: hover) and (pointer: fine) {
   &:hover {
     background: #6a798e;

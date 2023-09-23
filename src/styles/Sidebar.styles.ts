@@ -32,10 +32,14 @@ export const StyledInput = styled.input`
   font-size: 1rem;
   color: #4c586a;
   background-color: #ebebeb;
-  border: none;
+  border: solid 1px #ebebeb;
   padding: 5px 4px;
   margin: 0px;
   border-radius: 3px;
+  &:focus {
+    outline: none;
+    border: 1px solid #4c586a;
+  }
 `;
 
 export const Placeholder = styled.div`

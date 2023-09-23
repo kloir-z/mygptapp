@@ -13,7 +13,7 @@ export const StyledTextarea = styled.textarea`
   position: relative;
   width: calc(100% - 8px);
   height: auto;
-  margin: 4px;
+  margin: 2px;
   margin-bottom: 0px;
   padding: 10px 15px;
   resize: none;
@@ -26,6 +26,10 @@ export const StyledTextarea = styled.textarea`
   line-height: 1.2rem;
   color: #ebebeb;
   background-color: #4c586a;
+  &:focus {
+    outline: none;
+    border: 1px solid #8a94a4;
+  }
 ;
 `;
 

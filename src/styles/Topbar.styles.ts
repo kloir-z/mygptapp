@@ -20,7 +20,7 @@ export const TopbarContainer = styled.div`
 `;
 
 export const StyledSelect = styled.select`
-  margin: 2px;
+  margin: 3px;
   font-size: 1rem;
   color: #ffffffe3;
   background-color: #4c586a;

@@ -18,8 +18,8 @@ export const ConversationContainer = styled.div`
 
 export const MessagesContainer = styled.div`
   margin: 0px;
-  height: calc(100vh - 83px);
-  height: calc(100dvh - 83px);
+  height: calc(100vh - 81px);
+  height: calc(100dvh - 81px);
   overflow-y: scroll;
   overflow-x: hidden;
   /* scroll-behavior: smooth; */

@@ -19,6 +19,9 @@ type MessageInputProps = {
 const MessageInput: React.FC<MessageInputProps> = ({ receivingId, awaitGetAIResponse, handleStartResponse, handleStopResponse, scrollWrapperRef, inputMessage, setInputMessage }) => {
   const { messagesEndRef, scrollContainerRef } = useScroll(undefined, inputMessage);
   const { setDebugInfo } = useDebugInfo();
+  interface CustomWindow extends Window { MSStream?: any}
+  const customWindow = window as CustomWindow;
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !customWindow.MSStream;
 
   useEffect(() => {
     scrollContainerRef.current = scrollWrapperRef.current;
@@ -37,6 +40,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ receivingId, awaitGetAIResp
     <>
       <MessageInputContainer>
       <StyledTextarea
+        style={{ width: isIOS ? '100%' : 'calc(100% - 12px)',}}
         value={inputMessage}
         onChange={e => setInputMessage(e.target.value)}
         rows={inputMessage.split('\n').length || 1}

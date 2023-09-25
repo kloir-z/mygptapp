@@ -9,7 +9,9 @@ const useScroll = (displayMessages?: ConversationData[], receivingMessage?: stri
 
   const scrollToBottom = () => {
     setTimeout(() => {
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      interface CustomWindow extends Window { MSStream?: any}
+      const customWindow = window as CustomWindow;
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !customWindow.MSStream;
       if (isIOS) {
         messagesEndRef.current?.scrollIntoView({ block: 'end', behavior: 'auto' });
         window.scrollTo(0, document.body.scrollHeight);

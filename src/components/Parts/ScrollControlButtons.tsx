@@ -1,7 +1,7 @@
 //ScrollControlButtons.tsx
 import React, { useState, useEffect, useRef } from 'react';
 import { GoMoveToTop, GoMoveToBottom } from "react-icons/go";
-import _ from 'lodash'; // lodashを使ってthrottleを実装
+import _ from 'lodash';
 
 type ScrollControlButtonsProps = {
   scrollToTop: () => void;
@@ -109,33 +109,41 @@ const ScrollControlButtons: React.FC<ScrollControlButtonsProps> = ({ scrollToTop
       onMouseOver={handleContainerMouseOver}
       onMouseOut={handleContainerMouseOut}
     >
-      <div 
+      <button 
+        title='scrollToTop'
         style={{ 
           cursor: 'pointer', 
           marginBottom: '10px', 
           opacity: topHovered && mouseIsMoving ? 1 : (containerHovered && mouseIsMoving ? 0.4 : 0.1),
-          transition: 'opacity 0.3s ease'
+          transition: 'opacity 0.3s ease',
+          background: 'transparent',
+          color: '#ebebeb',
+          border: 'none'
         }} 
         onClick={scrollToTop}
         onMouseOver={handleTopMouseOver}
         onMouseOut={handleTopMouseOut}
       >
         <GoMoveToTop size={24} />
-      </div>
+      </button>
       <br></br>
       <br></br>
-      <div 
+      <button 
+        title='scrollToBottom'
         style={{ 
           cursor: 'pointer', 
           opacity: bottomHovered && mouseIsMoving ? 1 : (containerHovered && mouseIsMoving ? 0.4 : 0.1),
-          transition: 'opacity 0.3s ease'
+          transition: 'opacity 0.3s ease',
+          background: 'transparent',
+          color: '#ebebeb',
+          border: 'none'
         }} 
         onClick={scrollToBottom}
         onMouseOver={handleBottomMouseOver}
         onMouseOut={handleBottomMouseOut}
       >
         <GoMoveToBottom size={24} />
-      </div>
+      </button>
     </div>
   );
 };

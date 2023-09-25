@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from 'react';
 import { ConversationData } from '../../types/Conversations.types';
 import { SyntaxHighlight } from './SyntaxHighlight';
 import { FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
-import { MessageDiv, EditTextarea, EditingText, ToggleCollapseBarBottom, ToggleCollapseButton, WakatiButton } from '../../styles/Conversation.styles';
+import { MessageDiv, EditTextarea, EditingText, ToggleCollapseButtonBottom, ToggleCollapseBarBottom, ToggleCollapseButton, WakatiButton, IconButton } from '../../styles/Conversation.styles';
 import React, { useMemo } from 'react';
 import { WakachiModal } from './WakachiModal';
 
@@ -125,9 +125,9 @@ const MessageItem: React.FC<{
             />
             <EditingText>
               Editing...
-              <FaCheck className="Icon" style={{ color: 'rgb(41, 175, 0)' }} onClick={() => handleConfirmEditing(index)} />
-              <FaTimes className="Icon" style={{ color: 'red' }} onClick={handleCancelEditing} />
-              <FaTrash className="Icon" style={{ color: '#404040' }} onClick={() => deleteMessage(index)} />
+              <IconButton onClick={() => handleConfirmEditing(index)}><FaCheck style={{ color: 'rgb(41, 175, 0)' }} /></IconButton>
+              <IconButton onClick={handleCancelEditing}><FaTimes style={{ color: 'red' }} /></IconButton>
+              <IconButton onClick={() => deleteMessage(index)}><FaTrash style={{ color: '#404040' }} /></IconButton>
             </EditingText>
           </>
         ) : (
@@ -147,10 +147,15 @@ const MessageItem: React.FC<{
         <ToggleCollapseBarBottom 
           role={ConversationData.role}
           collapsed={collapsed} 
+        >
+        </ToggleCollapseBarBottom>
+        <ToggleCollapseButtonBottom 
+          role={ConversationData.role}
+          collapsed={collapsed} 
           onClick={toggleCollapse}
         >
           {collapsed && '▼' || '▲'}
-        </ToggleCollapseBarBottom>
+        </ToggleCollapseButtonBottom>
         <div style={{position: 'absolute', bottom: '-1px', zIndex: '1000', width: '100%', backgroundColor: '#282c34', height: '2px'}}></div>
         </>
       )}

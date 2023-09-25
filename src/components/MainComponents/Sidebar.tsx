@@ -1,6 +1,6 @@
 //Sidebar.tsx
 import React, { useMemo, useEffect } from 'react';
-import { StyledInput, ConversationItem, TitleContainer, TitleEditIconsContainer } from '../../styles/Sidebar.styles';
+import { StyledInput, ConversationItem, TitleContainer, TitleEditIconsContainer, IconButton } from '../../styles/Sidebar.styles';
 import { ConversationType } from '../../types/Conversations.types';
 import { FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
 import { MdOutlineChat } from 'react-icons/md';
@@ -105,9 +105,9 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, setConversations, acti
                 onChange={(e) => setEditingTitle(e.target.value)}
               />
               <TitleEditIconsContainer>
-                <FaCheck className="Icon" style={{color:'rgb(41, 175, 0)'}} onClick={confirmEdit} />
-                <FaTimes className="Icon" style={{color:'red'}} onClick={cancelEdit} />
-                <FaTrash className="Icon" style={{color:'#404040'}} onClick={() => handleDeleteConversation(conversation.id)} />
+                <IconButton onClick={confirmEdit}><FaCheck style={{color:'rgb(41, 175, 0)'}} /></IconButton>
+                <IconButton onClick={cancelEdit}><FaTimes style={{color:'red'}} /></IconButton>
+                <IconButton onClick={() => handleDeleteConversation(conversation.id)}><FaTrash style={{color:'#404040'}} /></IconButton>
               </TitleEditIconsContainer>
             </>
           ) : (

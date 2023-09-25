@@ -11,7 +11,7 @@ const fadeAnimation = (fromOpacity: number, toOpacity: number) => css`
   animation: ${createFadeAnimation(fromOpacity, toOpacity)} 0.2s ease-out forwards;
 `;
 
-export const Overlay = styled.div<{ fadeStatus: 'in' | 'out' }>`
+export const Overlay = styled.button<{ fadeStatus: 'in' | 'out' }>`
   position: fixed;
   top: 0;
   left: 0;
@@ -24,9 +24,11 @@ export const Overlay = styled.div<{ fadeStatus: 'in' | 'out' }>`
   z-index: 2000;
   opacity: 0;
   ${props => props.fadeStatus === 'out' ? fadeAnimation(1, 0) : fadeAnimation(0, 1)}
+  border: none;
+  color: #ebebeb;
 `;
 
-export const ModalContainer = styled.div<{ fadeStatus: 'in' | 'out' }>`
+export const ModalContainer = styled.button<{ fadeStatus: 'in' | 'out' }>`
   position: relative;
   background: #282c34;
   padding: 20px;
@@ -35,6 +37,7 @@ export const ModalContainer = styled.div<{ fadeStatus: 'in' | 'out' }>`
   font-size: 1rem;
   opacity: 0;
   ${props => props.fadeStatus === 'out' ? fadeAnimation(1, 0) : fadeAnimation(0, 1)}
+  color: #ebebeb;
 `;
 
 export const SystemPromptSettingsContainer = styled.div`
@@ -110,12 +113,15 @@ export const SystemPromptTextarea = styled.textarea`
   }
 `;
 
-export const CloseButton = styled.div`
+export const CloseButton = styled.button`
   position: absolute;
   top: 0px;
   right: 10px;
   cursor: pointer;
   font-size: 1.7rem;
+  color: #ebebeb;
+  border: none;
+  background: transparent;
 `;
 
 export const StatusLabel = styled.label`

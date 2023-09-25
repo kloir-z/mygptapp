@@ -1,12 +1,15 @@
 // OCRComponent.styles.ts
 import styled from '@emotion/styled';
 
-export const DropzoneContainer = styled.div`
+export const DropzoneContainer = styled.button`
   border: 2px dashed gray;
   margin: 10px;
   padding: 20px;
   text-align: center;
-  width: 60%;
+  width: 50%;
+  color: #ebebeb;
+  font-size: 1rem;
+  background: transparent;
 `;
 
 export const PreviewImageContainer = styled.div`

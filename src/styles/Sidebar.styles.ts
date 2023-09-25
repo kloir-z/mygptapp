@@ -12,14 +12,6 @@ export const ConversationItem = styled.button<{ active: boolean }>`
   flex-shrink: 0;
   border-radius: 4px;
   border: none;
-  .Icon {
-    font-size: 1rem;
-    background-color: #b3b3b3;
-    border-radius: 3px;
-    padding: 4px;
-    margin-right: 30px;
-    min-width: 1.2rem;
-  }
   @media (hover: hover) {
     &:hover {
       background-color: ${props => props.active ? '#80888f' : '#575d68'};
@@ -81,3 +73,14 @@ export const TitleEditIconsContainer = styled.div`
   padding-left: 20px;
 `;
 
+export const IconButton = styled.button`
+  font-size: 1rem;
+  background-color: #b3b3b3;
+  border-radius: 3px;
+  padding: 4px;
+  margin-right: 30px;
+  min-width: 1.2rem;
+  border: none;
+  display: flex;
+  justify-content: center;
+`;

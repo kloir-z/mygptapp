@@ -56,13 +56,36 @@ export const MessageDiv = styled.div<ToggleProps & { maxHeight?: string, shouldA
   transition: ${props => props.shouldAnimate ? 'max-height 0.5s ease-in-out' : 'none'};
 `;
 
+export const ToggleCollapseButtonBottom= styled.button<ToggleProps>`
+  margin: 0px 2px;
+  position: absolute;
+  bottom: -1px;
+  z-index: 1100;
+  height: ${props => props.collapsed ? '120px' : '40px'};
+  width: calc(100% - 26px);
+  cursor: pointer;
+  background: transparent;
+  color: #ebebeb;
+  border: none;
+  font-size: ${props => props.collapsed ? '1rem' : '0.7rem'};
+  padding: ${props => props.collapsed ? '10px' : '2px'};
+  font-weight: ${props => props.collapsed ? 'bold' : ''};
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  @media (hover: hover) and (pointer: fine) {
+  &:hover {
+    color: #ffffff92;
+  }}
+`;
+
 export const ToggleCollapseBarBottom= styled.div<ToggleProps>`
   margin: 0px 2px;
   position: absolute;
   bottom: -1px;
   z-index: 1000;
+  height: ${props => props.collapsed ? '120px' : '40px'};
   width: calc(100% - 26px);
-  cursor: pointer;
   background: ${props => {
     if (props.collapsed) {
       if (props.role === 'user') {
@@ -73,21 +96,10 @@ export const ToggleCollapseBarBottom= styled.div<ToggleProps>`
     }
     return '#00000000';
   }};
-  height: ${props => props.collapsed ? '120px' : '40px'};
   transition: background 0.5s ease-in-out, height 0.5s ease-in-out;
-  font-weight: ${props => props.collapsed ? 'bold' : ''};
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  font-size: ${props => props.collapsed ? '1rem' : '0.7rem'};
-  padding: ${props => props.collapsed ? '10px' : '2px'};
-  @media (hover: hover) and (pointer: fine) {
-  &:hover {
-    color: #ffffff92;
-  }}
 `;
 
-export const ToggleCollapseButton= styled.div`
+export const ToggleCollapseButton= styled.button`
   margin: 0px;
   position: absolute;
   top: -2px;
@@ -96,7 +108,7 @@ export const ToggleCollapseButton= styled.div`
   width: 24px;
   height: 24px;
   cursor: pointer;
-  background: '#00000000';
+  background: transparent;
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -105,6 +117,8 @@ export const ToggleCollapseButton= styled.div`
   &:hover {
     color: #ffffff92;
   }}
+  border: none;
+  color: #ebebeb;
 `;
 
 export const EditingText = styled.div`
@@ -129,6 +143,18 @@ export const EditingText = styled.div`
     margin-left: 30px;
   }
   z-index: 3000;
+`;
+
+export const IconButton = styled.button`
+  font-size: 1rem;
+  background-color: #b3b3b3;
+  border-radius: 3px;
+  padding: 4px;
+  margin-left: 30px;
+  min-width: 1.2rem;
+  border: none;
+  display: flex;
+  justify-content: center;
 `;
 
 export const EditTextarea = styled.textarea`

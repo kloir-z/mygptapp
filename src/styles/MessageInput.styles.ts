@@ -4,14 +4,8 @@ export const MessageInputContainer = styled.div`
   position: relative;
 `;
 
-export const MessageInputBottomContainer = styled.div`
-  display: flex;
-  flex-direction: row-reverse;
-`;
-
 export const StyledTextarea = styled.textarea`
   position: relative;
-  width: calc(100% - 8px);
   height: auto;
   margin: 2px;
   margin-bottom: 0px;
@@ -33,25 +27,10 @@ export const StyledTextarea = styled.textarea`
 ;
 `;
 
-export const CalcTokenButton = styled.button`
-  margin: 4px;
-  margin-top: 0px;
-  padding: 5px 10px;
-  font-size: 1rem;
-  border-radius: 3px;
-  border: none;
-  cursor: pointer;
-  color: rgba(255, 255, 255, 0.75); 
-  background: rgba(51, 99, 150, 0.75);
-  &:hover {
-    background: rgba(65, 125, 189, 0.75);
-  }
-`;
-
 export const SendButton = styled.button`
   position: absolute;
-  right: 8px;
-  bottom: 8px;
+  right: 16px;
+  bottom: 9px;
   margin: 0px;
   padding: 5px 10px;
   font-size: 1rem;

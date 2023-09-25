@@ -64,7 +64,7 @@ export const NotificationDot = styled.label`
   right: 4px;
 `;
 
-export const TokenText = styled.div`
+export const TokenText = styled.button`
   margin: 3px;
   font-size: 1rem;
   width: 45px;
@@ -81,4 +81,5 @@ export const TokenText = styled.div`
   &:hover {
     background: #ffffff19;
   }}
+  border: none;
 `;

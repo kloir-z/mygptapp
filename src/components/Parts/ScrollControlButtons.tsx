@@ -101,10 +101,11 @@ const ScrollControlButtons: React.FC<ScrollControlButtonsProps> = ({ scrollToTop
         position: 'fixed', 
         top: '45svh', 
         right: isIOS ? '4px' : '16px',
-        zIndex: 1000,
+        zIndex: 1200,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
+        width: '28px',
       }}
       onMouseOver={handleContainerMouseOver}
       onMouseOut={handleContainerMouseOut}

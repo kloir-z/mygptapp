@@ -40,7 +40,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ receivingId, awaitGetAIResp
     <>
       <MessageInputContainer>
       <StyledTextarea
-        style={{ width: isIOS ? '100%' : 'calc(100% - 12px)',}}
+        style={{ width: isIOS ? 'calc(100% - 3px)' : 'calc(100% - 12px)',}}
         value={inputMessage}
         onChange={e => setInputMessage(e.target.value)}
         rows={inputMessage.split('\n').length || 1}

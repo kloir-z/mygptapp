@@ -29,7 +29,6 @@ export const StyledTextarea = styled.textarea`
 
 export const SendButton = styled.button`
   position: absolute;
-  right: 16px;
   bottom: 9px;
   margin: 0px;
   padding: 5px 10px;

@@ -17,6 +17,9 @@ type SendButtonProps = {
 
 const SendButton: React.FC<SendButtonProps> = ({ receivingId, awaitGetAIResponse, handleStartResponse, handleStopResponse, inputMessage, setInputMessage, disabled }) => {
   const [isHovered, setIsHovered] = useState(false);
+  interface CustomWindow extends Window { MSStream?: any}
+  const customWindow = window as CustomWindow;
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !customWindow.MSStream;
 
   const handleGetAIResponse = async () => {
     handleStartResponse();
@@ -42,6 +45,7 @@ const SendButton: React.FC<SendButtonProps> = ({ receivingId, awaitGetAIResponse
 
   return (
     <StyledSendButton
+      style={{ right: isIOS ? '7px' : '16px',}}
       onClick={receivingId ? handleStopResponse : handleGetAIResponse}
       disabled={disabled}
       onMouseEnter={onMouseEnter}

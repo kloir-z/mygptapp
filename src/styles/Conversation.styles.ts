@@ -104,7 +104,7 @@ export const ToggleCollapseButton= styled.button`
   position: absolute;
   top: -2px;
   right: 4px;
-  z-index: 1000;
+  z-index: 1100;
   width: 24px;
   height: 24px;
   cursor: pointer;

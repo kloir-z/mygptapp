@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const ConversationItem = styled.div<{ active: boolean }>`
+export const ConversationItem = styled.button<{ active: boolean }>`
   font-size: 1rem;
   background-color: ${props => props.active ? '#70777e' : 'transparent'}; 
   padding: 5px; 
@@ -11,6 +11,7 @@ export const ConversationItem = styled.div<{ active: boolean }>`
   flex-grow: 0;
   flex-shrink: 0;
   border-radius: 4px;
+  border: none;
   .Icon {
     font-size: 1rem;
     background-color: #b3b3b3;
@@ -36,6 +37,7 @@ export const StyledInput = styled.input`
   padding: 5px 4px;
   margin: 0px;
   border-radius: 3px;
+  width: calc(100% - 10px);
   &:focus {
     outline: none;
     border: 1px solid #4c586a;
@@ -52,6 +54,8 @@ export const TitleContainer = styled.div`
   overflow-x: auto;
   display: flex;
   align-items: center;
+  color: #ebebeb;
+  width: 100%;
   svg {
     vertical-align: middle;
     width: 20px;

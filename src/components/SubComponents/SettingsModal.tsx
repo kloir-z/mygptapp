@@ -42,8 +42,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ show, onClose, apiKey, se
     <Overlay fadeStatus={fadeStatus} onMouseDown={handleClose}>
       <ModalContainer fadeStatus={fadeStatus} onMouseDown={e => e.stopPropagation()}>
         <CloseButton onClick={handleClose}>×</CloseButton>
+        <label>Set your OpenAI API key here.</label>
         <form>
-          <label>Set your OpenAI API key here.</label><br></br>
           <StatusLabel active={Boolean(apiKey)}>●</StatusLabel>
           <StyledInput 
             type="password" 

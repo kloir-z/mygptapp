@@ -11,7 +11,7 @@ const fadeAnimation = (fromOpacity: number, toOpacity: number) => css`
   animation: ${createFadeAnimation(fromOpacity, toOpacity)} 0.2s ease-out forwards;
 `;
 
-export const Overlay = styled.button<{ fadeStatus: 'in' | 'out' }>`
+export const Overlay = styled.label<{ fadeStatus: 'in' | 'out' }>`
   position: fixed;
   top: 0;
   left: 0;
@@ -29,6 +29,8 @@ export const Overlay = styled.button<{ fadeStatus: 'in' | 'out' }>`
 `;
 
 export const ModalContainer = styled.button<{ fadeStatus: 'in' | 'out' }>`
+  display: flex;
+  flex-direction: column;
   position: relative;
   background: #282c34;
   padding: 20px;

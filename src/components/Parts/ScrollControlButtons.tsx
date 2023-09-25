@@ -100,7 +100,7 @@ const ScrollControlButtons: React.FC<ScrollControlButtonsProps> = ({ scrollToTop
       style={{ 
         position: 'fixed', 
         top: '45svh', 
-        right: isIOS ? '4px' : '16px',
+        right: isIOS ? '6px' : '16px',
         zIndex: 1200,
         display: 'flex',
         flexDirection: 'column',

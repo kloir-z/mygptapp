@@ -120,7 +120,7 @@ export const WakachiModal: React.FC<WakachiModalProps> = ({ text, show, onClose 
         {isLoading ? <Spinner /> : (
           <>
             <div className="field">
-              <p style={{fontSize: '1.5rem', height: '1.5rem'}}>{groupedWakachi[currentIndex]}</p>
+              <p style={{fontSize: '1.5rem', height: '2.2rem'}}>{groupedWakachi[currentIndex]}</p>
             </div>
             <div className="field is-grouped">
               <button className="button" onClick={(e) => { e.stopPropagation(); goBackSentence()}} aria-label="文の先頭に戻る">

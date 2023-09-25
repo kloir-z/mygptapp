@@ -21,8 +21,6 @@ export const getYoutubeTranscript = async (youtubeUrl: string): Promise<string |
   export const getMarkdownContent = async (targetUrl: string): Promise<string[] | null> => {
     const endpoint = "https://asia-northeast2-my-pj-20230703.cloudfunctions.net/get_txt_from_url";
     const params = { url: targetUrl };
-
-    console.log(targetUrl)
   
     try {
       const response = await fetch(`${endpoint}?url=${encodeURIComponent(params.url)}`);
@@ -79,7 +77,6 @@ export const getYoutubeTranscript = async (youtubeUrl: string): Promise<string |
         if (fullTextAnnotation) {
           if (useMarkdown) {
             const markdownString = toMarkdown(fullTextAnnotation);
-            console.log(fullTextAnnotation)
             return markdownString;
           } else {
             return fullTextAnnotation.text;

@@ -83,7 +83,6 @@ export const getWakachi = async ({ text, maxLength }: WakachiProps): Promise<str
       if (tempGroup) {
         groupedWakachi.push(tempGroup);
       }
-      console.log(groupedWakachi)
 
       resolve(groupedWakachi);
     });

@@ -47,15 +47,12 @@ export const WakachiModal: React.FC<WakachiModalProps> = ({ text, show, onClose 
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
     
-    const minSpeed = 50; // 最低速度をミリ秒で設定。この値は自由に調整できます。
+    const minSpeed = 50; // 最低速度
     
     const calculatePlaybackSpeed = () => {
       const currentText = groupedWakachi[currentIndex];
       const textLength = currentText ? currentText.length : 0;
-      // ここで係数をかけています、この例では10を使っていますが、調整可能です。
       const dynamicSpeed = playbackSpeed * textLength / 2;
-      
-      // 計算された速度とminSpeedを比較し、大きい方を使用します。
       return Math.max(dynamicSpeed, minSpeed);
     };
     
@@ -81,8 +78,6 @@ export const WakachiModal: React.FC<WakachiModalProps> = ({ text, show, onClose 
       }
     };
   }, [isPlaying, groupedWakachi, currentIndex, playbackSpeed]);
-  
-  
 
   const goBackSentence = () => {
     let newIndex = currentIndex - 3;

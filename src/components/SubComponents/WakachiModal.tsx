@@ -47,7 +47,7 @@ export const WakachiModal: React.FC<WakachiModalProps> = ({ text, show, onClose 
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
     
-    const minSpeed = 50; // 最低速度
+    const minSpeed = 50;
     
     const calculatePlaybackSpeed = () => {
       const currentText = groupedWakachi[currentIndex];
@@ -101,6 +101,10 @@ export const WakachiModal: React.FC<WakachiModalProps> = ({ text, show, onClose 
         fadeStatus={fadeStatus}
         onMouseDown={e => e.stopPropagation()}
         onDoubleClick={e => e.stopPropagation()}
+        onClick={() => {
+          console.log("ModalContainer was clicked!");  // こちらを追加
+          setIsPlaying(!isPlaying);
+        }}
         style={{
           width: '80svw',
           maxWidth: '400px',
@@ -110,7 +114,6 @@ export const WakachiModal: React.FC<WakachiModalProps> = ({ text, show, onClose 
           justifyContent: 'center',
           alignItems: 'center'
         }}
-        onClick={() => setIsPlaying(!isPlaying)}
       >
         {isLoading ? <Spinner /> : (
           <>

@@ -94,6 +94,7 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
                   handleUpdateConversations={handleUpdateConversations}
                   gcpApiKey={gcpApiKey}
                   setGcpApiKey={setGcpApiKey}
+                  apiKey={apiKey}
                 />
               )}
               {displayMessages.map((ConversationData: ConversationData, index: number) => (

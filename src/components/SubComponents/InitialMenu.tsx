@@ -5,6 +5,7 @@ import { getYoutubeTranscript, getMarkdownContent } from 'src/utils/openAIUtil';
 import { SystemPromptType, ConversationType, ConversationData } from '../../types/Conversations.types';
 import { InitialMenuContainer, StyledSelect, StyledOption, StyledInput, StyledButton } from '../../styles/InitialMenu.styles';
 import OCRComponent from './OCRComponent';
+import VoiceInput from './VoiceInput';
 
 type InitialMenuProps = {
   systemprompts: SystemPromptType[];
@@ -12,9 +13,10 @@ type InitialMenuProps = {
   handleUpdateConversations: (updatedConversation: ConversationType, shouldUpdateFirestore: boolean) => Promise<void>;
   gcpApiKey: string;
   setGcpApiKey: React.Dispatch<React.SetStateAction<string>>;
+  apiKey: string;
 };
 
-const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversation, handleUpdateConversations, gcpApiKey, setGcpApiKey }) => {
+const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversation, handleUpdateConversations, gcpApiKey, setGcpApiKey, apiKey }) => {
   const [showTranscriptPopup, setShowTranscriptPopup] = useState(false);
   const [showGetMdTxtPopup, setShowGetMdTxtPopup] = useState(false);
   const [targetUrl, setTargetUrl] = useState<string | null>(null);
@@ -22,6 +24,7 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
   const [selectedPromptId, setSelectedPromptId] = useState<string>("none");
   const [showOcrPopup, setShowOcrPopup] = useState(false);
   const [ocrText, setOcrText] = useState<string | null>(null);
+  const [showVoiceModePopup, setShowVoiceModePopup] = useState(false);
 
   useEffect(() => {
     setSelectedPromptId("none");
@@ -40,6 +43,8 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
           setShowGetMdTxtPopup(true);
         } else if (matchingPrompt.title === 'OCRして要約') {
           setShowOcrPopup(true);
+        } else if (matchingPrompt.title === 'VoiceMode') {
+          setShowVoiceModePopup(true);
         }
       }
     }
@@ -218,6 +223,12 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
           <br></br>
         </>
       )}
+      {showVoiceModePopup &&
+        <VoiceInput
+          setOcrText={setOcrText} 
+          apiKey={apiKey}
+        />
+      }
       {showOcrPopup &&
         <OCRComponent
           setOcrText={setOcrText} 

@@ -14,9 +14,10 @@ type InitialMenuProps = {
   gcpApiKey: string;
   setGcpApiKey: React.Dispatch<React.SetStateAction<string>>;
   apiKey: string;
+  setAutoRunOnLoad: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversation, handleUpdateConversations, gcpApiKey, setGcpApiKey, apiKey }) => {
+const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversation, handleUpdateConversations, gcpApiKey, setGcpApiKey, apiKey, setAutoRunOnLoad }) => {
   const [showTranscriptPopup, setShowTranscriptPopup] = useState(false);
   const [showGetMdTxtPopup, setShowGetMdTxtPopup] = useState(false);
   const [targetUrl, setTargetUrl] = useState<string | null>(null);
@@ -25,6 +26,11 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
   const [showOcrPopup, setShowOcrPopup] = useState(false);
   const [ocrText, setOcrText] = useState<string | null>(null);
   const [showVoiceModePopup, setShowVoiceModePopup] = useState(false);
+
+  // 音声入力に対して自動応答するために記載したが、ここではなく、もっと上位のコンポーネントでautoRunOnLoadというか、isVoiceModeとかで管理すべきかなと思われる。
+  // useEffect(() => {
+  //   setAutoRunOnLoad(showVoiceModePopup);
+  // }, [showVoiceModePopup]);
 
   useEffect(() => {
     setSelectedPromptId("none");

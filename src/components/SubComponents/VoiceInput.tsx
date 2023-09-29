@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { StyledButton } from '../../styles/InitialMenu.styles';
 
 interface AudioRecorderProps {
   apiKey: string;
@@ -99,9 +100,9 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
 
   return (
     <div>
-      <button onClick={toggleRecording}>
-        {recording ? 'Stop Recording' : 'Start Recording'}
-      </button>
+      <StyledButton onClick={toggleRecording}>
+        {recording ? 'Stop' : 'Start'}
+      </StyledButton>
     </div>
   );
 };

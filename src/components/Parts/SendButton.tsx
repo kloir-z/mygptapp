@@ -1,5 +1,5 @@
 //SendButton.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane, faStop } from '@fortawesome/free-solid-svg-icons'
 import { SendButton as StyledSendButton } from '../../styles/MessageInput.styles'
@@ -13,14 +13,21 @@ type SendButtonProps = {
   inputMessage?: string;
   setInputMessage?: React.Dispatch<React.SetStateAction<string>>;
   disabled?: boolean; 
+  autoRunOnLoad?: boolean;
 };
 
-const SendButton: React.FC<SendButtonProps> = ({ receivingId, awaitGetAIResponse, handleStartResponse, handleStopResponse, inputMessage, setInputMessage, disabled }) => {
+const SendButton: React.FC<SendButtonProps> = ({ receivingId, awaitGetAIResponse, handleStartResponse, handleStopResponse, inputMessage, setInputMessage, disabled, autoRunOnLoad }) => {
   const [isHovered, setIsHovered] = useState(false);
   interface CustomWindow extends Window { MSStream?: any}
   const customWindow = window as CustomWindow;
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !customWindow.MSStream;
 
+  useEffect(() => {
+    if (autoRunOnLoad) {
+      handleGetAIResponse();
+    }
+  }, [autoRunOnLoad]);
+  
   const handleGetAIResponse = async () => {
     handleStartResponse();
     try {

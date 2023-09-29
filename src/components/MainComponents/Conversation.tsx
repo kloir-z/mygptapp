@@ -41,6 +41,7 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
   const { messagesEndRef, scrollContainerRef, scrollToTop, scrollToBottom } = useScroll(displayMessages, receivingMessage, editingMessageIndex);
   const [showInitialMenu, setShowInitialMenu] = useState(false);
   const [isFadedIn, setIsFadedIn] = useState(false);
+  const [autoRunOnLoad, setAutoRunOnLoad] = useState(false);
 
   const { setDebugInfo } = useDebugInfo();
   const handleStartResponse = () => {
@@ -95,6 +96,7 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
                   gcpApiKey={gcpApiKey}
                   setGcpApiKey={setGcpApiKey}
                   apiKey={apiKey}
+                  setAutoRunOnLoad={setAutoRunOnLoad}
                 />
               )}
               {displayMessages.map((ConversationData: ConversationData, index: number) => (
@@ -122,6 +124,7 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
                     awaitGetAIResponse={awaitGetAIResponse} 
                     handleStartResponse={handleStartResponse}
                     handleStopResponse={handleStopResponse}
+                    autoRunOnLoad={autoRunOnLoad}
                   />
                 </div>
               )}

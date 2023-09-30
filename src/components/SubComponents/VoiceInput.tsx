@@ -39,7 +39,7 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
 
       mediaRecorder.addEventListener('stop', () => {
         if (hasSpoken.current) {
-          const audioType = /iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'audio/mp4' : 'audio/wav';
+          const audioType = /iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'audio/mp3' : 'audio/wav';
           const audioBlob = new Blob(audioChunks, { type: audioType });
           
           const formData = new FormData();
@@ -51,7 +51,7 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
           setAudioUrl(url);
           const a = document.createElement('a');
           a.href = url;
-          a.download = 'test_chunk.mp4';
+          a.download = 'test_chunk.mp3';
           a.click();
       
           fetch('https://api.openai.com/v1/audio/transcriptions', {

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { StyledButton } from '../../styles/InitialMenu.styles';
 import { useDebugInfo } from '../Debugger/DebugContext';
+import AudioRecorderPolyfill from 'audio-recorder-polyfill';
 
 interface AudioRecorderProps {
   apiKey: string;
@@ -15,6 +16,13 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const { setDebugInfo } = useDebugInfo();
 
+  useEffect(() => {
+    // Check if MediaRecorder is available or if it doesn't support audio/wave
+    if (!window.MediaRecorder || !MediaRecorder.isTypeSupported('audio/wave')) {
+      window.MediaRecorder = AudioRecorderPolyfill;
+    }
+  }, []);
+  
   const toggleRecording = async () => {
     if (recording) {
       // Stop recording
@@ -48,10 +56,6 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
 
           const url = URL.createObjectURL(audioBlob);
           setAudioUrl(url);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = 'test_chunk.wav';
-          a.click();
           setDebugInfo(`${audioBlob.type}`);
       
           fetch('https://api.openai.com/v1/audio/transcriptions', {

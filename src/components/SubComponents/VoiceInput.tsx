@@ -29,7 +29,7 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
     } else {
       // Start recording
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
+      const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/wav' });
 
       mediaRecorderRef.current = mediaRecorder;
       const audioChunks: BlobPart[] = [];

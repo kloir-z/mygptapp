@@ -92,12 +92,13 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
       intervalIdRef.current = window.setInterval(() => {
         analyser.getByteFrequencyData(dataArray);
         const volume = Math.max(...dataArray);
+        setDebugInfo(`${volume}`);
 
         if (volume >= 180) {
           hasSpoken.current = true;
         }
 
-        if (hasSpoken.current && volume < 100) {
+        if (hasSpoken.current && volume < 120) {
           if (belowThresholdTime === null) {
             belowThresholdTime = Date.now();
           } else if (Date.now() - belowThresholdTime > 800) {

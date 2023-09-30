@@ -29,7 +29,8 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
     } else {
       // Start recording
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream);
+      const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
+
       mediaRecorderRef.current = mediaRecorder;
       const audioChunks: BlobPart[] = [];
 
@@ -48,6 +49,10 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
           setDebugInfo(`audioBlob.type: ${audioBlob.type}`);
           const url = URL.createObjectURL(audioBlob);
           setAudioUrl(url);  // Blob URLをセット
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'test.wav';
+          a.click();
       
           fetch('https://api.openai.com/v1/audio/transcriptions', {
             method: 'POST',

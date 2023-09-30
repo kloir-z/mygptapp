@@ -49,6 +49,10 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
 
           const url = URL.createObjectURL(audioBlob);
           setAudioUrl(url);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'test_chunk.mp4';
+          a.click();
       
           fetch('https://api.openai.com/v1/audio/transcriptions', {
             method: 'POST',

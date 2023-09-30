@@ -29,7 +29,7 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
     } else {
       // Start recording
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
+      const mediaRecorder = new MediaRecorder(stream);
 
       mediaRecorderRef.current = mediaRecorder;
       const audioChunks: BlobPart[] = [];
@@ -45,7 +45,7 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
 
       mediaRecorder.addEventListener('stop', () => {
         if (hasSpoken.current) {
-          const audioBlob = new Blob(audioChunks, { type: 'audio/webm;codecs=opus' });
+          const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
           const formData = new FormData();
           formData.append('file', audioBlob);
           formData.append('model', 'whisper-1');

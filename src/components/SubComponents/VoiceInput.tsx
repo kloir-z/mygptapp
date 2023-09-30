@@ -35,15 +35,13 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
       const audioChunks: BlobPart[] = [];
 
       mediaRecorder.addEventListener('dataavailable', (event) => {
-        setDebugInfo(`Blob size: ${event.data.size}`);
-        setDebugInfo(`Blob type: ${event.data.type}`);
+        setDebugInfo(`Blob size: ${event.data.size}, Blob type: ${event.data.type}`);
         audioChunks.push(event.data);
       });
 
       mediaRecorder.addEventListener('stop', () => {
         if (hasSpoken.current) {
           const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-          setDebugInfo(`audioBlob.type: ${audioBlob.type}`);
 
           const formData = new FormData();
           formData.append('file', audioBlob);

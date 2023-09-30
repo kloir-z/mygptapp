@@ -18,7 +18,7 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
 
   useEffect(() => {
     // Check if MediaRecorder is available or if it doesn't support audio/wave
-    if (!window.MediaRecorder || !MediaRecorder.isTypeSupported('audio/wave')) {
+    if (!window.MediaRecorder || !MediaRecorder.isTypeSupported('audio/wav')) {
       window.MediaRecorder = AudioRecorderPolyfill;
     }
   }, []);
@@ -36,7 +36,8 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
       hasSpoken.current = false;
     } else {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream);
+      const options = { mimeType: 'audio/wav' };
+      const mediaRecorder = new MediaRecorder(stream, options);
 
       mediaRecorderRef.current = mediaRecorder;
       const audioChunks: BlobPart[] = [];
@@ -47,8 +48,8 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
 
       mediaRecorder.addEventListener('stop', () => {
         if (hasSpoken.current) {
-          const audioBlob = new Blob(audioChunks);
-          
+          const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+
           const formData = new FormData();
           formData.append('file', audioBlob);
           formData.append('model', 'whisper-1');
@@ -117,7 +118,7 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
         }
       }, 10);
 
-      mediaRecorder.start(1000);
+      mediaRecorder.start();
       setRecording(true);
     }
   };

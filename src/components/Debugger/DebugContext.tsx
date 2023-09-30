@@ -22,11 +22,13 @@ export const DebugDisplay: React.FC = () => {
       <div
         style={{
           position: 'fixed',
-          bottom: 0,
+          bottom: '10px',
           left: 0,
-          opacity: 0.7,
+          opacity: 0.8,
           fontSize: '12px',
           zIndex: 1000,
+          backgroundColor: '#000000',
+          color: '#09ff00'
         }}
       >
         {debugInfo}

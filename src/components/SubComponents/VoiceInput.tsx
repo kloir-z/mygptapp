@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { StyledButton } from '../../styles/InitialMenu.styles';
+import { useDebugInfo } from '../Debugger/DebugContext';
 
 interface AudioRecorderProps {
   apiKey: string;
@@ -12,6 +13,7 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const intervalIdRef = useRef<number | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const { setDebugInfo } = useDebugInfo();
 
   const toggleRecording = async () => {
     if (recording) {
@@ -43,6 +45,7 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
           formData.append('model', 'whisper-1');
           formData.append('language', 'ja');
 
+          setDebugInfo(`audioBlob.type: ${audioBlob.type}`);
           const url = URL.createObjectURL(audioBlob);
           setAudioUrl(url);  // Blob URLをセット
       

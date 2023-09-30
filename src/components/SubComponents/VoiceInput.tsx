@@ -48,7 +48,7 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
           formData.append('language', 'ja');
 
           const url = URL.createObjectURL(audioBlob);
-          setAudioUrl(url);  // Blob URLをセット
+          setAudioUrl(url);
       
           fetch('https://api.openai.com/v1/audio/transcriptions', {
             method: 'POST',
@@ -58,15 +58,20 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
             body: formData,
           })
           .then(response => {
-            setDebugInfo(`"Status code:"${response.status}`)
+            if (!response.ok) {
+              return response.json().then(data => {
+                setDebugInfo(`Status code: ${response.status}, Error: ${JSON.stringify(data)}`);
+                throw new Error('API responded with an error');
+              });
+            }
             return response.json();
-          }) 
-         .then(data => {
+          })
+          .then(data => {
             setOcrText(data.text);
           })
           .catch(error => {
             console.error('API Error:', error);
-            setDebugInfo(`${error}`)
+            setDebugInfo(`Caught exception: ${error.toString()}`);
           });
           hasSpoken.current = false;
         }

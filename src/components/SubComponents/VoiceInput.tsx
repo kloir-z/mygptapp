@@ -38,6 +38,11 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
         audioChunks.push(event.data);
       });
 
+      mediaRecorder.onerror = (event) => {
+        const errorEvent = event as any;
+        setDebugInfo(`MediaRecorder error: ${errorEvent.error}`);
+      };
+
       mediaRecorder.addEventListener('stop', () => {
         if (hasSpoken.current) {
           const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });

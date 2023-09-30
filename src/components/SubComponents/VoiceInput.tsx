@@ -41,7 +41,6 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
       mediaRecorder.addEventListener('stop', () => {
         if (hasSpoken.current) {
           const audioType = /iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'audio/mp4' : 'audio/wav';
-          setDebugInfo(`${audioType}`)
           const audioBlob = new Blob(audioChunks, { type: audioType });
           
           const formData = new FormData();
@@ -59,12 +58,16 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
             },
             body: formData,
           })
-          .then(response => response.json())
-          .then(data => {
+          .then(response => {
+            setDebugInfo(`"Status code:"${response.status}`)
+            return response.json();
+          }) 
+         .then(data => {
             setOcrText(data.text);
           })
           .catch(error => {
             console.error('API Error:', error);
+            setDebugInfo(`${error}`)
           });
           hasSpoken.current = false;
         }

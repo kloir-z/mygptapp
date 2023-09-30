@@ -11,6 +11,7 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
   const hasSpoken = useRef(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const intervalIdRef = useRef<number | null>(null);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
   const toggleRecording = async () => {
     if (recording) {
@@ -41,6 +42,9 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
           formData.append('file', audioBlob);
           formData.append('model', 'whisper-1');
           formData.append('language', 'ja');
+
+          const url = URL.createObjectURL(audioBlob);
+          setAudioUrl(url);  // Blob URLをセット
       
           fetch('https://api.openai.com/v1/audio/transcriptions', {
             method: 'POST',
@@ -103,6 +107,7 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
       <StyledButton onClick={toggleRecording}>
         {recording ? 'Stop' : 'Start'}
       </StyledButton>
+      {audioUrl && <audio controls src={audioUrl}>Your browser does not support the audio element.</audio>}
     </div>
   );
 };

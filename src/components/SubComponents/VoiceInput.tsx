@@ -39,8 +39,8 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
 
       mediaRecorder.addEventListener('stop', () => {
         if (hasSpoken.current) {
-          const audioType = /iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'audio/mp4' : 'audio/wav';
-          const audioBlob = new Blob(audioChunks, { type: audioType });
+          const audioType = /iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'audio/mp4' : 'audio/webm';
+          const audioBlob = new Blob(audioChunks);
           
           const formData = new FormData();
           formData.append('file', audioBlob);

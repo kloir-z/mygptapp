@@ -53,7 +53,7 @@ export const getAIResponse = async ({
   const decoder = new TextDecoder('utf-8');
   let aiMessageContent = '';
 
-  const debouncedSetReceivingMessage = debounce(setReceivingMessage, 10);
+  const debouncedSetReceivingMessage = debounce(setReceivingMessage, 1);
 
   try {
     let retries = 3;
@@ -69,12 +69,20 @@ export const getAIResponse = async ({
           reader.releaseLock();
           return;
         }
+        console.log(value)
   
         const chunk = decoder.decode(value, { stream: true });
         const jsons = chunk
           .split('\n')
           .filter((data) => data.startsWith('data:') && !data.includes('[DONE]'))
-          .map((data) => JSON.parse(data.slice(5)))
+          .map((data) => {
+            try {
+              return JSON.parse(data.slice(5));
+            } catch (e) {
+              console.error("JSON parse error:", e, "Data:", data);
+              return null;
+            }
+          })
           .filter((data) => data);
 
         for (const json of jsons) {

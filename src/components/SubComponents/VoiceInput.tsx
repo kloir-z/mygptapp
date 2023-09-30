@@ -39,7 +39,7 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
 
       mediaRecorder.addEventListener('stop', () => {
         if (hasSpoken.current) {
-          const audioType = /iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'audio/mp3' : 'audio/wav';
+          const audioType = /iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'audio/mp4' : 'audio/wav';
           const audioBlob = new Blob(audioChunks, { type: audioType });
           
           const formData = new FormData();
@@ -51,8 +51,9 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
           setAudioUrl(url);
           const a = document.createElement('a');
           a.href = url;
-          a.download = 'test_chunk.mp3';
+          a.download = 'test_chunk.mp4';
           a.click();
+          setDebugInfo(`${audioBlob.type}`);
       
           fetch('https://api.openai.com/v1/audio/transcriptions', {
             method: 'POST',
@@ -64,7 +65,6 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
           .then(response => {
             if (!response.ok) {
               return response.json().then(data => {
-                setDebugInfo(`Status code: ${response.status}, Error: ${JSON.stringify(data)}`);
                 throw new Error('API responded with an error');
               });
             }
@@ -75,7 +75,6 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
           })
           .catch(error => {
             console.error('API Error:', error);
-            setDebugInfo(`Caught exception: ${error.toString()}`);
           });
           hasSpoken.current = false;
         }

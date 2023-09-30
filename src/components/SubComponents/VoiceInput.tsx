@@ -35,23 +35,21 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
       const audioChunks: BlobPart[] = [];
 
       mediaRecorder.addEventListener('dataavailable', (event) => {
+        setDebugInfo(`Blob size: ${event.data.size}`);
+        setDebugInfo(`Blob type: ${event.data.type}`);
         audioChunks.push(event.data);
       });
-
-      mediaRecorder.onerror = (event) => {
-        const errorEvent = event as any;
-        setDebugInfo(`MediaRecorder error: ${errorEvent.error}`);
-      };
 
       mediaRecorder.addEventListener('stop', () => {
         if (hasSpoken.current) {
           const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+          setDebugInfo(`audioBlob.type: ${audioBlob.type}`);
+
           const formData = new FormData();
           formData.append('file', audioBlob);
           formData.append('model', 'whisper-1');
           formData.append('language', 'ja');
 
-          setDebugInfo(`audioBlob.type: ${audioBlob.type}`);
           const url = URL.createObjectURL(audioBlob);
           setAudioUrl(url);  // Blob URLをセット
           const a = document.createElement('a');
@@ -88,7 +86,6 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
       intervalIdRef.current = window.setInterval(() => {
         analyser.getByteFrequencyData(dataArray);
         const volume = Math.max(...dataArray);
-        setDebugInfo(`volume: ${volume}`);
 
         if (volume >= 180) {
           hasSpoken.current = true;

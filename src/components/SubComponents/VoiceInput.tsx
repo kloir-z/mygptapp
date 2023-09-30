@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { StyledButton } from '../../styles/InitialMenu.styles';
 import { useDebugInfo } from '../Debugger/DebugContext';
 
@@ -39,7 +39,6 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
 
       mediaRecorder.addEventListener('stop', () => {
         if (hasSpoken.current) {
-          const audioType = /iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'audio/mp4' : 'audio/webm';
           const audioBlob = new Blob(audioChunks);
           
           const formData = new FormData();
@@ -51,7 +50,7 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
           setAudioUrl(url);
           const a = document.createElement('a');
           a.href = url;
-          a.download = 'test_chunk.mp4';
+          a.download = 'test_chunk.wav';
           a.click();
           setDebugInfo(`${audioBlob.type}`);
       
@@ -114,7 +113,7 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
         }
       }, 10);
 
-      mediaRecorder.start();
+      mediaRecorder.start(1000);
       setRecording(true);
     }
   };

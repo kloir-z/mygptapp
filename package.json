@@ -17,6 +17,7 @@
     "@types/node": "^16.18.38",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
+    "audio-recorder-polyfill": "^0.4.1",
     "firebase": "^10.0.0",
     "kuromoji": "^0.1.2",
     "path-browserify": "^1.0.1",
@@ -66,6 +67,7 @@
     "@types/react-syntax-highlighter": "^15.5.7",
     "@types/uuid": "^9.0.2",
     "babel-plugin-emotion": "^11.0.0",
+    "opus-media-recorder": "^0.8.0",
     "react-app-rewired": "^2.2.1"
   }
 }

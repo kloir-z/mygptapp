@@ -88,6 +88,7 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
       intervalIdRef.current = window.setInterval(() => {
         analyser.getByteFrequencyData(dataArray);
         const volume = Math.max(...dataArray);
+        setDebugInfo(`volume: ${volume}`);
 
         if (volume >= 180) {
           hasSpoken.current = true;

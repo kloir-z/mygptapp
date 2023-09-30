@@ -14,6 +14,7 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
   const intervalIdRef = useRef<number | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const { setDebugInfo } = useDebugInfo();
+  const isSupported = MediaRecorder.isTypeSupported('audio/webm;codecs=opus');
 
   const toggleRecording = async () => {
     if (recording) {
@@ -35,7 +36,7 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
       const audioChunks: BlobPart[] = [];
 
       mediaRecorder.addEventListener('dataavailable', (event) => {
-        setDebugInfo(`Blob size: ${event.data.size}, Blob type: ${event.data.type}`);
+        setDebugInfo(`Blob size: ${event.data.size}, Blob type: ${event.data.type}, Is audio/webm;codecs=opus supported? ${isSupported}`);
         audioChunks.push(event.data);
       });
 

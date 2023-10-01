@@ -59,8 +59,10 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
   }, [activeConversation.id, receivingId]);
 
   useEffect(() => {
-    setAutoRunOnLoad(false);
-  }, [deleteMessage]);
+    if (editingMessageIndex !== null) {
+      setAutoRunOnLoad(false);
+    }
+  }, [editingMessageIndex]);
 
   useEffect(() => {
     setEditingMessageIndex(null);
@@ -108,6 +110,7 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
                   gcpApiKey={gcpApiKey}
                   setGcpApiKey={setGcpApiKey}
                   apiKey={apiKey}
+                  autoRunOnLoad={autoRunOnLoad}
                   setAutoRunOnLoad={setAutoRunOnLoad}
                   receivingMessage={receivingMessage}
                 />

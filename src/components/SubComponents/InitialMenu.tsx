@@ -14,11 +14,12 @@ type InitialMenuProps = {
   gcpApiKey: string;
   setGcpApiKey: React.Dispatch<React.SetStateAction<string>>;
   apiKey: string;
+  autoRunOnLoad: boolean;
   setAutoRunOnLoad: React.Dispatch<React.SetStateAction<boolean>>;
   receivingMessage: string;
 };
 
-const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversation, handleUpdateConversations, gcpApiKey, setGcpApiKey, apiKey, setAutoRunOnLoad, receivingMessage }) => {
+const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversation, handleUpdateConversations, gcpApiKey, setGcpApiKey, apiKey, autoRunOnLoad, setAutoRunOnLoad, receivingMessage }) => {
   const [showTranscriptPopup, setShowTranscriptPopup] = useState(false);
   const [showGetMdTxtPopup, setShowGetMdTxtPopup] = useState(false);
   const [targetUrl, setTargetUrl] = useState<string | null>(null);
@@ -235,6 +236,7 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
         <VoiceInput
           setOcrText={setOcrText} 
           apiKey={apiKey}
+          autoRunOnLoad={autoRunOnLoad}
           setAutoRunOnLoad={setAutoRunOnLoad}
           receivingMessage={receivingMessage}
           gcpApiKey={gcpApiKey}

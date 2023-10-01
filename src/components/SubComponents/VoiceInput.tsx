@@ -6,6 +6,7 @@ import AudioRecorderPolyfill from 'audio-recorder-polyfill';
 interface AudioRecorderProps {
   apiKey: string;
   setOcrText: React.Dispatch<React.SetStateAction<string | null>>;
+  autoRunOnLoad: boolean;
   setAutoRunOnLoad: React.Dispatch<React.SetStateAction<boolean>>;
   receivingMessage: string;
   gcpApiKey: string;
@@ -13,7 +14,7 @@ interface AudioRecorderProps {
 
 const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
 
-const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, setAutoRunOnLoad, receivingMessage, gcpApiKey }) => {
+const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunOnLoad, setAutoRunOnLoad, receivingMessage, gcpApiKey }) => {
   const [recording, setRecording] = useState(false);
   const hasSpoken = useRef(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -21,8 +22,7 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, setAutoR
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const { setDebugInfo } = useDebugInfo();
 
-  const [autoRunOnLoad, setLocalAutoRunOnLoad] = useState(true);
-  const [isTextToSpeechEnabled, setTextToSpeechEnabled] = useState(false);
+  const [isTextToSpeechEnabled, setTextToSpeechEnabled] = useState(true);
 
   const handleTextToSpeechChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTextToSpeechEnabled(event.target.checked);
@@ -30,7 +30,6 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, setAutoR
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const checked = event.target.checked;
-    setLocalAutoRunOnLoad(checked);
     setAutoRunOnLoad(checked);
   };
 

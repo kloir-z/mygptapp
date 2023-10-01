@@ -26,7 +26,8 @@ const SendButton: React.FC<SendButtonProps> = ({ receivingId, awaitGetAIResponse
     if (autoRunOnLoad) {
       handleGetAIResponse();
     }
-  }, [autoRunOnLoad]);
+    console.log(autoRunOnLoad)
+  }, []);
   
   const handleGetAIResponse = async () => {
     handleStartResponse();

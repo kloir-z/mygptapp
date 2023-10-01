@@ -102,7 +102,6 @@ export const WakachiModal: React.FC<WakachiModalProps> = ({ text, show, onClose 
         onMouseDown={e => e.stopPropagation()}
         onDoubleClick={e => e.stopPropagation()}
         onClick={() => {
-          console.log("ModalContainer was clicked!");  // こちらを追加
           setIsPlaying(!isPlaying);
         }}
         style={{

@@ -15,9 +15,10 @@ type InitialMenuProps = {
   setGcpApiKey: React.Dispatch<React.SetStateAction<string>>;
   apiKey: string;
   setAutoRunOnLoad: React.Dispatch<React.SetStateAction<boolean>>;
+  receivingMessage: string;
 };
 
-const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversation, handleUpdateConversations, gcpApiKey, setGcpApiKey, apiKey, setAutoRunOnLoad }) => {
+const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversation, handleUpdateConversations, gcpApiKey, setGcpApiKey, apiKey, setAutoRunOnLoad, receivingMessage }) => {
   const [showTranscriptPopup, setShowTranscriptPopup] = useState(false);
   const [showGetMdTxtPopup, setShowGetMdTxtPopup] = useState(false);
   const [targetUrl, setTargetUrl] = useState<string | null>(null);
@@ -34,9 +35,10 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
 
   useEffect(() => {
     setSelectedPromptId("none");
-    setShowTranscriptPopup(false); 
+    setShowTranscriptPopup(false);
     setShowGetMdTxtPopup(false);
     setShowOcrPopup(false);
+    setShowVoiceModePopup(false);
     if (activeConversation.revisions[0].conversation[0]?.role === 'system') {
       const systemContent = activeConversation.revisions[0].conversation[0].content;
       const matchingPrompt = systemprompts.find(prompt => prompt.content === systemContent);
@@ -233,6 +235,9 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
         <VoiceInput
           setOcrText={setOcrText} 
           apiKey={apiKey}
+          setAutoRunOnLoad={setAutoRunOnLoad}
+          receivingMessage={receivingMessage}
+          gcpApiKey={gcpApiKey}
         />
       }
       {showOcrPopup &&

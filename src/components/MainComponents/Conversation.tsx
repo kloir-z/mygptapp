@@ -61,13 +61,21 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
   useEffect(() => {
     setEditingMessageIndex(null);
     setDisplayMessages(activeConversation.revisions[0].conversation);
-    const showMenu = !activeConversation.revisions[0].conversation.some(message => message.role === 'assistant');
+    const hasAssistantMessage = activeConversation.revisions[0].conversation.some(message => message.role === 'assistant');
+    const hasVoiceModeSystemMessage = activeConversation.revisions[0].conversation.some(message => message.role === 'system' && message.content.startsWith('音声会話モード'));
+  
+    const showMenu = !hasAssistantMessage || hasVoiceModeSystemMessage;
+  
     setShowInitialMenu(showMenu);
     setIsConversationLoading(false);
   }, [activeConversation]);
 
   useEffect(() => {
-    const showMenu = !activeConversation.revisions[0].conversation.some(message => message.role === 'assistant');
+    const hasAssistantMessage = activeConversation.revisions[0].conversation.some(message => message.role === 'assistant');
+    const hasVoiceModeSystemMessage = activeConversation.revisions[0].conversation.some(message => message.role === 'system' && message.content.startsWith('音声会話モード'));
+  
+    const showMenu = !hasAssistantMessage || hasVoiceModeSystemMessage;
+  
     setShowInitialMenu(showMenu);
   }, [receivingId]);
 
@@ -97,6 +105,7 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
                   setGcpApiKey={setGcpApiKey}
                   apiKey={apiKey}
                   setAutoRunOnLoad={setAutoRunOnLoad}
+                  receivingMessage={receivingMessage}
                 />
               )}
               {displayMessages.map((ConversationData: ConversationData, index: number) => (

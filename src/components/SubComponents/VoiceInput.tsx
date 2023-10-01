@@ -6,15 +6,89 @@ import AudioRecorderPolyfill from 'audio-recorder-polyfill';
 interface AudioRecorderProps {
   apiKey: string;
   setOcrText: React.Dispatch<React.SetStateAction<string | null>>;
+  setAutoRunOnLoad: React.Dispatch<React.SetStateAction<boolean>>;
+  receivingMessage: string;
+  gcpApiKey: string;
 }
 
-const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
+const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, setAutoRunOnLoad, receivingMessage, gcpApiKey }) => {
   const [recording, setRecording] = useState(false);
   const hasSpoken = useRef(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const intervalIdRef = useRef<number | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const { setDebugInfo } = useDebugInfo();
+
+  const [autoRunOnLoad, setLocalAutoRunOnLoad] = useState(false);
+  const [isTextToSpeechEnabled, setTextToSpeechEnabled] = useState(false);
+
+  const handleTextToSpeechChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTextToSpeechEnabled(event.target.checked);
+  };
+
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = event.target.checked;
+    setLocalAutoRunOnLoad(checked);
+    setAutoRunOnLoad(checked);
+  };
+
+  const prevReceivingMessageRef = useRef('');
+
+  useEffect(() => {
+    const wasEmpty = prevReceivingMessageRef.current === '';
+    const isEmptyNow = receivingMessage === '';
+
+    if (!wasEmpty && isEmptyNow && isTextToSpeechEnabled) {
+      // メッセージ受信が終了
+      textToSpeech(prevReceivingMessageRef.current);
+      console.log(prevReceivingMessageRef.current)
+    }
+
+    // 値を更新
+    prevReceivingMessageRef.current = receivingMessage;
+  }, [receivingMessage]);
+
+  const textToSpeech = async (text: string) => {
+    const endpoint = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${gcpApiKey}`;
+  
+    const payload = {
+      input: {
+        text: text
+      },
+      voice: {
+        languageCode: 'ja-JP',
+        name: 'ja-JP-Neural2-C'
+      },
+      audioConfig: {
+        audioEncoding: 'MP3',
+        pitch: '-3.2',
+        speakingRate: '1.19'
+      }
+    };
+  
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8'
+        },
+        body: JSON.stringify(payload)
+      });
+  
+      if (!response.ok) {
+        throw new Error('API responded with an error');
+      }
+  
+      const data = await response.json();
+      console.log(data);  // レスポンスを表示
+  
+      // 生成された音声を自動再生
+      const audio = new Audio("data:audio/mp3;base64," + data.audioContent);
+      audio.play();
+    } catch (error) {
+      console.error("Text-to-Speech Error:", error);
+    }
+  };
 
   useEffect(() => {
     // Check if MediaRecorder is available or if it doesn't support audio/wave
@@ -125,6 +199,25 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText }) => {
 
   return (
     <div>
+      <div>
+        <label>
+          <input
+            type="checkbox"
+            checked={autoRunOnLoad}
+            onChange={handleCheckboxChange}
+          />
+          Auto Run On Load
+        </label>
+        <br></br>
+        <label>
+          <input
+            type="checkbox"
+            checked={isTextToSpeechEnabled}
+            onChange={handleTextToSpeechChange}
+          />
+          Text To Speech
+        </label>
+      </div>
       <StyledButton onClick={toggleRecording}>
         {recording ? 'Stop' : 'Start'}
       </StyledButton>

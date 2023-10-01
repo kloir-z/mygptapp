@@ -69,7 +69,7 @@ export const getAIResponse = async ({
           reader.releaseLock();
           return;
         }
-        console.log(value)
+        // console.log(value)
   
         const chunk = decoder.decode(value, { stream: true });
         const jsons = chunk

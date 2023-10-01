@@ -11,6 +11,8 @@ interface AudioRecorderProps {
   gcpApiKey: string;
 }
 
+const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+
 const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, setAutoRunOnLoad, receivingMessage, gcpApiKey }) => {
   const [recording, setRecording] = useState(false);
   const hasSpoken = useRef(false);
@@ -80,11 +82,15 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, setAutoR
       }
   
       const data = await response.json();
-      console.log(data);  // レスポンスを表示
-  
-      // 生成された音声を自動再生
-      const audio = new Audio("data:audio/mp3;base64," + data.audioContent);
-      audio.play();
+      const audioData = await fetch("data:audio/mp3;base64," + data.audioContent).then(response => response.arrayBuffer());
+
+      // AudioContextでの再生
+      const bufferSource = audioContext.createBufferSource();
+      audioContext.decodeAudioData(audioData, (buffer) => {
+        bufferSource.buffer = buffer;
+        bufferSource.connect(audioContext.destination);
+        bufferSource.start(0);
+      });
     } catch (error) {
       console.error("Text-to-Speech Error:", error);
     }
@@ -131,7 +137,7 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, setAutoR
 
           const url = URL.createObjectURL(audioBlob);
           setAudioUrl(url);
-          setDebugInfo(`${audioBlob.type}`);
+          // setDebugInfo(`${audioBlob.type}`);
       
           fetch('https://api.openai.com/v1/audio/transcriptions', {
             method: 'POST',

@@ -19,7 +19,7 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, setAutoR
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const { setDebugInfo } = useDebugInfo();
 
-  const [autoRunOnLoad, setLocalAutoRunOnLoad] = useState(false);
+  const [autoRunOnLoad, setLocalAutoRunOnLoad] = useState(true);
   const [isTextToSpeechEnabled, setTextToSpeechEnabled] = useState(false);
 
   const handleTextToSpeechChange = (event: React.ChangeEvent<HTMLInputElement>) => {

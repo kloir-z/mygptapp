@@ -59,6 +59,10 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
   }, [activeConversation.id, receivingId]);
 
   useEffect(() => {
+    setAutoRunOnLoad(false);
+  }, [deleteMessage]);
+
+  useEffect(() => {
     setEditingMessageIndex(null);
     setDisplayMessages(activeConversation.revisions[0].conversation);
     const hasAssistantMessage = activeConversation.revisions[0].conversation.some(message => message.role === 'assistant');

@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { StyledButton } from '../../styles/InitialMenu.styles';
 import { useDebugInfo } from '../Debugger/DebugContext';
-import AudioRecorderPolyfill from 'audio-recorder-polyfill';
+import { useRecording } from 'src/hooks/useSpeechToText';
+import { useTextToSpeech } from 'src/hooks/useTextToSpeech';
 
 interface AudioRecorderProps {
   apiKey: string;
@@ -12,17 +13,11 @@ interface AudioRecorderProps {
   gcpApiKey: string;
 }
 
-const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-
 const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunOnLoad, setAutoRunOnLoad, receivingMessage, gcpApiKey }) => {
-  const [recording, setRecording] = useState(false);
-  const hasSpoken = useRef(false);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const intervalIdRef = useRef<number | null>(null);
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
-  const { setDebugInfo } = useDebugInfo();
-
   const [isTextToSpeechEnabled, setTextToSpeechEnabled] = useState(true);
+  const { setDebugInfo } = useDebugInfo();
+  const { recording, toggleRecording, audioUrl } = useRecording(apiKey, setOcrText, setDebugInfo);
+  const { textToSpeech, prevReceivingMessageRef } = useTextToSpeech(gcpApiKey);
 
   const handleTextToSpeechChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTextToSpeechEnabled(event.target.checked);
@@ -32,8 +27,6 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
     const checked = event.target.checked;
     setAutoRunOnLoad(checked);
   };
-
-  const prevReceivingMessageRef = useRef('');
 
   useEffect(() => {
     const wasEmpty = prevReceivingMessageRef.current === '';
@@ -48,159 +41,6 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
     // 値を更新
     prevReceivingMessageRef.current = receivingMessage;
   }, [receivingMessage]);
-
-  const textToSpeech = async (text: string) => {
-    const endpoint = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${gcpApiKey}`;
-  
-    const payload = {
-      input: {
-        text: text
-      },
-      voice: {
-        languageCode: 'ja-JP',
-        name: 'ja-JP-Neural2-C'
-      },
-      audioConfig: {
-        audioEncoding: 'MP3',
-        pitch: '-3.2',
-        speakingRate: '1.19'
-      }
-    };
-  
-    try {
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json; charset=utf-8'
-        },
-        body: JSON.stringify(payload)
-      });
-  
-      if (!response.ok) {
-        throw new Error('API responded with an error');
-      }
-  
-      const data = await response.json();
-      const audioData = await fetch("data:audio/mp3;base64," + data.audioContent).then(response => response.arrayBuffer());
-
-      // AudioContextでの再生
-      const bufferSource = audioContext.createBufferSource();
-      audioContext.decodeAudioData(audioData, (buffer) => {
-        bufferSource.buffer = buffer;
-        bufferSource.connect(audioContext.destination);
-        bufferSource.start(0);
-      });
-    } catch (error) {
-      console.error("Text-to-Speech Error:", error);
-    }
-  };
-
-  useEffect(() => {
-    // Check if MediaRecorder is available or if it doesn't support audio/wave
-    if (!window.MediaRecorder || !MediaRecorder.isTypeSupported('audio/wav')) {
-      window.MediaRecorder = AudioRecorderPolyfill;
-    }
-  }, []);
-  
-  const toggleRecording = async () => {
-    if (recording) {
-      // Stop recording
-      if (mediaRecorderRef.current) {
-        mediaRecorderRef.current.stop();
-      }
-      if (intervalIdRef.current !== null) {
-        clearInterval(intervalIdRef.current);
-      }
-      setRecording(false);
-      hasSpoken.current = false;
-    } else {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const options = { mimeType: 'audio/wav' };
-      const mediaRecorder = new MediaRecorder(stream, options);
-
-      mediaRecorderRef.current = mediaRecorder;
-      const audioChunks: BlobPart[] = [];
-
-      mediaRecorder.addEventListener('dataavailable', (event) => {
-        audioChunks.push(event.data);
-      });
-
-      mediaRecorder.addEventListener('stop', () => {
-        if (hasSpoken.current) {
-          const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-
-          const formData = new FormData();
-          formData.append('file', audioBlob);
-          formData.append('model', 'whisper-1');
-          formData.append('language', 'ja');
-
-          const url = URL.createObjectURL(audioBlob);
-          setAudioUrl(url);
-          // setDebugInfo(`${audioBlob.type}`);
-      
-          fetch('https://api.openai.com/v1/audio/transcriptions', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${apiKey}`,
-            },
-            body: formData,
-          })
-          .then(response => {
-            if (!response.ok) {
-              return response.json().then(data => {
-                throw new Error('API responded with an error');
-              });
-            }
-            return response.json();
-          })
-          .then(data => {
-            setOcrText(data.text);
-          })
-          .catch(error => {
-            console.error('API Error:', error);
-          });
-          hasSpoken.current = false;
-        }
-      });
-
-      const audioContext = new AudioContext();
-      const analyser = audioContext.createAnalyser();
-      const source = audioContext.createMediaStreamSource(stream);
-      source.connect(analyser);
-
-      const dataArray = new Uint8Array(analyser.frequencyBinCount);
-      let belowThresholdTime: number | null = null;
-
-      intervalIdRef.current = window.setInterval(() => {
-        analyser.getByteFrequencyData(dataArray);
-        const volume = Math.max(...dataArray);
-        setDebugInfo(`${volume}`);
-
-        if (volume >= 180) {
-          hasSpoken.current = true;
-        }
-
-        if (hasSpoken.current && volume < 120) {
-          if (belowThresholdTime === null) {
-            belowThresholdTime = Date.now();
-          } else if (Date.now() - belowThresholdTime > 800) {
-            if (mediaRecorderRef.current) {
-              mediaRecorderRef.current.stop();
-            }
-            if (intervalIdRef.current !== null) {
-              clearInterval(intervalIdRef.current);
-            }
-            setRecording(false);
-          }
-        } else {
-          belowThresholdTime = null;
-        }
-      }, 10);
-
-      mediaRecorder.start();
-      setRecording(true);
-    }
-  };
 
   return (
     <div>

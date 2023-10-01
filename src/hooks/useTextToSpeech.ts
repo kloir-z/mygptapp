@@ -1,6 +1,10 @@
 import { useRef } from 'react';
 import { Howl } from 'howler';
 
+if (/iPhone/i.test(navigator.userAgent)) {
+  Howler.stereo(-1);
+}
+
 export const useTextToSpeech = (gcpApiKey: string) => {
   const prevReceivingMessageRef = useRef('');
 

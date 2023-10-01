@@ -24,8 +24,7 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
   };
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const checked = event.target.checked;
-    setAutoRunOnLoad(checked);
+    setAutoRunOnLoad(event.target.checked);
   };
 
   useEffect(() => {

@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { audioContext } from 'src/hooks/useSpeechToText';
+import { Howl } from 'howler';
 
 export const useTextToSpeech = (gcpApiKey: string) => {
   const prevReceivingMessageRef = useRef('');
@@ -21,33 +21,31 @@ export const useTextToSpeech = (gcpApiKey: string) => {
         speakingRate: '1.19'
       }
     };
-  
-    try {
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json; charset=utf-8'
-        },
-        body: JSON.stringify(payload)
-      });
-  
-      if (!response.ok) {
-        throw new Error('API responded with an error');
-      }
-  
-      const data = await response.json();
-      const audioData = await fetch("data:audio/mp3;base64," + data.audioContent).then(response => response.arrayBuffer());
 
-      // AudioContextでの再生
-      const bufferSource = audioContext.createBufferSource();
-      audioContext.decodeAudioData(audioData, (buffer) => {
-        bufferSource.buffer = buffer;
-        bufferSource.connect(audioContext.destination);
-        bufferSource.start(0);
-      });
-    } catch (error) {
-      console.error("Text-to-Speech Error:", error);
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      throw new Error('API responded with an error');
     }
+
+    const data = await response.json();
+    
+    const audioBlob = new Blob([new Uint8Array(atob(data.audioContent).split("").map(character => character.charCodeAt(0)))], { type: 'audio/mp3' });
+    const audioURL = URL.createObjectURL(audioBlob);
+
+    const sound = new Howl({
+      src: [audioURL],
+      format: ['mp3'],
+      html5: true
+    });
+
+    sound.play();
   };
 
   return { textToSpeech, prevReceivingMessageRef };

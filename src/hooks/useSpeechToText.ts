@@ -5,18 +5,25 @@ import { Howl } from 'howler';
 
 export const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
 
-const playStartSound = () => {
-  const sound = new Howl({
-    src: [process.env.PUBLIC_URL + '/sounds/start_rec.mp3'],
-    format: ['mp3'],
-    html5: true
-  });
+const playStartSound = (): Promise<void> => {
+  return new Promise((resolve) => {
+    const sound = new Howl({
+      src: [process.env.PUBLIC_URL + '/sounds/start_rec.mp3'],
+      format: ['mp3'],
+      html5: true
+    });
 
-  sound.play();
+    sound.once('end', () => {
+      resolve();
+    });
+
+    sound.play();
+  });
 };
 
 export const useRecording = (apiKey: string, setOcrText: React.Dispatch<React.SetStateAction<string | null>>, setDebugInfo: any) => {
   const [recording, setRecording] = useState(false);
+  const [loading, setLoading] = useState(false); 
   const hasSpoken = useRef(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const intervalIdRef = useRef<number | null>(null);
@@ -34,7 +41,8 @@ export const useRecording = (apiKey: string, setOcrText: React.Dispatch<React.Se
         setRecording(false);
         hasSpoken.current = false;
       } else {
-        playStartSound();
+        setLoading(true);
+        await playStartSound();
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         const options = { mimeType: 'audio/wav' };
         const mediaRecorder = new MediaRecorder(stream, options);
@@ -120,10 +128,11 @@ export const useRecording = (apiKey: string, setOcrText: React.Dispatch<React.Se
         }, 10);
         mediaRecorder.start();
         setRecording(true);
+        setLoading(false);
       }
     };
   
-    return { recording, toggleRecording, audioUrl };
+    return { recording, toggleRecording, audioUrl, loading };
   };
   
   // Check if MediaRecorder is available or if it doesn't support audio/wave

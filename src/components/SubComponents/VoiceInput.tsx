@@ -3,8 +3,9 @@ import { StyledButton } from '../../styles/InitialMenu.styles';
 import { useDebugInfo } from '../Debugger/DebugContext';
 import { useRecording } from 'src/hooks/useSpeechToText';
 import { useTextToSpeech } from 'src/hooks/useTextToSpeech';
-import { FaPlay, FaMicrophone, FaStop } from 'react-icons/fa';
+import { FaMicrophone, FaStop } from 'react-icons/fa';
 import { HiSpeakerWave } from "react-icons/hi2";
+import { Spinner } from '../Parts/Spinner';
 
 interface AudioRecorderProps {
   apiKey: string;
@@ -18,7 +19,7 @@ interface AudioRecorderProps {
 const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunOnLoad, setAutoRunOnLoad, receivingMessage, gcpApiKey }) => {
   const [isTextToSpeechEnabled, setTextToSpeechEnabled] = useState(false);
   const { setDebugInfo } = useDebugInfo();
-  const { recording, toggleRecording, audioUrl } = useRecording(apiKey, setOcrText, setDebugInfo);
+  const { recording, toggleRecording, audioUrl, loading } = useRecording(apiKey, setOcrText, setDebugInfo);
   const { textToSpeech, prevReceivingMessageRef } = useTextToSpeech(gcpApiKey);
 
   const handleTextToSpeechChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,9 +72,15 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
           Text To Speech
         </label>
       </div>
-      <StyledButton onClick={toggleRecording}>
-      {recording ? <FaStop /> : [<FaMicrophone />, ' & ', <HiSpeakerWave />]}
-      </StyledButton>
+      <StyledButton onClick={toggleRecording} disabled={loading}>
+                {
+                    loading 
+                    ? <Spinner />  // loadingがtrueのときはスピナーを表示
+                    : recording 
+                        ? <FaStop /> 
+                        : [<FaMicrophone />, ' & ', <HiSpeakerWave />]
+                }
+            </StyledButton>
       {audioUrl && <audio controls src={audioUrl}>Your browser does not support the audio element.</audio>}
     </div>
   );

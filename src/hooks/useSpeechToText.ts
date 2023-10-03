@@ -1,10 +1,27 @@
 import { useRef, useState } from 'react';
 import AudioRecorderPolyfill from 'audio-recorder-polyfill';
+import { useDebugInfo } from 'src/components/Debugger/DebugContext';
 
 export const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
 
 const playStartSound = () => {
+  const { setDebugInfo } = useDebugInfo();
   const audio = new Audio(process.env.PUBLIC_URL + '/sounds/start_rec.mp3');
+
+  audio.onplay = () => {
+    setDebugInfo("Audio is playing");
+  };
+
+  audio.onerror = (event: Event | string) => {
+    if (typeof event === "string") {
+      setDebugInfo("Audio playback error: " + event);
+    } else if (event instanceof ErrorEvent && event.error) {
+      setDebugInfo("Audio playback error: " + event.error.message);
+    } else {
+      setDebugInfo("Audio playback error occurred.");
+    }
+  };
+
   audio.play();
 };
 

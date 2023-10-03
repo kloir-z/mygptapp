@@ -1,28 +1,18 @@
 import { useRef, useState } from 'react';
 import AudioRecorderPolyfill from 'audio-recorder-polyfill';
 import { useDebugInfo } from 'src/components/Debugger/DebugContext';
+import { Howl } from 'howler';
 
 export const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
 
 const playStartSound = () => {
-  const { setDebugInfo } = useDebugInfo();
-  const audio = new Audio(process.env.PUBLIC_URL + '/sounds/start_rec.mp3');
+  const sound = new Howl({
+    src: [process.env.PUBLIC_URL + '/sounds/start_rec.mp3'],
+    format: ['mp3'],
+    html5: true
+  });
 
-  audio.onplay = () => {
-    setDebugInfo("Audio is playing");
-  };
-
-  audio.onerror = (event: Event | string) => {
-    if (typeof event === "string") {
-      setDebugInfo("Audio playback error: " + event);
-    } else if (event instanceof ErrorEvent && event.error) {
-      setDebugInfo("Audio playback error: " + event.error.message);
-    } else {
-      setDebugInfo("Audio playback error occurred.");
-    }
-  };
-
-  audio.play();
+  sound.play();
 };
 
 export const useRecording = (apiKey: string, setOcrText: React.Dispatch<React.SetStateAction<string | null>>, setDebugInfo: any) => {

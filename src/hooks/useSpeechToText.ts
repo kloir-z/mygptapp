@@ -3,6 +3,11 @@ import AudioRecorderPolyfill from 'audio-recorder-polyfill';
 
 export const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
 
+const playStartSound = () => {
+  const audio = new Audio(process.env.PUBLIC_URL + '/sounds/start_rec.mp3');
+  audio.play();
+};
+
 export const useRecording = (apiKey: string, setOcrText: React.Dispatch<React.SetStateAction<string | null>>, setDebugInfo: any) => {
   const [recording, setRecording] = useState(false);
   const hasSpoken = useRef(false);
@@ -22,6 +27,7 @@ export const useRecording = (apiKey: string, setOcrText: React.Dispatch<React.Se
         setRecording(false);
         hasSpoken.current = false;
       } else {
+        playStartSound();
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         const options = { mimeType: 'audio/wav' };
         const mediaRecorder = new MediaRecorder(stream, options);
@@ -69,6 +75,7 @@ export const useRecording = (apiKey: string, setOcrText: React.Dispatch<React.Se
             });
             hasSpoken.current = false;
           }
+          stream.getTracks().forEach(track => track.stop());
         });
   
         const audioContext = new AudioContext();
@@ -104,7 +111,6 @@ export const useRecording = (apiKey: string, setOcrText: React.Dispatch<React.Se
             belowThresholdTime = null;
           }
         }, 10);
-  
         mediaRecorder.start();
         setRecording(true);
       }

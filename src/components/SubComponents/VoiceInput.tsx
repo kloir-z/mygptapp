@@ -3,6 +3,8 @@ import { StyledButton } from '../../styles/InitialMenu.styles';
 import { useDebugInfo } from '../Debugger/DebugContext';
 import { useRecording } from 'src/hooks/useSpeechToText';
 import { useTextToSpeech } from 'src/hooks/useTextToSpeech';
+import { FaPlay, FaMicrophone, FaStop } from 'react-icons/fa';
+import { HiSpeakerWave } from "react-icons/hi2";
 
 interface AudioRecorderProps {
   apiKey: string;
@@ -14,7 +16,7 @@ interface AudioRecorderProps {
 }
 
 const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunOnLoad, setAutoRunOnLoad, receivingMessage, gcpApiKey }) => {
-  const [isTextToSpeechEnabled, setTextToSpeechEnabled] = useState(true);
+  const [isTextToSpeechEnabled, setTextToSpeechEnabled] = useState(false);
   const { setDebugInfo } = useDebugInfo();
   const { recording, toggleRecording, audioUrl } = useRecording(apiKey, setOcrText, setDebugInfo);
   const { textToSpeech, prevReceivingMessageRef } = useTextToSpeech(gcpApiKey);
@@ -26,6 +28,13 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAutoRunOnLoad(event.target.checked);
   };
+
+  useEffect(() => {
+    setAutoRunOnLoad(true);
+    return () => {
+      setAutoRunOnLoad(false)
+    }
+  }, []);
 
   useEffect(() => {
     const wasEmpty = prevReceivingMessageRef.current === '';
@@ -63,7 +72,7 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
         </label>
       </div>
       <StyledButton onClick={toggleRecording}>
-        {recording ? 'Stop' : 'Start'}
+      {recording ? <FaStop /> : [<FaMicrophone />, ' & ', <HiSpeakerWave />]}
       </StyledButton>
       {audioUrl && <audio controls src={audioUrl}>Your browser does not support the audio element.</audio>}
     </div>

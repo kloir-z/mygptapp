@@ -41,7 +41,7 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
   const { messagesEndRef, scrollContainerRef, scrollToTop, scrollToBottom } = useScroll(displayMessages, receivingMessage, editingMessageIndex);
   const [showInitialMenu, setShowInitialMenu] = useState(false);
   const [isFadedIn, setIsFadedIn] = useState(false);
-  const [autoRunOnLoad, setAutoRunOnLoad] = useState(true);
+  const [autoRunOnLoad, setAutoRunOnLoad] = useState(false);
 
   const { setDebugInfo } = useDebugInfo();
   const handleStartResponse = () => {

@@ -1,3 +1,4 @@
+//VoiceInput.tsx
 import React, { useState, useRef, useEffect } from 'react';
 import { StyledButton } from '../../styles/InitialMenu.styles';
 import { useDebugInfo } from '../Debugger/DebugContext';
@@ -6,6 +7,7 @@ import { useTextToSpeech } from 'src/hooks/useTextToSpeech';
 import { FaMicrophone, FaStop } from 'react-icons/fa';
 import { HiSpeakerWave } from "react-icons/hi2";
 import { Spinner } from '../Parts/Spinner';
+import { Howl } from 'howler';
 
 interface AudioRecorderProps {
   apiKey: string;
@@ -21,6 +23,8 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
   const { setDebugInfo } = useDebugInfo();
   const { recording, toggleRecording, audioUrl, loading } = useRecording(apiKey, setOcrText, setDebugInfo);
   const { textToSpeech, prevReceivingMessageRef } = useTextToSpeech(gcpApiKey);
+  const [audioTTSUrl, setAudioTTSUrl] = useState<string | null>(null);
+
 
   const handleTextToSpeechChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTextToSpeechEnabled(event.target.checked);
@@ -43,13 +47,25 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
 
     if (!wasEmpty && isEmptyNow && isTextToSpeechEnabled) {
       // メッセージ受信が終了
-      textToSpeech(prevReceivingMessageRef.current);
+      textToSpeech(prevReceivingMessageRef.current).then(url => {
+        setAudioTTSUrl(url);
+        playTTS(url);  // ここで再生を試みる
+      });
       console.log(prevReceivingMessageRef.current)
     }
 
     // 値を更新
     prevReceivingMessageRef.current = receivingMessage;
   }, [receivingMessage]);
+
+  const playTTS = (url: string) => {
+    const sound = new Howl({
+      src: [url],
+      format: ['mp3'],
+      html5: true
+    });
+    sound.play();
+  };
 
   return (
     <div>
@@ -72,15 +88,15 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
           Text To Speech
         </label>
       </div>
-      <StyledButton onClick={toggleRecording} disabled={loading}>
-                {
-                    loading 
-                    ? <Spinner />  // loadingがtrueのときはスピナーを表示
-                    : recording 
-                        ? <FaStop /> 
-                        : [<FaMicrophone />, ' & ', <HiSpeakerWave />]
-                }
-            </StyledButton>
+        <StyledButton onClick={toggleRecording} disabled={loading}>
+          {
+            loading 
+            ? <Spinner />
+            : recording 
+              ? <FaStop /> 
+              : [<FaMicrophone />]
+          }
+        </StyledButton>
       {audioUrl && <audio controls src={audioUrl}>Your browser does not support the audio element.</audio>}
     </div>
   );

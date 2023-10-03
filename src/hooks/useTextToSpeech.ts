@@ -1,5 +1,5 @@
+//useTextToSppech.ts
 import { useRef } from 'react';
-import { Howl } from 'howler';
 
 export const useTextToSpeech = (gcpApiKey: string) => {
   const prevReceivingMessageRef = useRef('');
@@ -37,15 +37,7 @@ export const useTextToSpeech = (gcpApiKey: string) => {
     const data = await response.json();
     
     const audioBlob = new Blob([new Uint8Array(atob(data.audioContent).split("").map(character => character.charCodeAt(0)))], { type: 'audio/mp3' });
-    const audioURL = URL.createObjectURL(audioBlob);
-
-    const sound = new Howl({
-      src: [audioURL],
-      format: ['mp3'],
-      html5: true
-    });
-
-    sound.play();
+    return URL.createObjectURL(audioBlob);
   };
 
   return { textToSpeech, prevReceivingMessageRef };

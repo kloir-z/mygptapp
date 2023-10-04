@@ -21,10 +21,8 @@ interface AudioRecorderProps {
 const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunOnLoad, setAutoRunOnLoad, receivingMessage, gcpApiKey }) => {
   const [isTextToSpeechEnabled, setTextToSpeechEnabled] = useState(false);
   const { setDebugInfo } = useDebugInfo();
-  const { recording, toggleRecording, audioUrl, loading } = useRecording(apiKey, setOcrText, setDebugInfo);
+  const { playStartSound, recording, toggleRecording, audioUrl, loading } = useRecording(apiKey, setOcrText, setDebugInfo);
   const { textToSpeech, prevReceivingMessageRef } = useTextToSpeech(gcpApiKey);
-  const [audioTTSUrl, setAudioTTSUrl] = useState<string | null>(null);
-
 
   const handleTextToSpeechChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTextToSpeechEnabled(event.target.checked);
@@ -48,7 +46,7 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
     if (!wasEmpty && isEmptyNow && isTextToSpeechEnabled) {
       // メッセージ受信が終了
       textToSpeech(prevReceivingMessageRef.current).then(url => {
-        setAudioTTSUrl(url);
+        playStartSound();
         playTTS(url);  // ここで再生を試みる
       });
       console.log(prevReceivingMessageRef.current)

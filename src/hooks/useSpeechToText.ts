@@ -5,7 +5,7 @@ import { Howl } from 'howler';
 
 export const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
 
-const playStartSound = (): Promise<void> => {
+export const playStartSound = (): Promise<void> => {
   return new Promise((resolve) => {
     const sound = new Howl({
       src: [process.env.PUBLIC_URL + '/sounds/start_rec.mp3'],
@@ -42,7 +42,6 @@ export const useRecording = (apiKey: string, setOcrText: React.Dispatch<React.Se
         hasSpoken.current = false;
       } else {
         setLoading(true);
-        await playStartSound();
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         const options = { mimeType: 'audio/wav' };
         const mediaRecorder = new MediaRecorder(stream, options);
@@ -127,12 +126,13 @@ export const useRecording = (apiKey: string, setOcrText: React.Dispatch<React.Se
           }
         }, 10);
         mediaRecorder.start();
+        await playStartSound();
         setRecording(true);
         setLoading(false);
       }
     };
   
-    return { recording, toggleRecording, audioUrl, loading };
+    return { playStartSound, recording, toggleRecording, audioUrl, loading };
   };
   
   // Check if MediaRecorder is available or if it doesn't support audio/wave

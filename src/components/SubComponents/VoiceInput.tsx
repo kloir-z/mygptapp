@@ -59,12 +59,49 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
   }, [receivingMessage]);
 
   const playTTS = (url: string) => {
+    // AudioContextの状態をチェック
+    if (audioContextRef.current.state === "suspended") {
+      alert("音声の再生を開始するには、一度画面をクリックしてください。");
+      document.addEventListener("click", resumeAudioContextAndPlay);
+      return;  // ここで関数の実行を中断
+    }
+  
+    // AudioContextの状態がrunningの場合、直接再生
     const sound = new Howl({
       src: [url],
       format: ['mp3'],
       html5: true
     });
     sound.play();
+  };
+  
+  const resumeAudioContextAndPlay = () => {
+    audioContextRef.current.resume().then(() => {
+      document.removeEventListener("click", resumeAudioContextAndPlay);
+      // AudioContextが再開された後で再生を再試行
+      if (audioTTSUrl) {
+        playTTS(audioTTSUrl);
+      }
+    });
+  };
+
+  const audioContextRef = useRef(new AudioContext());
+
+  useEffect(() => {
+    // AudioContextの状態がsuspendedなら、ユーザーのインタラクションを促す
+    if (audioContextRef.current.state === "suspended") {
+      alert("音声の再生を開始するには、一度画面をクリックしてください。");
+      document.addEventListener("click", resumeAudioContext);
+    }
+    return () => {
+      document.removeEventListener("click", resumeAudioContext);
+    };
+  }, []);
+
+  const resumeAudioContext = () => {
+    audioContextRef.current.resume().then(() => {
+      document.removeEventListener("click", resumeAudioContext);
+    });
   };
 
   return (

@@ -62,7 +62,8 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
     const sound = new Howl({
       src: [url],
       format: ['mp3'],
-      html5: true
+      html5: true,
+      autoplay: true
     });
     sound.play();
   };

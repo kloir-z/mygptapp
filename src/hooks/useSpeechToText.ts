@@ -107,7 +107,7 @@ export const useRecording = (apiKey: string, setOcrText: React.Dispatch<React.Se
           const volume = Math.max(...dataArray);
           setDebugInfo(`${volume}`);
   
-          if (volume >= 180) {
+          if (volume >= 170) {
             hasSpoken.current = true;
           }
   

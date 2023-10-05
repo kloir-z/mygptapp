@@ -1,6 +1,6 @@
 //AuthProvider.tsx
 import React, { useState, useEffect, ReactNode } from 'react';
-import { onAuthStateChanged, User, GoogleAuthProvider, signInWithRedirect } from 'firebase/auth';
+import { onAuthStateChanged, User, GoogleAuthProvider, signInWithRedirect, signInWithPopup } from 'firebase/auth';
 import { AuthContext } from './AuthContext';
 import { auth } from './firebase';
 
@@ -14,7 +14,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const handleLogin = () => {
     const provider = new GoogleAuthProvider();
-    signInWithRedirect(auth, provider);
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        setUser(result.user);
+      })
+      .catch((error) => {
+        console.error("Login failed:", error);
+      });
   };
 
   const handleLogout = () => {

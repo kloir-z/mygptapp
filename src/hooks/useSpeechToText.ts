@@ -10,7 +10,8 @@ export const playSound = (filename: string): Promise<void> => {
     const sound = new Howl({
       src: [`${process.env.PUBLIC_URL}/sounds/${filename}.mp3`],
       format: ['mp3'],
-      html5: true
+      html5: true,
+      autoplay: true
     });
 
     sound.once('end', () => {

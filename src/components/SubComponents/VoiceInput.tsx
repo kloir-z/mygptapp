@@ -46,7 +46,7 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
     if (!wasEmpty && isEmptyNow && isTextToSpeechEnabled) {
       // メッセージ受信が終了
       textToSpeech(prevReceivingMessageRef.current).then(url => {
-        playSound("silent");
+        playSound("test1");
         
         setTimeout(() => {
           playTTS(url);  // ウェイトの後に再生を試みる

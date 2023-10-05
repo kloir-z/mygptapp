@@ -42,7 +42,7 @@ export const useRecording = (apiKey: string, setOcrText: React.Dispatch<React.Se
         setRecording(false);
         hasSpoken.current = false;
       } else {
-        await playSound("test1");
+        playSound("test1");
         setLoading(true);
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         const options = { mimeType: 'audio/wav' };
@@ -127,7 +127,7 @@ export const useRecording = (apiKey: string, setOcrText: React.Dispatch<React.Se
             belowThresholdTime = null;
           }
         }, 10);
-        await playSound("start_rec");
+        playSound("start_rec");
         mediaRecorder.start();
         setRecording(true);
         setLoading(false);

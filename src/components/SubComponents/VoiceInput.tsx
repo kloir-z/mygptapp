@@ -19,10 +19,12 @@ interface AudioRecorderProps {
 }
 
 const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunOnLoad, setAutoRunOnLoad, receivingMessage, gcpApiKey }) => {
-  const [isTextToSpeechEnabled, setTextToSpeechEnabled] = useState(false);
+  const [isTextToSpeechEnabled, setTextToSpeechEnabled] = useState(true);
   const { setDebugInfo } = useDebugInfo();
   const { playSound, recording, toggleRecording, audioUrl, loading } = useRecording(apiKey, setOcrText, setDebugInfo);
   const { textToSpeech, prevReceivingMessageRef } = useTextToSpeech(gcpApiKey);
+  const [ttsUrl, setTtsUrl] = useState<string | null>(null);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false); 
 
   const handleTextToSpeechChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTextToSpeechEnabled(event.target.checked);
@@ -44,17 +46,11 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
     const isEmptyNow = receivingMessage === '';
 
     if (!wasEmpty && isEmptyNow && isTextToSpeechEnabled) {
-      // メッセージ受信が終了
       textToSpeech(prevReceivingMessageRef.current).then(url => {
-        playSound("test1");
-        
-        setTimeout(() => {
-          playTTS(url);  // ウェイトの後に再生を試みる
-        }, 300);      });
-      console.log(prevReceivingMessageRef.current)
+        setTtsUrl(url); 
+      });
     }
 
-    // 値を更新
     prevReceivingMessageRef.current = receivingMessage;
   }, [receivingMessage]);
 
@@ -63,8 +59,11 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
       src: [url],
       format: ['mp3'],
       html5: true,
-      autoplay: true
+      onend: () => {
+        setIsPlaying(false);
+      }
     });
+    setIsPlaying(true);
     sound.play();
   };
 
@@ -99,6 +98,11 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
           }
         </StyledButton>
       {audioUrl && <audio controls src={audioUrl}>Your browser does not support the audio element.</audio>}
+      {ttsUrl && (
+        <div>
+          <StyledButton onClick={() => playTTS(ttsUrl)} disabled={isPlaying}>▶</StyledButton>
+        </div>
+      )}
     </div>
   );
 };

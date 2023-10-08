@@ -126,7 +126,7 @@ export const useRecording = (apiKey: string, setOcrText: React.Dispatch<React.Se
             belowThresholdTime = null;
           }
         }, 10);
-        await playSound("start_rec");
+        playSound("start_rec");
         mediaRecorder.start();
         setRecording(true);
         setLoading(false);

@@ -5,7 +5,6 @@ import { useDebugInfo } from '../Debugger/DebugContext';
 import { useRecording } from 'src/hooks/useSpeechToText';
 import { useTextToSpeech } from 'src/hooks/useTextToSpeech';
 import { FaMicrophone, FaStop } from 'react-icons/fa';
-import { HiSpeakerWave } from "react-icons/hi2";
 import { Spinner } from '../Parts/Spinner';
 import { Howl } from 'howler';
 
@@ -25,6 +24,10 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
   const { textToSpeech, prevReceivingMessageRef } = useTextToSpeech(gcpApiKey);
   const [ttsUrl, setTtsUrl] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false); 
+  const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [volume, setVolume] = useState<number>(1);
+  const soundRef = useRef<Howl | null>(null);
+
 
   const handleTextToSpeechChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTextToSpeechEnabled(event.target.checked);
@@ -33,6 +36,11 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAutoRunOnLoad(event.target.checked);
   };
+
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
+  };
+
 
   useEffect(() => {
     setAutoRunOnLoad(true);
@@ -55,17 +63,29 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
   }, [receivingMessage]);
 
   const playTTS = (url: string) => {
+    playSound("start_rec");
     const sound = new Howl({
       src: [url],
       format: ['mp3'],
       html5: true,
+      volume: isMuted ? 0 : volume,
       onend: () => {
         setIsPlaying(false);
       }
     });
+    soundRef.current = sound;
     setIsPlaying(true);
     sound.play();
   };
+
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVolume = parseFloat(e.target.value);
+    setVolume(newVolume);
+
+    if (soundRef.current) {
+        soundRef.current.volume(newVolume);
+    }
+}
 
   return (
     <div>
@@ -101,6 +121,10 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
       {ttsUrl && (
         <div>
           <StyledButton onClick={() => playTTS(ttsUrl)} disabled={isPlaying}>▶</StyledButton>
+          <input type="range" min="0" max="1" step="0.1" value={volume} onChange={handleVolumeChange} />
+          <StyledButton onClick={toggleMute}>
+              {isMuted ? "Unmute" : "Mute"}
+          </StyledButton>
         </div>
       )}
     </div>

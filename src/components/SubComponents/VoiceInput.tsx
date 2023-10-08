@@ -28,7 +28,6 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
   const [volume, setVolume] = useState<number>(1);
   const soundRef = useRef<Howl | null>(null);
 
-
   const handleTextToSpeechChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTextToSpeechEnabled(event.target.checked);
   };
@@ -40,7 +39,6 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
   const toggleMute = () => {
     setIsMuted(!isMuted);
   };
-
 
   useEffect(() => {
     setAutoRunOnLoad(true);

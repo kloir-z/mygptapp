@@ -24,6 +24,7 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
   const { textToSpeech, prevReceivingMessageRef } = useTextToSpeech(gcpApiKey);
   const [ttsUrl, setTtsUrl] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false); 
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(1);
   const soundRef = useRef<Howl | null>(null);
@@ -40,6 +41,18 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
     setIsMuted(!isMuted);
   };
 
+  const togglePlayPause = () => {
+    if (soundRef.current) {
+      if (isPaused) {
+        soundRef.current.play();
+        setIsPaused(false);
+      } else {
+        soundRef.current.pause();
+        setIsPaused(true);
+      }
+    }
+  };
+  
   useEffect(() => {
     setAutoRunOnLoad(true);
     return () => {
@@ -118,7 +131,9 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
       {audioUrl && <audio controls src={audioUrl}>Your browser does not support the audio element.</audio>}
       {ttsUrl && (
         <div>
-          <StyledButton onClick={() => playTTS(ttsUrl)} disabled={isPlaying}>▶</StyledButton>
+          <StyledButton onClick={isPlaying ? togglePlayPause : () => playTTS(ttsUrl)}>
+              {isPlaying && isPaused ? "▶" : isPlaying ? "⏸" : "▶"}
+          </StyledButton>
           <input type="range" min="0" max="1" step="0.1" value={volume} onChange={handleVolumeChange} />
           <StyledButton onClick={toggleMute}>
               {isMuted ? "Unmute" : "Mute"}

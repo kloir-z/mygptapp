@@ -62,10 +62,6 @@ export const useRecording = (apiKey: string, setOcrText: React.Dispatch<React.Se
             formData.append('file', audioBlob);
             formData.append('model', 'whisper-1');
             formData.append('language', 'ja');
-  
-            const url = URL.createObjectURL(audioBlob);
-            setAudioUrl(url);
-            // setDebugInfo(`${audioBlob.type}`);
         
             fetch('https://api.openai.com/v1/audio/transcriptions', {
               method: 'POST',

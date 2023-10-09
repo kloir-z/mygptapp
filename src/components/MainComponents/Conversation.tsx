@@ -68,7 +68,7 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
     setEditingMessageIndex(null);
     setDisplayMessages(activeConversation.revisions[0].conversation);
     const hasAssistantMessage = activeConversation.revisions[0].conversation.some(message => message.role === 'assistant');
-    const hasVoiceModeSystemMessage = activeConversation.revisions[0].conversation.some(message => message.role === 'system' && message.content.startsWith('音声会話モード'));
+    const hasVoiceModeSystemMessage = activeConversation.systemPromptTitle === 'VoiceMode';
   
     const showMenu = !hasAssistantMessage || hasVoiceModeSystemMessage;
   
@@ -78,7 +78,7 @@ const Conversation: React.FC<ConversationProps> = ({ activeConversation, model, 
 
   useEffect(() => {
     const hasAssistantMessage = activeConversation.revisions[0].conversation.some(message => message.role === 'assistant');
-    const hasVoiceModeSystemMessage = activeConversation.revisions[0].conversation.some(message => message.role === 'system' && message.content.startsWith('音声会話モード'));
+    const hasVoiceModeSystemMessage = activeConversation.systemPromptTitle === 'VoiceMode';
   
     const showMenu = !hasAssistantMessage || hasVoiceModeSystemMessage;
   

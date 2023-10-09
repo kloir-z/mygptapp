@@ -29,11 +29,6 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
   const [ocrText, setOcrText] = useState<string | null>(null);
   const [showVoiceModePopup, setShowVoiceModePopup] = useState(false);
 
-  // 音声入力に対して自動応答するために記載したが、ここではなく、もっと上位のコンポーネントでautoRunOnLoadというか、isVoiceModeとかで管理すべきかなと思われる。
-  // useEffect(() => {
-  //   setAutoRunOnLoad(showVoiceModePopup);
-  // }, [showVoiceModePopup]);
-
   useEffect(() => {
     setSelectedPromptId("none");
     setShowTranscriptPopup(false);
@@ -41,8 +36,8 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
     setShowOcrPopup(false);
     setShowVoiceModePopup(false);
     if (activeConversation.revisions[0].conversation[0]?.role === 'system') {
-      const systemContent = activeConversation.revisions[0].conversation[0].content;
-      const matchingPrompt = systemprompts.find(prompt => prompt.content === systemContent);
+      const systemTitle = activeConversation.systemPromptTitle;
+      const matchingPrompt = systemprompts.find(prompt => prompt.title === systemTitle);
       
       if (matchingPrompt) {
         setSelectedPromptId(matchingPrompt.id);
@@ -84,28 +79,27 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
       if (activeConversation.revisions[0].conversation[0]?.role === 'system') {
         const updatedConversation = {
           ...activeConversation,
+          systemPromptTitle: "",
           revisions: [
             { revision: '0', conversation: activeConversation.revisions[0].conversation.slice(1) },
           ],
         };
         await handleUpdateConversations(updatedConversation, false);
       }
-      setShowTranscriptPopup(false);
       return;
     }  
 
     const selectedPrompt = systemprompts.find(prompt => prompt.id === selectedPromptId);
     if (selectedPrompt) {
-
       const updatedMessages = [...activeConversation.revisions[0].conversation];
       if (updatedMessages[0]?.role === 'system') {
         updatedMessages[0] = { content: selectedPrompt.content, role: 'system' };
       } else {
         updatedMessages.unshift({ content: selectedPrompt.content, role: 'system' });
       }
-  
       const updatedConversation = {
         ...activeConversation,
+        systemPromptTitle: selectedPrompt.title,
         revisions: [
           { revision: '0', conversation: updatedMessages },
         ],

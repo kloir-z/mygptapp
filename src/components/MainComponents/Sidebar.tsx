@@ -21,6 +21,7 @@ const createNewConversation = (): ConversationType => {
   return {
     id: uuidv4(),
     title: "New Conversation",
+    systemPromptTitle: "",
     revisions: [
       {
         revision: "0",

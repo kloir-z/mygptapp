@@ -12,6 +12,7 @@ type RevisionData = {
 export type ConversationType = {
   id: string;
   title: string;
+  systemPromptTitle: string;
   revisions: RevisionData[];
 };
 

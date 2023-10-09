@@ -4,7 +4,7 @@ import { StyledButton } from '../../styles/InitialMenu.styles';
 import { useDebugInfo } from '../Debugger/DebugContext';
 import { useRecording } from 'src/hooks/useSpeechToText';
 import { useTextToSpeech } from 'src/hooks/useTextToSpeech';
-import { FaMicrophone, FaStop } from 'react-icons/fa';
+import { FaMicrophone, FaPlay, FaStop } from 'react-icons/fa';
 import { Spinner } from '../Parts/Spinner';
 import { Howl } from 'howler';
 
@@ -115,7 +115,7 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
       {ttsUrl && (
         <div>
           <StyledButton onClick={isPlaying ? togglePlayPause : () => playTTS(ttsUrl)}>
-              {isPlaying && isPaused ? "▶" : isPlaying ? "⏸" : "▶"}
+              {isPlaying && isPaused ? <FaPlay />  : isPlaying ? <FaStop />  : <FaPlay /> }
           </StyledButton>
         </div>
       )}

@@ -26,6 +26,7 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const soundRef = useRef<Howl | null>(null);
+  const ttsButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const handleTextToSpeechChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTextToSpeechEnabled(event.target.checked);
@@ -47,6 +48,12 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
     }
   };
   
+  useEffect(() => {
+    if (ttsUrl && ttsButtonRef.current) {
+      ttsButtonRef.current.click();
+    }
+  }, [ttsUrl]);
+
   useEffect(() => {
     setAutoRunOnLoad(true);
     return () => {
@@ -113,11 +120,9 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
         </StyledButton>
       {audioUrl && <audio controls src={audioUrl}>Your browser does not support the audio element.</audio>}
       {ttsUrl && (
-        <div>
-          <StyledButton onClick={isPlaying ? togglePlayPause : () => playTTS(ttsUrl)}>
+          <StyledButton ref={ttsButtonRef} onClick={isPlaying ? togglePlayPause : () => playTTS(ttsUrl)}>
               {isPlaying && isPaused ? <FaPlay />  : isPlaying ? <FaStop />  : <FaPlay /> }
           </StyledButton>
-        </div>
       )}
     </div>
   );

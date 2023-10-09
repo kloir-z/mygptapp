@@ -72,6 +72,7 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
     }
 
     prevReceivingMessageRef.current = receivingMessage;
+    playSound("start_rec")
   }, [receivingMessage]);
 
   const playTTS = (url: string) => {

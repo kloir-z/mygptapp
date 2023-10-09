@@ -23,10 +23,8 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
   const { playSound, recording, toggleRecording, audioUrl, loading } = useRecording(apiKey, setOcrText, setDebugInfo);
   const { textToSpeech, prevReceivingMessageRef } = useTextToSpeech(gcpApiKey);
   const [ttsUrl, setTtsUrl] = useState<string | null>(null);
-  const [isPlaying, setIsPlaying] = useState<boolean>(false); 
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [isMuted, setIsMuted] = useState<boolean>(false);
-  const [volume, setVolume] = useState<number>(1);
   const soundRef = useRef<Howl | null>(null);
 
   const handleTextToSpeechChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,10 +33,6 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAutoRunOnLoad(event.target.checked);
-  };
-
-  const toggleMute = () => {
-    setIsMuted(!isMuted);
   };
 
   const togglePlayPause = () => {
@@ -74,12 +68,10 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
   }, [receivingMessage]);
 
   const playTTS = (url: string) => {
-    playSound("start_rec");
     const sound = new Howl({
       src: [url],
       format: ['mp3'],
       html5: true,
-      volume: isMuted ? 0 : volume,
       onend: () => {
         setIsPlaying(false);
       }
@@ -88,15 +80,6 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
     setIsPlaying(true);
     sound.play();
   };
-
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseFloat(e.target.value);
-    setVolume(newVolume);
-
-    if (soundRef.current) {
-        soundRef.current.volume(newVolume);
-    }
-}
 
   return (
     <div>
@@ -133,10 +116,6 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
         <div>
           <StyledButton onClick={isPlaying ? togglePlayPause : () => playTTS(ttsUrl)}>
               {isPlaying && isPaused ? "▶" : isPlaying ? "⏸" : "▶"}
-          </StyledButton>
-          <input type="range" min="0" max="1" step="0.1" value={volume} onChange={handleVolumeChange} />
-          <StyledButton onClick={toggleMute}>
-              {isMuted ? "Unmute" : "Mute"}
           </StyledButton>
         </div>
       )}

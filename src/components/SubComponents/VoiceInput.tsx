@@ -68,11 +68,11 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
     if (!wasEmpty && isEmptyNow && isTextToSpeechEnabled) {
       textToSpeech(prevReceivingMessageRef.current).then(url => {
         setTtsUrl(url); 
+        playSound("start_rec")
       });
     }
 
     prevReceivingMessageRef.current = receivingMessage;
-    playSound("start_rec")
   }, [receivingMessage]);
 
   const playTTS = (url: string) => {

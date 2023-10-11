@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react';
 import AudioRecorderPolyfill from 'audio-recorder-polyfill';
-import { useDebugInfo } from 'src/components/Debugger/DebugContext';
 import { Howl } from 'howler';
 
 export const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
@@ -22,7 +21,7 @@ export const playSound = (filename: string): Promise<void> => {
   });
 };
 
-export const useRecording = (apiKey: string, setOcrText: React.Dispatch<React.SetStateAction<string | null>>, setDebugInfo: any) => {
+export const useRecording = (apiKey: string, setOcrText: React.Dispatch<React.SetStateAction<string | null>>, setVolume: React.Dispatch<React.SetStateAction<number | 0>>) => {
   const [recording, setRecording] = useState(false);
   const [loading, setLoading] = useState(false); 
   const hasSpoken = useRef(false);
@@ -86,6 +85,7 @@ export const useRecording = (apiKey: string, setOcrText: React.Dispatch<React.Se
             });
             hasSpoken.current = false;
           }
+          setVolume(0)
           stream.getTracks().forEach(track => track.stop());
         });
   
@@ -100,7 +100,7 @@ export const useRecording = (apiKey: string, setOcrText: React.Dispatch<React.Se
         intervalIdRef.current = window.setInterval(() => {
           analyser.getByteFrequencyData(dataArray);
           const volume = Math.max(...dataArray);
-          setDebugInfo(`${volume}`);
+          setVolume(volume);
   
           if (volume >= 170) {
             hasSpoken.current = true;
@@ -109,7 +109,7 @@ export const useRecording = (apiKey: string, setOcrText: React.Dispatch<React.Se
           if (hasSpoken.current && volume < 120) {
             if (belowThresholdTime === null) {
               belowThresholdTime = Date.now();
-            } else if (Date.now() - belowThresholdTime > 800) {
+            } else if (Date.now() - belowThresholdTime > 1000) {
               if (mediaRecorderRef.current) {
                 mediaRecorderRef.current.stop();
               }

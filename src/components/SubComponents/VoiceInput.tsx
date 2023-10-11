@@ -1,7 +1,6 @@
 //VoiceInput.tsx
 import React, { useState, useRef, useEffect } from 'react';
 import { StyledInput, StyledButton } from '../../styles/InitialMenu.styles';
-import { useDebugInfo } from '../Debugger/DebugContext';
 import { useRecording } from 'src/hooks/useSpeechToText';
 import { useTextToSpeech } from 'src/hooks/useTextToSpeech';
 import { FaMicrophone, FaPlay, FaStop } from 'react-icons/fa';
@@ -19,13 +18,13 @@ interface AudioRecorderProps {
 }
 
 const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunOnLoad, setAutoRunOnLoad, receivingMessage, gcpApiKey, setGcpApiKey }) => {
-  const [isTextToSpeechEnabled, setTextToSpeechEnabled] = useState(true);
-  const { setDebugInfo } = useDebugInfo();
-  const { playSound, recording, toggleRecording, audioUrl, loading } = useRecording(apiKey, setOcrText, setDebugInfo);
-  const { textToSpeech, prevReceivingMessageRef } = useTextToSpeech(gcpApiKey);
   const [ttsUrl, setTtsUrl] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [volume, setVolume] = useState<number>(0);
+  const [isTextToSpeechEnabled, setTextToSpeechEnabled] = useState(true);
+  const { playSound, recording, toggleRecording, audioUrl, loading } = useRecording(apiKey, setOcrText, setVolume);
+  const { textToSpeech, prevReceivingMessageRef } = useTextToSpeech(gcpApiKey);
   const soundRef = useRef<Howl | null>(null);
   const ttsButtonRef = useRef<HTMLButtonElement | null>(null);
 
@@ -129,6 +128,8 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
               : [<FaMicrophone />]
           }
         </StyledButton>
+        <progress value={volume} max={255} style={{ verticalAlign: "middle" }}></progress>
+        <br></br>
       {audioUrl && <audio controls src={audioUrl}>Your browser does not support the audio element.</audio>}
       {ttsUrl && (
           <StyledButton ref={ttsButtonRef} onClick={isPlaying ? togglePlayPause : () => playTTS(ttsUrl)}>

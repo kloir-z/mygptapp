@@ -234,6 +234,7 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
           setAutoRunOnLoad={setAutoRunOnLoad}
           receivingMessage={receivingMessage}
           gcpApiKey={gcpApiKey}
+          setGcpApiKey={setGcpApiKey}
         />
       }
       {showOcrPopup &&

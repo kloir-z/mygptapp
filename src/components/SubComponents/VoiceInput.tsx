@@ -1,6 +1,6 @@
 //VoiceInput.tsx
 import React, { useState, useRef, useEffect } from 'react';
-import { StyledButton } from '../../styles/InitialMenu.styles';
+import { StyledInput, StyledButton } from '../../styles/InitialMenu.styles';
 import { useDebugInfo } from '../Debugger/DebugContext';
 import { useRecording } from 'src/hooks/useSpeechToText';
 import { useTextToSpeech } from 'src/hooks/useTextToSpeech';
@@ -15,9 +15,10 @@ interface AudioRecorderProps {
   setAutoRunOnLoad: React.Dispatch<React.SetStateAction<boolean>>;
   receivingMessage: string;
   gcpApiKey: string;
+  setGcpApiKey: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunOnLoad, setAutoRunOnLoad, receivingMessage, gcpApiKey }) => {
+const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunOnLoad, setAutoRunOnLoad, receivingMessage, gcpApiKey, setGcpApiKey }) => {
   const [isTextToSpeechEnabled, setTextToSpeechEnabled] = useState(true);
   const { setDebugInfo } = useDebugInfo();
   const { playSound, recording, toggleRecording, audioUrl, loading } = useRecording(apiKey, setOcrText, setDebugInfo);
@@ -92,6 +93,15 @@ const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunO
   return (
     <div>
       <div>
+        <div>
+          <label>Set GCP API Key: </label>
+          <StyledInput
+            type="password"
+            placeholder="Enter GCP API Key"
+            value={gcpApiKey}
+            onChange={(e) => setGcpApiKey(e.target.value)}
+          />
+        </div>
         <label>
           <input
             type="checkbox"

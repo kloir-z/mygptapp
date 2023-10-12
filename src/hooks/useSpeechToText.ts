@@ -21,7 +21,7 @@ export const playSound = (filename: string): Promise<void> => {
   });
 };
 
-export const useRecording = (apiKey: string, setOcrText: React.Dispatch<React.SetStateAction<string | null>>, setVolume: React.Dispatch<React.SetStateAction<number | 0>>) => {
+export const useRecording = (apiKey: string, setReturnText: React.Dispatch<React.SetStateAction<string | null>>, setVolume: React.Dispatch<React.SetStateAction<number | 0>>) => {
   const [recording, setRecording] = useState(false);
   const [loading, setLoading] = useState(false); 
   const hasSpoken = useRef(false);
@@ -78,7 +78,7 @@ export const useRecording = (apiKey: string, setOcrText: React.Dispatch<React.Se
               return response.json();
             })
             .then(data => {
-              setOcrText(data.text);
+              setReturnText(data.text);
             })
             .catch(error => {
               console.error('API Error:', error);

@@ -14,12 +14,12 @@ import {
 } from '../../styles/OCRComponent.styles';
 
 type OCRComponentProps = {
-  setOcrText: React.Dispatch<React.SetStateAction<string | null>>,
+  setReturnText: React.Dispatch<React.SetStateAction<string | null>>,
   gcpApiKey: string;
   setGcpApiKey: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const OCRComponent: React.FC<OCRComponentProps> = ({ setOcrText, gcpApiKey, setGcpApiKey }) => {
+const OCRComponent: React.FC<OCRComponentProps> = ({ setReturnText, gcpApiKey, setGcpApiKey }) => {
   const [ocrImages, setOcrImages] = useState<File[]>([]);
   const [mergeResults, setMergeResults] = useState<boolean>(true); 
   const [useMarkdown, setUseMarkdown] = useState<boolean>(false); 
@@ -70,7 +70,7 @@ const OCRComponent: React.FC<OCRComponentProps> = ({ setOcrText, gcpApiKey, setG
           // img.width = 1000; // 任意の数値
           // document.body.appendChild(img); 
           const result = await getOcrResult(mergedImageFile, gcpApiKey, useMarkdown);
-          setOcrText(result);
+          setReturnText(result);
           return;
         }
       }
@@ -80,7 +80,7 @@ const OCRComponent: React.FC<OCRComponentProps> = ({ setOcrText, gcpApiKey, setG
         if (ocrImage && gcpApiKey) {
           const result = await getOcrResult(ocrImage, gcpApiKey, useMarkdown);
           if (!mergeResults) {
-            setOcrText(result);
+            setReturnText(result);
           } else {
             allResults += result;
           }
@@ -88,7 +88,7 @@ const OCRComponent: React.FC<OCRComponentProps> = ({ setOcrText, gcpApiKey, setG
       }
     
       if (!mergeResults) {
-        setOcrText(allResults);
+        setReturnText(allResults);
       }
     } finally {
       setIsLoading(false);

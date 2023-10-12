@@ -9,7 +9,7 @@ import { Howl } from 'howler';
 
 interface AudioRecorderProps {
   apiKey: string;
-  setOcrText: React.Dispatch<React.SetStateAction<string | null>>;
+  setReturnText: React.Dispatch<React.SetStateAction<string | null>>;
   autoRunOnLoad: boolean;
   setAutoRunOnLoad: React.Dispatch<React.SetStateAction<boolean>>;
   receivingMessage: string;
@@ -17,13 +17,13 @@ interface AudioRecorderProps {
   setGcpApiKey: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setOcrText, autoRunOnLoad, setAutoRunOnLoad, receivingMessage, gcpApiKey, setGcpApiKey }) => {
+const VoiceInput: React.FC<AudioRecorderProps> = ({ apiKey, setReturnText, autoRunOnLoad, setAutoRunOnLoad, receivingMessage, gcpApiKey, setGcpApiKey }) => {
   const [ttsUrl, setTtsUrl] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(0);
   const [isTextToSpeechEnabled, setTextToSpeechEnabled] = useState(true);
-  const { playSound, recording, toggleRecording, audioUrl, loading } = useRecording(apiKey, setOcrText, setVolume);
+  const { playSound, recording, toggleRecording, audioUrl, loading } = useRecording(apiKey, setReturnText, setVolume);
   const { textToSpeech, prevReceivingMessageRef } = useTextToSpeech(gcpApiKey);
   const soundRef = useRef<Howl | null>(null);
   const ttsButtonRef = useRef<HTMLButtonElement | null>(null);

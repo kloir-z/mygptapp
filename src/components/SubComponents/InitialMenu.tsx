@@ -1,11 +1,11 @@
 //InitialMenu.tsx
 import React, { useState, useEffect } from 'react';
-import { Spinner } from '../Parts/Spinner'
-import { getYoutubeTranscript, getMarkdownContent } from 'src/utils/openAIUtil';
-import { SystemPromptType, ConversationType, ConversationData } from '../../types/Conversations.types';
-import { InitialMenuContainer, StyledSelect, StyledOption, StyledInput, StyledButton } from '../../styles/InitialMenu.styles';
+import { SystemPromptType, ConversationType } from '../../types/Conversations.types';
+import { InitialMenuContainer, StyledSelect, StyledOption } from '../../styles/InitialMenu.styles';
 import OCRComponent from './OCRComponent';
 import VoiceInput from './VoiceInput';
+import YoutubeTranscriptFetch from './YoutubeTranscriptGet';
+import GetTextFromWebPage from './GetTextFromWebPage';
 
 type InitialMenuProps = {
   systemprompts: SystemPromptType[];
@@ -22,11 +22,9 @@ type InitialMenuProps = {
 const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversation, handleUpdateConversations, gcpApiKey, setGcpApiKey, apiKey, autoRunOnLoad, setAutoRunOnLoad, receivingMessage }) => {
   const [showTranscriptPopup, setShowTranscriptPopup] = useState(false);
   const [showGetMdTxtPopup, setShowGetMdTxtPopup] = useState(false);
-  const [targetUrl, setTargetUrl] = useState<string | null>(null);
-  const [loadingContentFetch, setLoadingContentFetch] = useState(false);
   const [selectedPromptId, setSelectedPromptId] = useState<string>("none");
   const [showOcrPopup, setShowOcrPopup] = useState(false);
-  const [ocrText, setOcrText] = useState<string | null>(null);
+  const [returnText, setReturnText] = useState<string | null>(null);
   const [showVoiceModePopup, setShowVoiceModePopup] = useState(false);
 
   useEffect(() => {
@@ -55,9 +53,9 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
   }, [activeConversation, systemprompts]);
   
   useEffect(() => {
-    if (ocrText) {
+    if (returnText) {
       const updatedMessages = [...activeConversation.revisions[0].conversation];
-      updatedMessages.push({ content: ocrText, role: 'user' });
+      updatedMessages.push({ content: returnText, role: 'user' });
 
       const updatedConversation = {
         ...activeConversation,
@@ -67,11 +65,11 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
       };
 
       handleUpdateConversations(updatedConversation, false).then(() => {
-        // 成功したらocrTextをnullにリセット
-        setOcrText(null);
+        // 成功したらreturnTextをnullにリセット
+        setReturnText(null);
       });
     }
-  }, [ocrText]);
+  }, [returnText]);
 
   const handleSystemPromptSelection = async (selectedPromptId: string) => {
     setSelectedPromptId(selectedPromptId);
@@ -108,77 +106,6 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
     }
   };
 
-  const handleYoutubeTranscriptFetch = async (url: string | null) => {
-    if (!url) return;
-    setLoadingContentFetch(true);
-    const content = await getYoutubeTranscript(url);
-    if (content !== null) {
-      let updatedMessages = [...activeConversation.revisions[0].conversation];
-      updatedMessages.push({ content: content, role: 'user' });
-  
-      const updatedConversation = {
-        ...activeConversation,
-        revisions: [
-          { revision: '0', conversation: updatedMessages },
-        ],
-      };
-      setLoadingContentFetch(false);
-      await handleUpdateConversations(updatedConversation, false);
-    }
-  };
-
-  const handleMarkdownContentFetch = async (url: string | null) => {
-    if (!url) return;
-  
-    setLoadingContentFetch(true);
-  
-    const fetchedContentArray = await getMarkdownContent(url);
-  
-    if (!Array.isArray(fetchedContentArray)) {
-      console.log('Failed to fetch Markdown content or content is not an array');
-      setLoadingContentFetch(false);
-      return;
-    }
-    
-    let updatedMessages = [...activeConversation.revisions[0].conversation];
-    const allLines = fetchedContentArray.map(content => content.split('\n'));
-    const linesToRemove = new Set<string>();
-  
-    if (allLines.length > 1) {
-      for (const line of allLines[0]) {
-        if (allLines.every(lines => lines.includes(line))) {
-          linesToRemove.add(line);
-        }
-      }
-  
-      allLines.forEach(linesInPage => {
-        const filteredLines = linesInPage.filter(line => !linesToRemove.has(line));
-        updatedMessages.push({ content: filteredLines.join('\n'), role: 'user' });
-      });
-    } else if (allLines.length === 1) {
-      updatedMessages.push({ content: allLines[0].join('\n'), role: 'user' });
-    }
-  
-    const updatedConversation = {
-      ...activeConversation,
-      revisions: [
-        { revision: '0', conversation: updatedMessages },
-      ],
-    };
-  
-    setLoadingContentFetch(false);
-    await handleUpdateConversations(updatedConversation, false);
-  };
-  
-  const fetchFromClipboard = async () => {
-    try {
-      const clipboardText = await navigator.clipboard.readText();
-      setTargetUrl(clipboardText);
-    } catch (err) {
-      console.error("クリップボードからテキストを取得できませんでした:", err);
-    }
-  };
-  
   return (
     <InitialMenuContainer>
       <label>1. Select System Prompt:</label>
@@ -192,43 +119,22 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
       </div>
       <br></br>
       {showTranscriptPopup && (
-        <>
-          <label>2. Use Youtube Transcript Get Tool:</label>
-          <div style={{display: 'flex', flexDirection:'column', paddingLeft: '10px'}}>
-            <StyledButton onClick={fetchFromClipboard}>Get from Clipboard</StyledButton>
-            <StyledInput type="text" placeholder="YouTube URL" onChange={e => setTargetUrl(e.target.value)} value={targetUrl || ''}/>
-          <br></br>
-            <StyledButton 
-              onClick={() => handleYoutubeTranscriptFetch(targetUrl)} 
-              disabled={loadingContentFetch}
-            >
-              {loadingContentFetch ? <Spinner /> : 'Get Content'}
-            </StyledButton>
-          </div>
-          <br></br>
-        </>
+        <YoutubeTranscriptFetch 
+          activeConversation={activeConversation}
+          handleUpdateConversations={handleUpdateConversations}
+        />
       )}
       
       {showGetMdTxtPopup && (
-        <>
-          <label>2. Use Get Markdown Text from URL Tool:</label>
-          <div style={{display: 'flex', flexDirection:'column', paddingLeft: '10px'}}>
-            <StyledButton onClick={fetchFromClipboard}>Get from Clipboard</StyledButton>
-            <StyledInput type="text" placeholder="URL" onChange={e => setTargetUrl(e.target.value)} value={targetUrl || ''}/>
-          <br></br>
-            <StyledButton 
-              onClick={() => handleMarkdownContentFetch(targetUrl)} 
-              disabled={loadingContentFetch}
-            >
-              {loadingContentFetch ? <Spinner /> : 'Get Content'}
-            </StyledButton>
-          </div>
-          <br></br>
-        </>
+      <GetTextFromWebPage 
+        activeConversation={activeConversation}
+        handleUpdateConversations={handleUpdateConversations}
+      />
       )}
+
       {showVoiceModePopup &&
         <VoiceInput
-          setOcrText={setOcrText} 
+          setReturnText={setReturnText} 
           apiKey={apiKey}
           autoRunOnLoad={autoRunOnLoad}
           setAutoRunOnLoad={setAutoRunOnLoad}
@@ -237,9 +143,10 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
           setGcpApiKey={setGcpApiKey}
         />
       }
+
       {showOcrPopup &&
         <OCRComponent
-          setOcrText={setOcrText} 
+          setReturnText={setReturnText} 
           gcpApiKey={gcpApiKey}
           setGcpApiKey={setGcpApiKey}
         />

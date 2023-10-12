@@ -46,7 +46,7 @@ export const StyledInput = styled.input`
 
 export const StyledButton = styled.button`
   margin: 3px;
-  padding: 7px 10px;
+  padding: 5px 10px;
   font-size: 1rem;
   width: fit-content;
   border-radius: 3px;
@@ -54,12 +54,10 @@ export const StyledButton = styled.button`
   cursor: pointer;
   color: #ffffffe3; 
   background: rgba(51, 99, 150, 0.85);
-
   &:disabled {
     cursor: not-allowed;
     background: rgba(255, 255, 255, 0.082);
   }
-
   @media (hover: hover) and (pointer: fine) {
     &:not(:disabled):hover {
       background: rgba(65, 125, 189, 0.85);

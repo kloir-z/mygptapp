@@ -51,10 +51,12 @@ export const TitleContainer = styled.div`
   svg {
     vertical-align: middle;
     width: 20px;
+    min-width:20px;
   }
   span {
     vertical-align: middle;
     width: 20px;
+    min-width:20px;
   }
   ::-webkit-scrollbar {
     width: 0px;

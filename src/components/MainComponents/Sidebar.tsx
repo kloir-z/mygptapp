@@ -2,8 +2,9 @@
 import React, { useMemo, useEffect } from 'react';
 import { StyledInput, ConversationItem, TitleContainer, TitleEditIconsContainer, IconButton } from '../../styles/Sidebar.styles';
 import { ConversationType } from '../../types/Conversations.types';
-import { FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
-import { MdOutlineChat } from 'react-icons/md';
+import { FaTrash, FaCheck, FaTimes, FaYoutube } from 'react-icons/fa';
+import { RiArticleLine, RiSpeakLine, RiTranslate2 } from 'react-icons/ri'
+import { MdOutlineChat, MdDocumentScanner } from 'react-icons/md';
 import useSidebar from 'src/hooks/useSidebar';
 import { v4 as uuidv4 } from 'uuid'; 
 
@@ -30,6 +31,7 @@ const createNewConversation = (): ConversationType => {
     ],
   };
 };
+
 
 const Sidebar: React.FC<SidebarProps> = ({ conversations, setConversations, activeConversation, setActiveConversation, handleUpdateConversations, handleDeleteConversation, setIsConversationLoading }) => {
   const {
@@ -78,7 +80,23 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, setConversations, acti
     }
   
   }, [conversations, setConversations]);
+
+  type IconMapType = {
+    [key: string]: React.ComponentType;
+  };
+
+  const iconMap: IconMapType = {
+    'Youtube要約': FaYoutube,
+    'Webページ要約': RiArticleLine,
+    'VoiceMode': RiSpeakLine,
+    '翻訳': RiTranslate2,
+    'OCRして要約': MdDocumentScanner,
+  };
   
+  const getIconForSystemPromptTitle = (systemPromptTitle: string) => {
+    const IconComponent = iconMap[systemPromptTitle];
+    return IconComponent ? <IconComponent /> : <MdOutlineChat />;
+  };
 
   const reversedConversations = useMemo(() => {
     return [...conversations].reverse();
@@ -112,7 +130,10 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, setConversations, acti
               </TitleEditIconsContainer>
             </>
           ) : (
-            <TitleContainer><MdOutlineChat /><span> {conversation.title}</span></TitleContainer>
+            <TitleContainer>
+              {getIconForSystemPromptTitle(conversation.systemPromptTitle)}
+              <span> {conversation.title}</span>
+            </TitleContainer>
           )}
         </ConversationItem>
       ))}

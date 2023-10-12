@@ -41,7 +41,7 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
         setSelectedPromptId(matchingPrompt.id);
         if (matchingPrompt.title === 'Youtube要約') {
           setShowTranscriptPopup(true);
-        } else if (matchingPrompt.title === 'URL要約') {
+        } else if (matchingPrompt.title === 'Webページ要約') {
           setShowGetMdTxtPopup(true);
         } else if (matchingPrompt.title === 'OCRして要約') {
           setShowOcrPopup(true);

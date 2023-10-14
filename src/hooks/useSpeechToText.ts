@@ -2,8 +2,6 @@ import { useRef, useState } from 'react';
 import AudioRecorderPolyfill from 'audio-recorder-polyfill';
 import { Howl } from 'howler';
 
-export const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-
 export const playSound = (filename: string): Promise<void> => {
   return new Promise((resolve) => {
     const sound = new Howl({

@@ -42,9 +42,9 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model
     const currentTotalTokens = totalTokenCount + inputTokenCount;
   
     const newAvailableModels: ModelOption[] = modelOptions.filter(option => {
-      if (option.value === 'gpt-3.5-turbo-0613') return currentTotalTokens < 4096 - 300;
-      if (option.value === 'gpt-3.5-turbo-16k-0613') return currentTotalTokens < 16384 - 300;
-      if (option.value === 'gpt-4-0613') return currentTotalTokens < 8192 - 300;
+      if (option.value === 'gpt-3.5-turbo-0613') return currentTotalTokens < 4096 - 800;
+      if (option.value === 'gpt-3.5-turbo-16k-0613') return currentTotalTokens < 16384 - 1500;
+      if (option.value === 'gpt-4-0613') return currentTotalTokens < 8192 - 800;
       return false;
     });
     
@@ -120,7 +120,6 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model
             </StyledButton>
             {showUserMenu && (
               <UserMenu
-                apiKey={apiKey}
                 userButtonRef={userButtonRef}
                 setShowUserMenu={setShowUserMenu}
               />

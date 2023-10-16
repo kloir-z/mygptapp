@@ -6,12 +6,11 @@ import { useContext } from 'react';
 import { MenuButton } from 'src/styles/UserMenu.styles'
 
 interface UserMenuProps {
-  apiKey: string;
   userButtonRef: React.RefObject<HTMLButtonElement>;
   setShowUserMenu: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const UserMenu: React.FC<UserMenuProps> = ({apiKey, userButtonRef, setShowUserMenu}) => {
+const UserMenu: React.FC<UserMenuProps> = ({userButtonRef, setShowUserMenu}) => {
   const { user } = useContext(AuthContext);
   const userMenuRef = useRef<HTMLDivElement | null>(null);
   const { handleLogout } = useContext(AuthContext);
@@ -34,7 +33,6 @@ const UserMenu: React.FC<UserMenuProps> = ({apiKey, userButtonRef, setShowUserMe
 
   return (
     <div ref={userMenuRef} style={{ position: 'absolute', bottom: 'auto', zIndex: '1000'}}>
-      <MenuButton isSignedIn={!!user}>Usage Check</MenuButton>
       <GoogleButton isSignedIn={!!user} onClick={handleLogout} />
     </div>
   );

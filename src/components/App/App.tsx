@@ -61,14 +61,14 @@ const App: React.FC = () => {
   useEffect(() => {
     const updatedActiveConversation = conversations.find(conv => conv.id === activeConversation?.id);
     
-    // activeConversation のタイトルが "New Conversation" であり、assistant のメッセージが含まれているかチェック
+    // Check if activeConversation's title is "New Conversation" and if it contains an assistant message
     if (updatedActiveConversation && updatedActiveConversation.title === 'New Conversation') {
       const hasAssistantMessage = updatedActiveConversation.revisions.some(revision => 
         revision.conversation.some(message => message.role === 'assistant')
       );
   
       if (hasAssistantMessage) {
-        // generateConversationTitle を呼び出してタイトルを自動生成
+        // Call generateConversationTitle to automatically generate a title
         generateConversationTitle({
           apiKey: apiKey, 
           model: 'gpt-3.5-turbo-0613',

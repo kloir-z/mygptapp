@@ -148,7 +148,7 @@ const getChunk = <T>(array: T[], start: number, limit: number): [T[], number] =>
   let end = start;
 
   while (end < array.length) {
-    // JSON.stringifyを使っておおよそのサイズを計算。これは完全ではありませんが、近似値としては有用です。
+    // Use JSON.stringify to approximate size. This is not exact, but useful as an approximation.
     size += JSON.stringify(array[end]).length;
     if (size > limit) break;
     end++;

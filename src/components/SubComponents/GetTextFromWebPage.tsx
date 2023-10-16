@@ -62,7 +62,7 @@ const GetTextFromWebPage: React.FC<MarkdownContentFetchProps> = ({ activeConvers
       const clipboardText = await navigator.clipboard.readText();
       setTargetUrl(clipboardText);
     } catch (err) {
-      console.error("クリップボードからテキストを取得できませんでした:", err);
+      console.error("Failed to retrieve text from clipboard:", err);
     }
   };
 

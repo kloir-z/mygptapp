@@ -146,11 +146,11 @@ export const getMarkdownContent = async (targetUrl: string): Promise<string[] | 
 
     if (response.status === 200) {
       const data = await response.json();
-      const content: string[] = data['content'];  // 配列として受け取る
+      const content: string[] = data['content'];
 
       return content;
     } else {
-      return null;  // エラーが発生した場合はnullを返す
+      return null;
     }
   } catch (error) {
     console.error(error);

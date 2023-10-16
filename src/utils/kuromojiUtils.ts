@@ -25,13 +25,12 @@ export const getWakachi = async ({ text, maxLength }: WakachiProps): Promise<str
       let groupedWakachi: string[] = [];
       let tempGroup = "";
       let isInParenthesis = false;
-      let currentParenthesisLength = 0; // 括弧内の文字数を追跡するための変数
-      const maxParenthesisLength = 6; // 括弧内の文字数上限（調整可能）
+      let currentParenthesisLength = 0;
+      const maxParenthesisLength = 6;
 
       tokens.forEach((token: IpadicFeatures) => {
         let word = token.surface_form;
 
-        // 括弧の開始を検出
         if (openingBrackets.has(word)) {
           isInParenthesis = true;
           currentParenthesisLength = 0;
@@ -54,7 +53,6 @@ export const getWakachi = async ({ text, maxLength }: WakachiProps): Promise<str
             tempGroup += word;
             currentParenthesisLength += word.length;
 
-            // 括弧の終了を検出
             if (closingBrackets.has(word)) {
               isInParenthesis = false;
               if (tempGroup) {

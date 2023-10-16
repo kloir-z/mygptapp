@@ -39,11 +39,11 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
       
       if (matchingPrompt) {
         setSelectedPromptId(matchingPrompt.id);
-        if (matchingPrompt.title === 'Youtube要約') {
+        if (matchingPrompt.title === 'Youtube Summary') {
           setShowTranscriptPopup(true);
-        } else if (matchingPrompt.title === 'Webページ要約') {
+        } else if (matchingPrompt.title === 'Web Page Summary') {
           setShowGetMdTxtPopup(true);
-        } else if (matchingPrompt.title === 'OCRして要約') {
+        } else if (matchingPrompt.title === 'OCR and Summary') {
           setShowOcrPopup(true);
         } else if (matchingPrompt.title === 'VoiceMode') {
           setShowVoiceModePopup(true);
@@ -65,7 +65,6 @@ const InitialMenu: React.FC<InitialMenuProps> = ({ systemprompts, activeConversa
       };
 
       handleUpdateConversations(updatedConversation, false).then(() => {
-        // 成功したらreturnTextをnullにリセット
         setReturnText(null);
       });
     }

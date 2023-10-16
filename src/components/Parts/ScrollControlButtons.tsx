@@ -58,7 +58,7 @@ const ScrollControlButtons: React.FC<ScrollControlButtonsProps> = ({ scrollToTop
 
         scrollTimer = setTimeout(() => {
           setContainerHovered(false);
-        }, 200); // 200ミリ秒後にスクロールが止まっていれば containerHovered を false に設定
+        }, 200);
       };
   
       checkScroll();
@@ -83,7 +83,7 @@ const ScrollControlButtons: React.FC<ScrollControlButtonsProps> = ({ scrollToTop
       }
       mouseMoveTimer = setTimeout(() => {
         setMouseIsMoving(false);
-      }, 250); // 250ミリ秒後にマウスが動いていなければ mouseIsMoving を false に設定
+      }, 250);
     };
 
     window.addEventListener('mousemove', handleMouseMove);

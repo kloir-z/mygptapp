@@ -44,7 +44,7 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, setConversations, acti
   } = useSidebar(conversations, setConversations, handleUpdateConversations);
 
   useEffect(() => {
-    // タイトルが"New Conversation"で、メッセージが含まれていないconversationを全て見つける
+    // Find all conversations titled "New Conversation" with no messages
     const emptyNewConversations = conversations.filter(conversation => {
       return conversation.title === "New Conversation" && 
         !conversation.revisions.some(revision => 
@@ -52,7 +52,7 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, setConversations, acti
         );
     });
   
-    // そのようなconversationが存在し、それが複数あれば、それを削除する
+    // If such conversations exist and there are more than one, delete them
     if (emptyNewConversations.length > 1) {
       const newConversations = conversations.filter(conversation => {
         return !emptyNewConversations.includes(conversation);
@@ -61,7 +61,7 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, setConversations, acti
       return;
     }
   
-    // １つだけ存在する場合、それが最後でなければ、最後に移動する
+    // If only one exists and it's not the last one, move it to the end
     if (emptyNewConversations.length === 1) {
       const targetIndex = conversations.indexOf(emptyNewConversations[0]);
       if (targetIndex < conversations.length - 1) {
@@ -72,7 +72,7 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, setConversations, acti
       }
     }
   
-    // そのようなconversationが存在しなければ、新しいものを追加する
+    // If no such conversations exist, add a new one
     if (emptyNewConversations.length === 0) {
       const newConv = createNewConversation();
       setConversations(prev => [...prev, newConv]);
@@ -86,13 +86,13 @@ const Sidebar: React.FC<SidebarProps> = ({ conversations, setConversations, acti
   };
 
   const iconMap: IconMapType = {
-    'Youtube要約': FaYoutube,
-    'Webページ要約': RiArticleLine,
+    'Youtube Summary': FaYoutube,
+    'Web Page Summary': RiArticleLine,
     'VoiceMode': RiSpeakLine,
-    '翻訳': RiTranslate2,
-    'OCRして要約': MdDocumentScanner,
+    'Translation': RiTranslate2,
+    'OCR and Summary': MdDocumentScanner,
   };
-  
+    
   const getIconForSystemPromptTitle = (systemPromptTitle: string) => {
     const IconComponent = iconMap[systemPromptTitle];
     return IconComponent ? <IconComponent /> : <MdOutlineChat />;

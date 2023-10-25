@@ -138,7 +138,7 @@ export const WakachiModal: React.FC<WakachiModalProps> = ({ text, show, onClose 
             <input
               type="range"
               min="50"
-              max="700"
+              max="400"
               step="10"
               value={playbackSpeed}
               onClick={(e) => e.stopPropagation()}

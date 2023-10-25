@@ -52,7 +52,7 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model
   
     const isCurrentModelAvailable = newAvailableModels.some(modelOption => modelOption.value === model);
     
-    if (model === 'gpt-3.5-turbo-16k-0613' && currentTotalTokens < 4096 - 300 && isAutoSwitched) {
+    if (model === 'gpt-3.5-turbo-16k-0613' && currentTotalTokens < 4096 - 800 && isAutoSwitched) {
       setModel('gpt-3.5-turbo-0613');
       setIsAutoSwitched(true); 
     } 

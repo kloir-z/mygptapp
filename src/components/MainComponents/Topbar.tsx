@@ -22,9 +22,9 @@ type TopbarProps = {
   };
 
   const modelOptions: ModelOption[] = [
-    { value: 'gpt-3.5-turbo-0613', label: 'gpt3.5(4k)' },
-    { value: 'gpt-3.5-turbo-16k-0613', label: 'gpt3.5(16k)' },
-    { value: 'gpt-4-0613', label: 'gpt4(8k)' }
+    { value: 'gpt-3.5-turbo', label: 'gpt3.5(4k)' },
+    { value: 'gpt-3.5-turbo-1106', label: 'gpt3.5(16k)' },
+    { value: 'gpt-4-1106-preview', label: 'gpt4(8k)' }
   ];
   
 const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model, setModel, activeConversation, setShowMenu, systemprompts, setSystemPrompts, setSidebarTransition, inputMessage }) => {
@@ -42,9 +42,9 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model
     const currentTotalTokens = totalTokenCount + inputTokenCount;
   
     const newAvailableModels: ModelOption[] = modelOptions.filter(option => {
-      if (option.value === 'gpt-3.5-turbo-0613') return currentTotalTokens < 4096 - 800;
-      if (option.value === 'gpt-3.5-turbo-16k-0613') return currentTotalTokens < 16384 - 1500;
-      if (option.value === 'gpt-4-0613') return currentTotalTokens < 8192 - 800;
+      if (option.value === 'gpt-3.5-turbo') return currentTotalTokens < 4096 - 800;
+      if (option.value === 'gpt-3.5-turbo-1106') return currentTotalTokens < 16384 - 1500;
+      if (option.value === 'gpt-4-1106-preview') return currentTotalTokens < 128000 - 800;
       return false;
     });
     
@@ -52,8 +52,8 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model
   
     const isCurrentModelAvailable = newAvailableModels.some(modelOption => modelOption.value === model);
     
-    if (model === 'gpt-3.5-turbo-16k-0613' && currentTotalTokens < 4096 - 800 && isAutoSwitched) {
-      setModel('gpt-3.5-turbo-0613');
+    if (model === 'gpt-3.5-turbo-1106' && currentTotalTokens < 4096 - 800 && isAutoSwitched) {
+      setModel('gpt-3.5-turbo');
       setIsAutoSwitched(true); 
     } 
     else if (!isCurrentModelAvailable) {

@@ -71,7 +71,7 @@ const App: React.FC = () => {
         // Call generateConversationTitle to automatically generate a title
         generateConversationTitle({
           apiKey: apiKey, 
-          model: 'gpt-3.5-turbo-0613',
+          model: 'gpt-3.5-turbo',
           messages: updatedActiveConversation.revisions[0].conversation
         }).then(newTitle => {
           if (newTitle) {

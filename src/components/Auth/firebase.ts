@@ -65,10 +65,12 @@ const updateConversations = async (userId?: string, conversations: ConversationT
 
   let start = 0;
   let i = 0;
-  const limit = 500000;
+  const limit = 900000;
   while (start < conversations.length) {
     const [chunk, nextStart] = getChunk(conversations, start, limit);
     const chunkSize = JSON.stringify({ conversations: chunk }).length;
+    console.log(chunk)
+    console.log(chunkSize)
 
     if (chunkSize >= limit) {
       console.error('Chunk size is close to or exceeds the limit!');
@@ -88,7 +90,7 @@ const updateSystemPrompts = async (userId?: string, systemPrompts: SystemPromptT
 
   let start = 0;
   let i = 0;
-  const limit = 500000;
+  const limit = 900000;
   while (start < systemPrompts.length) {
     const [chunk, nextStart] = getChunk(systemPrompts, start, limit);
     const chunkSize = JSON.stringify({ systemPrompts: chunk }).length;
@@ -148,9 +150,9 @@ const getChunk = <T>(array: T[], start: number, limit: number): [T[], number] =>
   let end = start;
 
   while (end < array.length) {
-    // Use JSON.stringify to approximate size. This is not exact, but useful as an approximation.
-    size += JSON.stringify(array[end]).length;
-    if (size > limit) break;
+    const itemSize = calculateFirestoreDataSize(array[end]); // 各要素のサイズを計算
+    if (size + itemSize > limit) break; // 制限を超える場合はループを抜ける
+    size += itemSize;
     end++;
   }
 
@@ -158,3 +160,28 @@ const getChunk = <T>(array: T[], start: number, limit: number): [T[], number] =>
 };
 
 export { auth, fetchUserData, updateConversations, deleteConversation, updateSystemPrompts };
+
+const calculateFirestoreDataSize = (data: any): number => {
+  const sizeOfString = (str: string): number => new TextEncoder().encode(str).length + 1; // UTF-8エンコードされたバイト数 + 1
+
+  let size = 0; // 初期サイズを0に設定
+
+  // データの各フィールドのサイズを計算
+  for (const [key, value] of Object.entries(data)) {
+    size += sizeOfString(key); // フィールド名のサイズ
+
+    if (typeof value === 'string') {
+      size += sizeOfString(value); // 文字列フィールド値
+    } else if (typeof value === 'number') {
+      size += 8; // 数値フィールド値（整数または浮動小数点数）
+    } else if (typeof value === 'boolean') {
+      size += 1; // ブール値フィールド値
+    } else if (Array.isArray(value)) {
+      size += value.reduce((acc, item) => acc + calculateFirestoreDataSize(item), 0); // 配列フィールド値（各要素のサイズを再帰的に計算）
+    } else if (typeof value === 'object' && value !== null) {
+      size += calculateFirestoreDataSize(value); // オブジェクトフィールド値（再帰的に計算）
+    }
+  }
+
+  return size + 32; // ドキュメントのサイズに32バイト追加
+};

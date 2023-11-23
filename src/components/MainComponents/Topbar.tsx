@@ -36,6 +36,8 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model
   const [isAutoSwitched, setIsAutoSwitched] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [tooltipMessage, setTooltipMessage] = useState('');
   const userButtonRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
@@ -66,6 +68,9 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model
   const handleModelChange = (newModel: string) => {
     setModel(newModel);
     setIsAutoSwitched(false);
+    setShowTooltip(true);
+    setTooltipMessage(`${newModel}`);
+    setTimeout(() => setShowTooltip(false), 2000);
   };
   
   const toggleMenu = () => {
@@ -85,6 +90,7 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model
         <StyledButton onClick={() => setShowSettings(true)}>
           <FaCog />{apiKey ? null : <NotificationDot>●</NotificationDot>}
         </StyledButton>
+        {showTooltip && <Tooltip message={tooltipMessage} />}
         <SettingsModal
           show={showSettings}
           onClose={() => setShowSettings(false)}
@@ -132,3 +138,11 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model
 };
 
 export default Topbar;
+
+const Tooltip = ({ message }: { message: string }) => {
+  return (
+    <div style={{ borderRadius: '8px', padding: '7px', position: 'absolute', top: '36px', left: '80px', backgroundColor: 'black' }}>
+      {message}
+    </div>
+  );
+};

@@ -24,7 +24,9 @@ type TopbarProps = {
   const modelOptions: ModelOption[] = [
     { value: 'gpt-3.5-turbo', label: 'gpt3.5(4k)' },
     { value: 'gpt-3.5-turbo-1106', label: 'gpt3.5(16k)' },
-    { value: 'gpt-4-1106-preview', label: 'gpt4(8k)' }
+    { value: 'gpt-4-1106-preview', label: '4-1106(128k)' },
+    { value: 'gpt-4-turbo-preview', label: '4-turbo(128k)' },
+    { value: 'gpt-4-0125-preview', label: '4-0125(128k)' }
   ];
   
 const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model, setModel, activeConversation, setShowMenu, systemprompts, setSystemPrompts, setSidebarTransition, inputMessage }) => {
@@ -47,6 +49,8 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model
       if (option.value === 'gpt-3.5-turbo') return currentTotalTokens < 4096 - 800;
       if (option.value === 'gpt-3.5-turbo-1106') return currentTotalTokens < 16384 - 1500;
       if (option.value === 'gpt-4-1106-preview') return currentTotalTokens < 128000 - 800;
+      if (option.value === 'gpt-4-turbo-preview') return currentTotalTokens < 128000 - 800;
+      if (option.value === 'gpt-4-0125-preview') return currentTotalTokens < 128000 - 800;
       return false;
     });
     

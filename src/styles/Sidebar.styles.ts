@@ -63,7 +63,7 @@ export const TitleContainer = styled.div`
     height: 0px;
   }
   /* Firefox */
-  scrollbar-width: thin;
+  scrollbar-width: none;
   scrollbar-color: #525252 #282c34;
 `;
 

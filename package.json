@@ -64,6 +64,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@craco/craco": "7.1.0",
     "@types/howler": "2.2.9",
     "@types/kuromoji": "0.1.1",

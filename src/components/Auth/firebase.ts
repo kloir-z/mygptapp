@@ -29,13 +29,15 @@ const fetchUserData = async (userId?: string): Promise<FetchedUserData> => {
 
   let i = 0;
   while (true) {
-    const docRef = doc(firestore, 'UserData', `${userId}-conversations-${i}`);
+    const docRef =  doc(firestore, 'UserData', `${userId}-conversations-${i}`);
     const docSnap = await getDoc(docRef);
+    
     if (docSnap.exists()) {
       conversations = conversations.concat(docSnap.data()?.conversations ?? []);
     } else {
       if (i === 0) {
         await setDoc(docRef, { conversations: [] });
+        console.log("No such document!");
       }
       break;
     }

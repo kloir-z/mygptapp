@@ -30,7 +30,11 @@ const fetchUserData = async (userId?: string): Promise<FetchedUserData> => {
   let i = 0;
   while (true) {
     const docRef =  doc(firestore, 'UserData', `${userId}-conversations-${i}`);
+    console.log(`Fetching document: ${docRef.path}`);
+    const startTime = performance.now();
     const docSnap = await getDoc(docRef);
+    const endTime = performance.now();
+    console.log(`Fetched document in ${endTime - startTime} ms`);
     
     if (docSnap.exists()) {
       conversations = conversations.concat(docSnap.data()?.conversations ?? []);

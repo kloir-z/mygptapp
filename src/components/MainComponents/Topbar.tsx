@@ -3,32 +3,33 @@ import React, { useState, useRef, useEffect, useContext } from "react";
 import { TopbarContainer, StyledButton, StyledSelect, StyledOption, NotificationDot, TopbarArea } from '../../styles/Topbar.styles';
 import { ConversationType, SystemPromptType, ModelOption } from '../../types/Conversations.types';
 import { FaBars, FaCog, FaUser } from 'react-icons/fa';
-import SettingsModal from '../SubComponents/SettingsModal'; 
+import SettingsModal from '../SubComponents/SettingsModal';
 import TokenCounter from '../Parts/TokenCounter';
 import UserMenu from '../SubComponents/UserMenu';
 
 type TopbarProps = {
-    apiKey: string;
-    setApiKey: React.Dispatch<React.SetStateAction<string>>;
-    conversations: ConversationType[];
-    model: string;
-    setModel: React.Dispatch<React.SetStateAction<string>>;
-    activeConversation: ConversationType | null;
-    setShowMenu: React.Dispatch<React.SetStateAction<boolean>>;
-    systemprompts: SystemPromptType[];
-    setSystemPrompts: React.Dispatch<React.SetStateAction<SystemPromptType[]>>;
-    setSidebarTransition: React.Dispatch<React.SetStateAction<boolean>>;
-    inputMessage: string;
-  };
+  apiKey: string;
+  setApiKey: React.Dispatch<React.SetStateAction<string>>;
+  conversations: ConversationType[];
+  model: string;
+  setModel: React.Dispatch<React.SetStateAction<string>>;
+  activeConversation: ConversationType | null;
+  setShowMenu: React.Dispatch<React.SetStateAction<boolean>>;
+  systemprompts: SystemPromptType[];
+  setSystemPrompts: React.Dispatch<React.SetStateAction<SystemPromptType[]>>;
+  setSidebarTransition: React.Dispatch<React.SetStateAction<boolean>>;
+  inputMessage: string;
+};
 
-  const modelOptions: ModelOption[] = [
-    { value: 'gpt-3.5-turbo', label: 'gpt3.5(4k)' },
-    { value: 'gpt-3.5-turbo-1106', label: 'gpt3.5(16k)' },
-    { value: 'gpt-4-1106-preview', label: '4-1106(128k)' },
-    { value: 'gpt-4-turbo-preview', label: '4-turbo(128k)' },
-    { value: 'gpt-4-0125-preview', label: '4-0125(128k)' }
-  ];
-  
+const modelOptions: ModelOption[] = [
+  { value: 'gpt-3.5-turbo', label: 'gpt3.5(4k)' },
+  { value: 'gpt-3.5-turbo-1106', label: 'gpt3.5(16k)' },
+  { value: 'gpt-4-1106-preview', label: '4-1106(128k)' },
+  { value: 'gpt-4-turbo-preview', label: '4-turbo(128k)' },
+  { value: 'gpt-4-0125-preview', label: '4-0125(128k)' },
+  { value: 'gpt-4-turbo-2024-04-09', label: '4-0409(128k)' }
+];
+
 const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model, setModel, activeConversation, setShowMenu, systemprompts, setSystemPrompts, setSidebarTransition, inputMessage }) => {
   const [inputTokenCount, setInputTokenCount] = useState<number>(0);
   const [totalTokenCount, setTotalTokenCount] = useState<number>(0);
@@ -44,29 +45,30 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model
 
   useEffect(() => {
     const currentTotalTokens = totalTokenCount + inputTokenCount;
-  
+
     const newAvailableModels: ModelOption[] = modelOptions.filter(option => {
       if (option.value === 'gpt-3.5-turbo') return currentTotalTokens < 4096 - 800;
       if (option.value === 'gpt-3.5-turbo-1106') return currentTotalTokens < 16384 - 1500;
       if (option.value === 'gpt-4-1106-preview') return currentTotalTokens < 128000 - 800;
       if (option.value === 'gpt-4-turbo-preview') return currentTotalTokens < 128000 - 800;
       if (option.value === 'gpt-4-0125-preview') return currentTotalTokens < 128000 - 800;
+      if (option.value === 'gpt-4-turbo-2024-04-09') return currentTotalTokens < 128000 - 800;
       return false;
     });
-    
+
     setAvailableModels(newAvailableModels);
-  
+
     const isCurrentModelAvailable = newAvailableModels.some(modelOption => modelOption.value === model);
-    
+
     if (model === 'gpt-3.5-turbo-1106' && currentTotalTokens < 4096 - 800 && isAutoSwitched) {
       setModel('gpt-3.5-turbo');
-      setIsAutoSwitched(true); 
-    } 
+      setIsAutoSwitched(true);
+    }
     else if (!isCurrentModelAvailable) {
       setModel(newAvailableModels[0]?.value || '');
-      setIsAutoSwitched(true); 
+      setIsAutoSwitched(true);
     }
-  
+
   }, [totalTokenCount, inputTokenCount, model]);
 
   const handleModelChange = (newModel: string) => {
@@ -76,7 +78,7 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model
     setTooltipMessage(`${newModel}`);
     setTimeout(() => setShowTooltip(false), 2000);
   };
-  
+
   const toggleMenu = () => {
     setShowMenu((prevState: Boolean) => !prevState);
     setSidebarTransition(true);
@@ -85,7 +87,7 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model
     }, 210);
   };
 
-  return(
+  return (
     <TopbarArea>
       <TopbarContainer>
         <StyledButton onClick={toggleMenu}>
@@ -103,7 +105,7 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model
           systemprompts={systemprompts}
           setSystemPrompts={setSystemPrompts}
         />
-        <StyledSelect value={model} onChange={e => handleModelChange(e.target.value)}>  
+        <StyledSelect value={model} onChange={e => handleModelChange(e.target.value)}>
           {availableModels.map((modelOption, index) => (
             <StyledOption key={index} value={modelOption.value}>
               {modelOption.label}

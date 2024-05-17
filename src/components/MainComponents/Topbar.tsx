@@ -54,6 +54,7 @@ const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model
       if (option.value === 'gpt-4-turbo-preview') return currentTotalTokens < 128000 - 800;
       if (option.value === 'gpt-4-0125-preview') return currentTotalTokens < 128000 - 800;
       if (option.value === 'gpt-4-turbo-2024-04-09') return currentTotalTokens < 128000 - 800;
+      if (option.value === 'gpt-4o') return currentTotalTokens < 128000 - 800;
       return false;
     });
 

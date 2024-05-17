@@ -27,7 +27,8 @@ const modelOptions: ModelOption[] = [
   { value: 'gpt-4-1106-preview', label: '4-1106(128k)' },
   { value: 'gpt-4-turbo-preview', label: '4-turbo(128k)' },
   { value: 'gpt-4-0125-preview', label: '4-0125(128k)' },
-  { value: 'gpt-4-turbo-2024-04-09', label: '4-0409(128k)' }
+  { value: 'gpt-4-turbo-2024-04-09', label: '4-0409(128k)' },
+  { value: 'gpt-4o', label: '4o(128k)' }
 ];
 
 const Topbar: React.FC<TopbarProps> = ({ apiKey, setApiKey, conversations, model, setModel, activeConversation, setShowMenu, systemprompts, setSystemPrompts, setSidebarTransition, inputMessage }) => {
